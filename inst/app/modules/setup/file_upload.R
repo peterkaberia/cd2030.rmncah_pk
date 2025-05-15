@@ -7,7 +7,7 @@ fileUploadUI <- function(id, i18n) {
 
   box(
     title = i18n$t('title_upload_survey'),
-    status = 'success',
+    status = 'primary',
     solidHeader = TRUE,
     width = 12,
 
@@ -226,7 +226,7 @@ fileUploadServer <- function(id, cache, i18n) {
             file_path <- .x$datapath
 
             tryCatch(
-              cd2030:::check_file_path(file_path),
+              cd2030.rmncah:::check_file_path(file_path),
               error = function(e) {
                 selected_dir_box$add_message(clean_error_message(e), 'error')
                 return()

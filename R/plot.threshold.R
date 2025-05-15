@@ -11,7 +11,7 @@ plot.cd_threshold <- function(x,
   )
 
   title <- if (indicator == "coverage") {
-    str_glue("Pecentage of {admin_level} with Vaccination Coverage > 90%")
+    str_glue("Pecentage of {admin_level} with Coverage > 90%")
   } else {
     str_glue("Percent of {admin_level} with Dropout Rate of < 10%")
   }

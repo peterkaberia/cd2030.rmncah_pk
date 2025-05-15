@@ -6,7 +6,7 @@ dataCompletenessUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t('title_completeness_options'),
-        status = 'success',
+        status = 'primary',
         solidHeader = TRUE,
         width = 12,
         fluidRow(
@@ -29,7 +29,7 @@ dataCompletenessUI <- function(id, i18n) {
         ),
 
         tabPanel(
-          title = i18n$t('title_complete_vaccines'),
+          title = i18n$t('title_complete_indicators'),
           fluidRow(
             column(12, h5(i18n$t('title_districts_with_complete_data'))),
             column(12, reactableOutput(ns('complete_vaccines')))
@@ -37,7 +37,7 @@ dataCompletenessUI <- function(id, i18n) {
         ),
 
         tabPanel(
-          title = i18n$t('title_incomplete_vaccines_by_region'),
+          title = i18n$t('title_missing_indicators_by_region'),
           fluidRow(
             column(12, plotCustomOutput(ns('incomplete_region')))
           )
@@ -45,7 +45,7 @@ dataCompletenessUI <- function(id, i18n) {
       ),
       box(
         title = i18n$t('title_districts_with_missing_data'),
-        status = 'success',
+        status = 'primary',
         width = 6,
         fluidRow(
           column(3, selectizeInput(ns('year'), label = i18n$t('title_year'), choice = NULL)),
@@ -182,10 +182,10 @@ dataCompletenessServer <- function(id, cache, i18n) {
 
         req(data())
 
-        vaccine_only <- list_vaccines ()
+        all_indicators <- get_all_indicators()
 
         data() %>%
-          add_missing_column(vaccine_only) %>%
+          add_missing_column(all_indicators) %>%
           summarise(across(starts_with('mis_'), ~ (1 - mean(.x, na.rm = TRUE))) * 100, .by = c(year, admin_level())) %>%
           group_by(!!sym(admin_level())) %>%
           select(year, any_of(admin_level()), where(~ any(.x < 100, na.rm = TRUE))) %>%

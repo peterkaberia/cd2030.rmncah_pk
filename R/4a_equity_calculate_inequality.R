@@ -92,6 +92,9 @@ calculate_inequality <- function(.data,
         indicator <- str_extract(cur_column(), "(?<=_cov_).+(?=_[^_]+$)")
         denominator <- str_extract(cur_column(), "[^_]+$")
         population <- get_population_column(indicator, denominator)
+        if (is.na(population)) {
+          return(NA)
+        }
 
         stats::weighted.mean(.x, get(paste("popshare", population, sep = "_")), na.rm = TRUE)
       },
@@ -159,7 +162,7 @@ filter_inequality <- function(.data,
                               denominator = c("dhis2", "anc1", "penta1", "penta1derived"),
                               ...) {
   # check_cd_inequality(.data)
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator)
 
   pop_col <- get_population_column(indicator, denominator)

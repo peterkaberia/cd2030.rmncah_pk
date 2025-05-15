@@ -116,9 +116,9 @@
       "fr": "Inégalités infranationales"
     },
     {
-      "key": "title_vaccination_coverage",
-      "en": "Global Vaccination Coverage",
-      "fr": "Couverture vaccinale mondiale"
+      "key": "title_global_coverage",
+      "en": "Global Coverage",
+      "fr": "Couverture mondiale"
     },
     {
       "key": "title_subnational_mapping",
@@ -611,11 +611,6 @@
       "fr": "CPN"
     },
     {
-      "key": "opt_institutional_delivery",
-      "en": "Institutional Delivery",
-      "fr": "Accouchement en établissement"
-    },
-    {
       "key": "opt_vaccination",
       "en": "Vaccination",
       "fr": "Vaccination"
@@ -801,14 +796,14 @@
       "fr": "Indicateurs avec des données manquantes"
     },
     {
-      "key": "title_complete_vaccines",
-      "en": "Complete Vaccines",
-      "fr": "Vaccins complets"
+      "key": "title_complete_indicators",
+      "en": "Complete Indicators",
+      "fr": "Indicateurs complets"
     },
     {
-      "key": "title_incomplete_vaccines_by_region",
-      "en": "Incomplete Vaccines by Region",
-      "fr": "Vaccins incomplets par région"
+      "key": "title_missing_indicators_by_region",
+      "en": "Missing Indicators by Region",
+      "fr": "Indicateurs manquants par région"
     },
     {
       "key": "title_districts_with_missing_data",
@@ -887,13 +882,13 @@
     },
     {
       "key": "title_monthly_completeness",
-      "en": "1. Completeness of monthly facility reporting (Immunization)",
-      "fr": "1. Complétude des rapports mensuels des établissements (Vaccination)"
+      "en": "1. Completeness of monthly facility reporting (mean of ANC, delivery, immunization, OPD)",
+      "fr": "1. Complétude des rapports mensuels des établissements (moyenne de CPN, accouchement, vaccination, consultations externes)"
     },
     {
       "key": "title_extreme_outliers",
-      "en": "2. Extreme outliers (Common Vaccine antigens)",
-      "fr": "2. Valeurs aberrantes extrêmes (Antigènes vaccinaux courants)"
+      "en": "2. Extreme outliers (mean of ANC, delivery, immunization, OPD)",
+      "fr": "2. Valeurs aberrantes extrêmes (moyenne de CPN, accouchement, vaccination, consultations externes)"
     },
     {
       "key": "title_consistency_annual_reporting",
@@ -1016,6 +1011,21 @@
       "fr": "Rougeole"
     },
     {
+      "key": "opt_anc1",
+      "en": "ANC1",
+      "fr": "ANC1"
+    },
+    {
+      "key": "opt_ideliv",
+      "en": "Institutional Delivery",
+      "fr": "Accouchement en établissement"
+    },
+    {
+      "key": "opt_opd_under5",
+      "en": "OPD Under 5",
+      "fr": "Consultations externes des enfants de moins de 5 ans"
+    },
+    {
       "key": "figure_live_births_outlier",
       "en": "Figure 1c: Comparison of number of live births before and after adjustments for completness and outliers",
       "fr": "Figure 1c : Comparaison du nombre de naissances vivantes avant et après ajustements pour complétude et valeurs aberrantes"
@@ -1026,14 +1036,24 @@
       "fr": "Figure 1d : Comparaison du nombre de vaccinations Penta1 avant et après ajustements pour complétude et valeurs aberrantes"
     },
     {
-      "key": "figure_bcg_outlier",
-      "en": "Figure 1e: Comparison of number of BCG vaccination before and after adjustments for completness and outliers",
-      "fr": "Figure 1e : Comparaison du nombre de vaccinations BCG avant et après ajustements pour complétude et valeurs aberrantes"
+      "key": "figure_anc1_outlier",
+      "en": "Figure 1e: Comparison of number of ANC1 before and after adjustments for completness and outliers",
+      "fr": "Figure 1e : Comparaison du nombre de ANC1 avant et après ajustements pour complétude et valeurs aberrantes"
     },
     {
       "key": "figure_mcv1_outlier",
       "en": "Figure 1f: Comparison of number of measles vaccination before and after adjustments for completness and outliers",
       "fr": "Figure 1f : Comparaison du nombre de vaccinations contre la rougeole avant et après ajustements pour complétude et valeurs aberrantes"
+    },
+     {
+      "key": "figure_ideliv_outlier",
+      "en": "Figure 1f: Comparison of number of institutional deliveries before and after adjustments for completness and outliers",
+      "fr": "Figure 1f : Comparaison du nombre d'accouchements en établissement avant et après ajustements pour complétude et valeurs aberrantes"
+    },
+    {
+      "key": "figure_opd_under5_outlier",
+      "en": "Figure 1f: Comparison of number of OPD under 5 years before and after adjustments for completeness and outliers",
+      "fr": "Figure 1f : Comparaison du nombre de consultations externes des enfants de moins de 5 ans avant et après ajustements pour complétude et valeurs aberrantes"
     },
     {
       "key": "title_national_rates",
@@ -1166,6 +1186,21 @@
       "fr": "Rougeole 1"
     },
     {
+      "key": "opt_mcv2",
+      "en": "Measles 2",
+      "fr": "Rougeole 2"
+    },
+    {
+      "key": "opt_anc4",
+      "en": "ANC 4",
+      "fr": "CPN 4"
+    },
+    {
+      "key": "opt_lbw",
+      "en": "Low Birth Weight",
+      "fr": "Faible poids à la naissance"
+    },
+    {
       "key": "title_analysis_options",
       "en": "Analysis Options",
       "fr": "Options d'analyse"
@@ -1266,19 +1301,24 @@
       "fr": "Niveau de couverture/utilisation"
     },
     {
-      "key": "title_distribution_of_penta13_dropout",
-      "en": "Distribution of Penta1 to Penta3 dropout in {country()} by Regions",
-      "fr": "Répartition de l’abandon entre Penta1 et Penta3 en {country()} par région"
+      "key": "title_distribution_of_anc4",
+      "en": "Distribution of ANC4 in {country()} by Regions",
+      "fr": "Répartition de la CPN 4 en {country()} par région"
     },
     {
-      "key": "title_distribution_of_penta3",
-      "en": "Distribution of Penta3 Coverage in {country()} by Regions",
-      "fr": "Répartition de la couverture Penta3 en {country()} par région"
+      "key": "title_distribution_of_ideliv",
+      "en": "Distribution of Institutional Deliveries in {country()} by Regions",
+      "fr": "Répartition des accouchements en établissement en {country()} par région"
     },
     {
-      "key": "title_distribution_of_penta3_mcv1_dropout",
-      "en": "Distribution of Penta3 to Measles1 dropout in {country()} by Regions",
-      "fr": "Répartition de l’abandon entre Penta3 et Rougeole1 en {country()} par région"
+      "key": "title_distribution_of_lbw",
+      "en": "Distribution of Low Birth Weight in {country()} by Regions",
+      "fr": "Répartition des cas de faible poids à la naissance en {country()} par région"
+    },
+    {
+      "key": "title_distribution_of_penta1",
+      "en": "Distribution of Penta1 Coverage in {country()} by Regions",
+      "fr": "Répartition de la couverture Penta1 en {country()} par région"
     },
     {
       "key": "title_distribution_of_measles1",

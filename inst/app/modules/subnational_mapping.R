@@ -6,7 +6,7 @@ subnationalMappingUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_analysis_options"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         solidHeader = TRUE,
         fluidRow(
@@ -24,34 +24,42 @@ subnationalMappingUI <- function(id, i18n) {
         width = 12,
 
         tabPanel(
-          i18n$t("title_penta3_coverage"),
+          title = i18n$t("opt_anc4"),
           fluidRow(
-            column(12, plotCustomOutput(ns('penta3_coverage'))),
-            column(3, downloadButtonUI(ns('penta3_download'))),
+            column(12, plotCustomOutput(ns('anc4'))),
+            downloadCoverageUI(ns('anc4_download'))
           )
         ),
 
         tabPanel(
-          i18n$t("title_mcv1_coverage"),
+          title = i18n$t("opt_ideliv"),
           fluidRow(
-            column(12, plotCustomOutput(ns('mcv1_coverage'))),
-            column(3, downloadButtonUI(ns('mcv1_download'))),
+            column(12, plotCustomOutput(ns('ideliv'))),
+            downloadCoverageUI(ns('ideliv_download'))
           )
         ),
 
         tabPanel(
-          i18n$t("title_penta13_dropout"),
+          title = i18n$t("opt_lbw"),
           fluidRow(
-            column(12, plotCustomOutput(ns('penta13_dropout'))),
-            column(3, downloadButtonUI(ns('penta13_dropout_download'))),
+            column(12, plotCustomOutput(ns('lbw'))),
+            downloadCoverageUI(ns('lbw_download'))
           )
         ),
 
         tabPanel(
-          i18n$t("title_penta3_mcv1_dropout"),
+          title = i18n$t("opt_penta1"),
           fluidRow(
-            column(12, plotCustomOutput(ns('penta3mcv1_dropout'))),
-            column(3, downloadButtonUI(ns('penta3mcv1_droput_download'))),
+            column(12, plotCustomOutput(ns('penta1'))),
+            downloadCoverageUI(ns('penta1_download'))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_mcv1"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('measles1'))),
+            downloadCoverageUI(ns('measles1_download'))
           )
         ),
 
@@ -59,7 +67,7 @@ subnationalMappingUI <- function(id, i18n) {
           i18n$t("opt_custom_check"),
           fluidRow(
             column(3, selectizeInput(ns('indicator'), label = i18n$t("title_indicator"),
-                                     choices = c('Select' = '0', list_vaccine_indicators())))
+                                     choices = c('Select' = '0', get_indicator_without_opd_ipd())))
           ),
           fluidRow(
             column(12, plotCustomOutput(ns('custom'))),
@@ -147,33 +155,33 @@ subnationalMappingServer <- function(id, cache, i18n) {
         updateSelectizeInput(session, 'palette', choices = palette)
       })
 
-      output$penta13_dropout <- renderCustomPlot({
+      output$anc4 <- renderCustomPlot({
         req(dt())
 
         title <- str_glue(i18n$t("title_distribution_of_penta13_dropout"))
-        plot(dt(), indicator = 'dropout_penta13',
+        plot(dt(), indicator = 'anc4',
              denominator = denominator(),
              palette = input$palette,
              title = title,
              plot_year = years())
       })
 
-      output$penta3mcv1_dropout <- renderCustomPlot({
+      output$ideliv <- renderCustomPlot({
         req(dt())
 
-        title <- str_glue(i18n$t("title_distribution_of_penta3_mcv1_dropout"))
-        plot(dt(), indicator = 'dropout_penta3mcv1',
+        title <- str_glue(i18n$t("title_distribution_of_ideliv"))
+        plot(dt(), indicator = 'instdeliveries',
              denominator = denominator(),
              palette = input$palette,
              title = title,
              plot_year = years())
       })
 
-      output$penta3_coverage <- renderCustomPlot({
+      output$lbw <- renderCustomPlot({
         req(dt())
 
-        title <- str_glue(i18n$t("title_distribution_of_penta3"))
-        plot(dt(), indicator = 'penta3',
+        title <- str_glue(i18n$t("title_distribution_of_lbw"))
+        plot(dt(), indicator = 'low_bweight',
              denominator = denominator(),
              palette = input$palette,
              title = title,
@@ -181,7 +189,18 @@ subnationalMappingServer <- function(id, cache, i18n) {
       })
 
 
-      output$mcv1_coverage <- renderCustomPlot({
+      output$penta1 <- renderCustomPlot({
+        req(dt())
+
+        title <- str_glue(i18n$t("title_distribution_of_penta1"))
+        plot(dt(), indicator = 'penta1',
+             denominator = denominator(),
+             palette = input$palette,
+             title = title,
+             plot_year = years())
+      })
+
+      output$measles1 <- renderCustomPlot({
         req(dt())
 
         title <- str_glue(i18n$t("title_distribution_of_measles1"))

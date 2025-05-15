@@ -30,18 +30,6 @@ test_that("get_country_name fails if class is wrong", {
   expect_error(get_country_name(x), "x The data object must be of class <'cd_data'>.")
 })
 
-test_that("list_tracer_vaccines returns expected static tracer list", {
-  expected <- c("bcg", "measles1", "opv1", "opv2", "opv3", "penta1", "penta2", "penta3")
-  expect_equal(list_tracer_vaccines(), expected)
-})
-
-test_that("list_vaccines returns all standard vaccines", {
-  result <- list_vaccines()
-  expect_true(all(c("bcg", "penta1", "measles2", "rota2") %in% result))
-  expect_length(result, 16)
-  expect_type(result, "character")
-})
-
 test_that("get_indicator_groups returns expected group names", {
   result <- get_indicator_groups()
   expect_named(result, c("anc", "idelv", "vacc"))

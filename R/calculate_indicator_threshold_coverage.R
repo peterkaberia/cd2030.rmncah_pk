@@ -112,7 +112,7 @@ calculate_threshold <- function(.data,
   indicators <- if (indicator == "dropout") {
     "zerodose|undervax|dropout_penta13|dropout_measles12|dropout_penta3mcv1|dropout_penta1mcv1"
   } else {
-    "bcg|penta3|measles1|opv1|opv3"
+    "anc4|instdeliveries|penta3"
   }
   threshold_func <- if (indicator == "coverage") {
     function(x) x > 90

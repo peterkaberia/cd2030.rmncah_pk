@@ -6,7 +6,7 @@ subnationalInequalityUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_analysis_options"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         solidHeader = TRUE,
         fluidRow(
@@ -20,6 +20,38 @@ subnationalInequalityUI <- function(id, i18n) {
         width = 12,
 
         tabPanel(
+          title = i18n$t("opt_anc4"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('anc4'))),
+            downloadCoverageUI(ns('anc4_download'))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_ideliv"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('ideliv'))),
+            downloadCoverageUI(ns('ideliv_download'))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_lbw"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('lbw'))),
+            downloadCoverageUI(ns('lbw_download'))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_penta1"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('penta1'))),
+            downloadCoverageUI(ns('penta1_download'))
+          )
+        ),
+
+        tabPanel(
           title = i18n$t("opt_mcv1"),
           fluidRow(
             column(12, plotCustomOutput(ns('measles1'))),
@@ -28,34 +60,10 @@ subnationalInequalityUI <- function(id, i18n) {
         ),
 
         tabPanel(
-          title = i18n$t("opt_penta3"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('penta3'))),
-            downloadCoverageUI(ns('penta3_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("title_penta13_dropout"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('dropout_penta13'))),
-            downloadCoverageUI(ns('dropout_penta13_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("title_penta3_mcv1_dropout"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('dropout_penta3mcv1'))),
-            downloadCoverageUI(ns('dropout_penta3mcv1_download'))
-          )
-        ),
-
-        tabPanel(
           i18n$t("opt_custom_check"),
           fluidRow(
             column(3, selectizeInput(ns('indicator'), label = i18n$t("title_indicator"),
-                                     choices = c('Select' = '', list_vaccine_indicators())))
+                                     choices = c('Select' = '', get_indicator_without_opd_ipd())))
           ),
           fluidRow(
             column(12, plotCustomOutput(ns('custom_check'))),
@@ -98,30 +106,68 @@ subnationalInequalityServer <- function(id, cache, i18n) {
         )
       })
 
+      output$anc4 <- renderCustomPlot({
+        req(inequalities(), denominator())
+        plot(inequalities(), indicator = 'anc4', denominator = denominator())
+      })
+
+      output$ideliv <- renderCustomPlot({
+        req(inequalities(), denominator())
+        plot(inequalities(), indicator = 'instdeliveries', denominator = denominator())
+      })
+
+      output$lbw <- renderCustomPlot({
+        req(inequalities(), denominator())
+        plot(inequalities(), indicator = 'low_bweight', denominator = denominator())
+      })
+
+      output$penta1 <- renderCustomPlot({
+        req(inequalities(), denominator())
+        plot(inequalities(), indicator = 'penta1', denominator = denominator())
+      })
+
       output$measles1 <- renderCustomPlot({
         req(inequalities(), denominator())
         plot(inequalities(), indicator = 'measles1', denominator = denominator())
-      })
-
-      output$penta3 <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'penta3', denominator = denominator())
-      })
-
-      output$dropout_penta13 <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'dropout_penta13', denominator = denominator())
-      })
-
-      output$dropout_penta3mcv1 <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'dropout_penta3mcv1', denominator = denominator())
       })
 
       output$custom_check <- renderCustomPlot({
         req(inequalities(), denominator(), input$indicator)
         plot(inequalities(), indicator = input$indicator, denominator = denominator())
       })
+
+      downloadCoverageServer(
+        id = 'anc4_download',
+        data = inequalities,
+        filename = reactive(paste0('anc4_', admin_level(), '_inequality_', denominator())),
+        indicator = reactive('anc4'),
+        denominator =denominator,
+        data_fn = filter_inequality,
+        i18n = i18n,
+        sheet_name = reactive(i18n$t("title_anc4_inequality"))
+      )
+
+      downloadCoverageServer(
+        id = 'ideliv_download',
+        data = inequalities,
+        filename = reactive(paste0('ideliv_', admin_level(), '_inequality_', denominator())),
+        indicator = reactive('instdeliveries'),
+        denominator =denominator,
+        data_fn = filter_inequality,
+        i18n = i18n,
+        sheet_name = reactive(i18n$t("title_ideliv_inequality"))
+      )
+
+      downloadCoverageServer(
+        id = 'lbw_download',
+        data = inequalities,
+        filename = reactive(paste0('lbw_', admin_level(), '_inequality_', denominator())),
+        indicator = reactive('low_bweight'),
+        denominator =denominator,
+        data_fn = filter_inequality,
+        i18n = i18n,
+        sheet_name = reactive(i18n$t("title_lbw_inequality"))
+      )
 
       downloadCoverageServer(
         id = 'measles1_download',
@@ -132,39 +178,6 @@ subnationalInequalityServer <- function(id, cache, i18n) {
         data_fn = filter_inequality,
         i18n = i18n,
         sheet_name = reactive(i18n$t("title_mcv1_inequality"))
-      )
-
-      downloadCoverageServer(
-        id = 'penta3_download',
-        data = inequalities,
-        filename = reactive(paste0('penta3_', admin_level(), '_inequality_', denominator())),
-        indicator = reactive('penta3'),
-        denominator =denominator,
-        data_fn = filter_inequality,
-        i18n = i18n,
-        sheet_name = reactive(i18n$t("title_penta3_inequality"))
-      )
-
-      downloadCoverageServer(
-        id = 'dropout_penta13_download',
-        data = inequalities,
-        filename = reactive(paste0('dropout_penta13_', admin_level(), '_inequality_', denominator())),
-        indicator = reactive('dropout_penta13'),
-        denominator = denominator,
-        data_fn = filter_inequality,
-        i18n = i18n,
-        sheet_name = reactive(i18n$t("title_penta13_inequality"))
-      )
-
-      downloadCoverageServer(
-        id = 'dropout_penta3mcv1_download',
-        data = inequalities,
-        filename = reactive(paste0('dropout_penta3mcv1_', admin_level(), '_inequality_', denominator())),
-        indicator = reactive('dropout_penta3mcv1'),
-        denominator = denominator,
-        data_fn = filter_inequality,
-        i18n = i18n,
-        sheet_name = reactive(i18n$t("title_penta3_mcv1_inequality"))
       )
 
       downloadCoverageServer(

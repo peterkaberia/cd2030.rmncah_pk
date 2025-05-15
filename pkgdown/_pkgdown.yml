@@ -142,9 +142,6 @@ reference:
     - get_named_indicators
     - get_population_column
     - get_admin_columns
-    - list_tracer_vaccines
-    - list_vaccines
-    - list_vaccine_indicators
     - robust_max
     - new_countdown
     - print.cd_data

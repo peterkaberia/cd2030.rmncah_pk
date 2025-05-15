@@ -123,7 +123,7 @@ filter_coverage <- function(.data,
   admin_level <- attr(.data, "admin_level")
 
   # check_cd_coverage(,data)
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator)
 
   if (admin_level != "national" && is.null(region)) {

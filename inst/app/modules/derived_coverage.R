@@ -5,7 +5,7 @@ derivedCoverageUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_analysis_options"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         solidHeader = TRUE,
         fluidRow(
@@ -53,7 +53,7 @@ derivedCoverageUI <- function(id, i18n) {
           i18n$t("opt_custom_check"),
           fluidRow(
             column(3, selectizeInput(ns('indicator'), label = i18n$t("title_indicator"),
-                                     choices = c('Select' = '', get_all_indicators())))
+                                     choices = c('Select' = '', get_indicator_without_opd_ipd())))
           ),
           fluidRow(
             column(12, plotCustomOutput(ns('custom'))),

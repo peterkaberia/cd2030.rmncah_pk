@@ -2,7 +2,7 @@ surveySetupUI <- function(id, i18n) {
   ns <- NS(id)
   box(
     title = i18n$t("title_survey_setup"),
-    status = 'success',
+    status = 'primary',
     solidHeader = TRUE,
     width = 12,
     fluidRow(

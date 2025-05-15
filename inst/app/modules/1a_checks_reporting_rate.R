@@ -6,7 +6,7 @@ reportingRateUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_reporting_rate_options"),
-        status = 'success',
+        status = 'primary',
         solidHeader = TRUE,
         width = 12,
         fluidRow(
@@ -36,7 +36,7 @@ reportingRateUI <- function(id, i18n) {
       ),
       box(
         title = i18n$t("title_national_reporting_rate"),
-        status = 'success',
+        status = 'primary',
         collapsible = TRUE,
         width = 6,
         fluidRow(
@@ -48,7 +48,7 @@ reportingRateUI <- function(id, i18n) {
       box(
         title = i18n$t("title_subnational_low_reporting"),
         width = 6,
-        status = 'success',
+        status = 'primary',
         fluidRow(
           column(3, selectizeInput(ns('year'),
                                    label = i18n$t("title_year"),

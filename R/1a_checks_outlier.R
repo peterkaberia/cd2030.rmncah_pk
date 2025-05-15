@@ -43,6 +43,8 @@ calculate_outliers_summary <- function(.data, admin_level = c('national', 'admin
   admin_level_cols <- get_admin_columns(admin_level)
 
   allindicators <- get_all_indicators()
+  ipd_indicators <- get_indicator_groups()['ipd']
+  four_indicator <- paste0(allindicators[which(!allindicators %in% ipd_indicators)], '_outlier5std')
 
   data <- .data %>%
     calculate_outlier_core(indicators = allindicators, admin_level = admin_level) %>%
@@ -52,6 +54,7 @@ calculate_outliers_summary <- function(.data, admin_level = c('national', 'admin
     ) %>%
     mutate(
       mean_out_all = rowMeans(select(., ends_with('_outlier5std')), na.rm = TRUE),
+      mean_out_four = rowMeans(select(., any_of(four_indicator)), na.rm = TRUE),
       across(c(ends_with('_outlier5std'), starts_with('mean_out_')), ~ round((1 - .x) * 100, 0))
     )
 
@@ -102,6 +105,8 @@ calculate_district_outlier_summary <- function(.data) {
   check_cd_data(.data)
 
   allindicators <- get_all_indicators()
+  ipd_indicators <- get_indicator_groups()['ipd']
+  four_indicator <- paste0(allindicators[which(!allindicators %in% ipd_indicators)], '_outlier5std')
 
   data <- .data %>%
     calculate_outlier_core(indicators = allindicators, admin_level = 'district') %>%
@@ -112,6 +117,7 @@ calculate_district_outlier_summary <- function(.data) {
     summarise(across(ends_with('_outlier5std'), mean, na.rm = TRUE), .by = year) %>%
     mutate(
       mean_out_all = rowMeans(select(., ends_with('_outlier5std')), na.rm = TRUE),
+      mean_out_four = rowMeans(select(., any_of(four_indicator)), na.rm = TRUE),
       across(c(ends_with('_outlier5std'), starts_with('mean_out_')), ~ round((1 - .x) * 100, 2))
     )
 

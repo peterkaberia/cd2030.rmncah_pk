@@ -529,7 +529,7 @@ CacheConnection <- R6::R6Class(
       adjusted_flag = FALSE,
       survey_year = NULL,
       survey_estimates = c(anc1 = NA, penta1 = NA, penta3 = NA, measles1 = NA, bcg = NA),
-      national_estimates = list(nmr = NA, pnmr = NA, twin_rate = NA, preg_loss = NA, sbr = NA),
+      national_estimates = list(nmr = NA, pnmr = NA, twin_rate = 0.015, preg_loss = 0.03, sbr = NA),
       start_survey_year = NULL,
       survey_source = NULL,
       denominator = 'penta1',

@@ -6,7 +6,7 @@ nationalCoverageUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_analysis_options"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         solidHeader = TRUE,
         fluidRow(column(3, denominatorInputUI(ns('denominator'), i18n)))
@@ -18,6 +18,38 @@ nationalCoverageUI <- function(id, i18n) {
         width = 12,
 
         tabPanel(
+          title = i18n$t("opt_anc4"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('anc4'))),
+            downloadCoverageUI(ns('anc4_download'))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_ideliv"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('ideliv'))),
+            downloadCoverageUI(ns('ideliv_download'))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_lbw"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('lbw'))),
+            downloadCoverageUI(ns('lbw_download'))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_penta1"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('penta1'))),
+            downloadCoverageUI(ns('penta1_download'))
+          )
+        ),
+
+        tabPanel(
           title = i18n$t("opt_mcv1"),
           fluidRow(
             column(12, plotCustomOutput(ns('measles1'))),
@@ -26,34 +58,10 @@ nationalCoverageUI <- function(id, i18n) {
         ),
 
         tabPanel(
-          title = i18n$t("opt_penta3"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('penta3'))),
-            downloadCoverageUI(ns('penta3_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("title_penta3_mcv1_dropout"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('dropout_penta3mcv1'))),
-            downloadCoverageUI(ns('dropout_penta3mcv1_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("title_penta13_dropout"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('dropout_penta13'))),
-            downloadCoverageUI(ns('dropout_penta13_download'))
-          )
-        ),
-
-        tabPanel(
           i18n$t("opt_custom_check"),
           fluidRow(
             column(3, selectizeInput(ns('indicator'), label = i18n$t("title_indicator"),
-                                     choices = c('Select' = '', list_vaccine_indicators())))
+                                     choices = c('Select' = '', get_indicator_without_opd_ipd())))
           ),
           fluidRow(
             column(12, plotCustomOutput(ns('custom_check'))),
@@ -101,30 +109,79 @@ nationalCoverageServer <- function(id, cache, i18n) {
           )
       })
 
+      output$anc4 <- renderCustomPlot({
+        req(coverage(), denominator())
+        plot(coverage(), indicator = 'anc4', denominator = denominator())
+      })
+
+      output$ideliv <- renderCustomPlot({
+        req(coverage(), denominator())
+        plot(coverage(), indicator = 'instdeliveries', denominator = denominator())
+      })
+
+      output$lbw <- renderCustomPlot({
+        req(coverage(), denominator())
+        plot(coverage(), indicator = 'low_bweight', denominator = denominator())
+      })
+
+      output$penta1 <- renderCustomPlot({
+        req(coverage(), denominator())
+        plot(coverage(), indicator = 'penta1', denominator = denominator())
+      })
+
       output$measles1 <- renderCustomPlot({
         req(coverage(), denominator())
         plot(coverage(), indicator = 'measles1', denominator = denominator())
-      })
-
-      output$penta3 <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'penta3', denominator = denominator())
-      })
-
-      output$dropout_penta13 <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'dropout_penta13', denominator = denominator())
-      })
-
-      output$dropout_penta3mcv1 <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'dropout_penta3mcv1', denominator = denominator())
       })
 
       output$custom_check <- renderCustomPlot({
         req(coverage(), denominator(), input$indicator)
         plot(coverage(), indicator = input$indicator, denominator = denominator())
       })
+
+      downloadCoverageServer(
+        id = 'anc4_download',
+        data = coverage,
+        filename = reactive(paste0('anc4_survey_', denominator())),
+        indicator = reactive('anc4'),
+        denominator = denominator,
+        data_fn = filter_coverage,
+        sheet_name = reactive(i18n$t("title_anc4")),
+        i18n = i18n
+      )
+
+      downloadCoverageServer(
+        id = 'ideliv_download',
+        data = coverage,
+        filename = reactive(paste0('ideliv_survey_', denominator())),
+        indicator = reactive('instdeliveries'),
+        denominator = denominator,
+        data_fn = filter_coverage,
+        sheet_name = reactive(i18n$t("title_ideliv_coverage")),
+        i18n = i18n
+      )
+
+      downloadCoverageServer(
+        id = 'lbw_download',
+        data = coverage,
+        filename = reactive(paste0('lbw_survey_', denominator())),
+        indicator = reactive('low_bweight'),
+        denominator = denominator,
+        data_fn = filter_coverage,
+        sheet_name = reactive(i18n$t("title_lbw_coverage")),
+        i18n = i18n
+      )
+
+      downloadCoverageServer(
+        id = 'penta1_download',
+        data = coverage,
+        filename = reactive(paste0('penta1_survey_', denominator())),
+        indicator = reactive('penta1'),
+        denominator = denominator,
+        data_fn = filter_coverage,
+        sheet_name = reactive(i18n$t("title_penta1_coverage")),
+        i18n = i18n
+      )
 
       downloadCoverageServer(
         id = 'measles1_download',
@@ -134,39 +191,6 @@ nationalCoverageServer <- function(id, cache, i18n) {
         denominator = denominator,
         data_fn = filter_coverage,
         sheet_name = reactive(i18n$t("title_mcv1_coverage")),
-        i18n = i18n
-      )
-
-      downloadCoverageServer(
-        id = 'penta3_download',
-        data = coverage,
-        filename = reactive(paste0('penta3_survey_', denominator())),
-        indicator = reactive('penta3'),
-        denominator = denominator,
-        data_fn = filter_coverage,
-        sheet_name = reactive(i18n$t("title_penta3_coverage")),
-        i18n = i18n
-      )
-
-      downloadCoverageServer(
-        id = 'dropout_penta13_download',
-        data = coverage,
-        filename = reactive(paste0('dropout_penta13_survey_', denominator())),
-        indicator = reactive('dropout_penta13'),
-        denominator = denominator,
-        data_fn = filter_coverage,
-        sheet_name = reactive(i18n$t("title_penta13_dropout")),
-        i18n = i18n
-      )
-
-      downloadCoverageServer(
-        id = 'dropout_penta3mcv1_download',
-        data = coverage,
-        filename = reactive(paste0('dropout_penta3mcv1_survey_', denominator())),
-        indicator = reactive('dropout_penta3mcv1'),
-        denominator = denominator,
-        data_fn = filter_coverage,
-        sheet_name = reactive(i18n$t("title_penta3_mcv1_dropout")),
         i18n = i18n
       )
 

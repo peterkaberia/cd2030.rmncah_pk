@@ -46,7 +46,7 @@ plot.cd_coverage <- function(x,
 
   admin_level <- attr_or_abort(x, "admin_level")
 
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_indicator_without_opd_ipd())
 
   data_long <- x %>%
     filter_coverage(indicator, denominator, region)

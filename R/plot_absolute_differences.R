@@ -33,13 +33,13 @@
 #' @import dplyr ggplot2
 #' @export
 plot_absolute_differences <- function(.data,
-                                      indicator = c("penta3", "measles1", "bcg"),
+                                      indicator,
                                       survey_coverage = 88) {
   country <- year <- category <- name <- indicator_name <- value <- NULL
 
   # Match the selected indicator to ensure it is valid
-  indicator <- arg_match(indicator)
-  if (is_scalar_double(survey_coverage)) {
+  indicator <- arg_match(indicator, get_indicator_without_opd_ipd())
+  if (!is_scalar_double(survey_coverage)) {
     cd_abort(c("x" = "A scalar numeric is required."))
   }
 

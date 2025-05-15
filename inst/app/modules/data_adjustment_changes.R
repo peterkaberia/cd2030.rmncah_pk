@@ -26,18 +26,26 @@ adjustmentChangesUI <- function(id, i18n) {
         ),
 
         tabPanel(
-          title = i18n$t("opt_bcg"),
+          title = i18n$t("opt_anc1"),
           fluidRow(
-            column(12, plotCustomOutput(ns('bcg'))),
-            column(3, downloadButtonUI(ns('bcg_plot')))
+            column(12, plotCustomOutput(ns('anc1'))),
+            column(3, downloadButtonUI(ns('anc1_plot')))
           )
         ),
 
         tabPanel(
-          title = i18n$t("opt_measles"),
+          title = i18n$t("opt_ideliv"),
           fluidRow(
-            column(12, plotCustomOutput(ns('measles1'))),
-            column(3, downloadButtonUI(ns('measles1_plot')))
+            column(12, plotCustomOutput(ns('ideliv'))),
+            column(3, downloadButtonUI(ns('ideliv_plot')))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_opd_under5"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('opd_under5'))),
+            column(3, downloadButtonUI(ns('opd_under5_plot')))
           )
         ),
 
@@ -46,7 +54,7 @@ adjustmentChangesUI <- function(id, i18n) {
           fluidRow(
             column(3, selectizeInput(ns('indicator'),
                                      label = i18n$t("title_indicator"),
-                                     choices = c('Select Indicator' = '', list_vaccines())))
+                                     choices = c('Select Indicator' = '', get_all_indicators())))
           ),
           fluidRow(
             column(12, plotCustomOutput(ns('custom_check'))),
@@ -76,7 +84,7 @@ adjustmentChangesServer <- function(id, cache, i18n) {
         if (cache()$adjusted_flag) {
           cache()$k_factors
         } else {
-          c(anc = 0, idelv = 0, vacc = 0)
+          c(anc = 0, ideliv = 0, vacc = 0)
         }
       })
 
@@ -100,18 +108,25 @@ adjustmentChangesServer <- function(id, cache, i18n) {
              title = i18n$t("figure_penta_outlier"))
       })
 
-      output$bcg <- renderCustomPlot({
+      output$anc1 <- renderCustomPlot({
         req(adjustments())
         plot(adjustments(),
-             indicator = 'bcg',
-             title = i18n$t("figure_bcg_outlier"))
+             indicator = 'anc1',
+             title = i18n$t("figure_anc1_outlier"))
       })
 
-      output$measles1 <- renderCustomPlot({
+      output$ideliv <- renderCustomPlot({
         req(adjustments())
         plot(adjustments(),
-             indicator = 'measles1',
-             title = i18n$t("figure_mcv1_outlier"))
+             indicator = 'ideliv',
+             title = i18n$t("figure_ideliv_outlier"))
+      })
+
+      output$opd_under5 <- renderCustomPlot({
+        req(adjustments())
+        plot(adjustments(),
+             indicator = 'opd_under5',
+             title = i18n$t("figure_opd_under5_outlier"))
       })
 
       output$custom_check <- renderCustomPlot({
@@ -128,7 +143,7 @@ adjustmentChangesServer <- function(id, cache, i18n) {
         i18n = i18n,
         plot_function = function() {
           plot(adjustments(),
-               indicator = 'ideliv',
+               indicator = 'instlivebirths',
                title = i18n$t("figure_live_births_outlier"))
         }
       )
@@ -146,26 +161,38 @@ adjustmentChangesServer <- function(id, cache, i18n) {
       )
 
       downloadPlot(
-        id = 'bcg_plot',
-        filename = reactive('bcg_plot'),
+        id = 'anc1_plot',
+        filename = reactive('anc1_plot'),
         data = adjustments,
         i18n = i18n,
         plot_function = function() {
           plot(adjustments(),
                indicator = 'bcg',
-               title = i18n$t("figure_bcg_outlier"))
+               title = i18n$t("figure_anc1_outlier"))
         }
       )
 
       downloadPlot(
-        id = 'measles1_plot',
-        filename = reactive('measles1_plot'),
+        id = 'ideliv_plot',
+        filename = reactive('ideliv_plot'),
         data = adjustments,
         i18n = i18n,
         plot_function = function() {
           plot(adjustments(),
-               indicator = 'measles1',
-               title = i18n$t("figure_mcv1_outlier"))
+               indicator = 'ideliv',
+               title = i18n$t("figure_ideliv_outlier"))
+        }
+      )
+
+      downloadPlot(
+        id = 'opd_under5_plot',
+        filename = reactive('opd_under5_plot'),
+        data = adjustments,
+        i18n = i18n,
+        plot_function = function() {
+          plot(adjustments(),
+               indicator = 'opd_under5',
+               title = i18n$t("figure_opd_under5_outlier"))
         }
       )
 

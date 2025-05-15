@@ -72,7 +72,7 @@ plot.cd_mapping <- function(x,
   check_required(indicator)
   check_required(denominator)
 
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator)
   palette <- arg_match(palette)
 

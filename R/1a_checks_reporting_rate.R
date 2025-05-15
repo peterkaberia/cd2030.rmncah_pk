@@ -28,11 +28,16 @@ calculate_average_reporting_rate <- function(.data,
 
   admin_level <- arg_match(admin_level)
   admin_level_cols <- get_admin_columns(admin_level)
-  indicators <- paste0(get_indicator_group_names(), "_rr")
+  allindicators <- get_indicator_group_names()
+  indicators <- paste0(allindicators, "_rr")
+  four_indicators <- paste0(allindicators[which(allindicators != 'ipd')], "_rr")
 
   reporting_rate <- .data %>%
     summarise(across(all_of(indicators), mean, na.rm = TRUE), .by = c(admin_level_cols, "year")) %>%
-    mutate(mean_rr = rowMeans(select(., indicators), na.rm = TRUE)) %>%
+    mutate(
+      mean_four_rr = rowMeans(select(., four_indicators), na.rm = TRUE),
+      mean_rr = rowMeans(select(., indicators), na.rm = TRUE)
+    ) %>%
     mutate(across(ends_with("_rr"), round, 0))
 
   new_tibble(
@@ -70,12 +75,17 @@ calculate_district_reporting_rate <- function(.data, threshold = 90) {
 
   check_cd_data(.data)
 
-  indicators <- paste0(get_indicator_group_names(), "_rr")
+  allindicators <- get_indicator_group_names()
+  indicators <- paste0(allindicators, "_rr")
+  four_indicators <- paste0('low_', allindicators[which(allindicators != 'ipd')], "_rr")
 
   reporting_rate <- .data %>%
     summarise(across(all_of(indicators), mean, na.rm = TRUE), .by = c(district, year)) %>%
     summarise(across(all_of(indicators), ~ mean(.x >= threshold, na.rm = TRUE) * 100, .names = "low_{.col}"), .by = year) %>%
-    mutate(low_mean_rr = rowMeans(select(., starts_with("low_")), na.rm = TRUE)) %>%
+    mutate(
+      low_mean_rr = rowMeans(select(., starts_with("low_")), na.rm = TRUE),
+      low_mean_four_rr = rowMeans(select(., any_of(four_indicators)), na.rm = TRUE)
+    ) %>%
     mutate(across(starts_with("low_"), round, 0))
 
   new_tibble(

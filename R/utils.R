@@ -60,15 +60,16 @@ check_cd_data <- function(.data, arg = caller_arg(.data), call = caller_env()) {
 #'
 #' @return Invisible `NULL`. Throws an error if the validation fails.
 #' @noRd
-check_un_estimates_data <- function(.data,
+check_un_estimates_data <- function(.data = NULL,
                                     admin_level = c("national", "adminlevel_1", "district"),
                                     arg = caller_arg(.data),
                                     call = caller_env()) {
-  check_cd_class(.data, "cd_un_estimates", arg = arg, call = call)
-
   admin_level <- arg_match(admin_level)
-  if (is.null(.data) && admin_level == "national") {
-    cd_abort(c("x" = "{.arg un_estimate} must be provided for {.val {admin_level}} metrics."), call = call)
+  if (admin_level == "national") {
+    if (is.null(.data)) {
+      cd_abort(c("x" = "{.arg un_estimate} must be provided for {.val national} metrics."), call = call)
+    }
+    check_cd_class(.data, "cd_un_estimates", arg = arg, call = call)
   }
 
   invisible(TRUE)

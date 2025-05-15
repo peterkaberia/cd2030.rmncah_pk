@@ -6,7 +6,7 @@ overallScoreUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_overall"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         fluidRow(
           column(12, withSpinner(uiOutput(ns('overall_score'))))

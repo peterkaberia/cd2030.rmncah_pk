@@ -2,11 +2,11 @@ lowReportingUI <- function(id, i18n) {
   ns <- NS(id)
 
   tagList(
-    contentHeader(ns('low_reporting'), i18n$t("title_vaccination_coverage"), i18n = i18n),
+    contentHeader(ns('low_reporting'), i18n$t("title_global_coverage"), i18n = i18n),
     contentBody(
       box(
         title = i18n$t("title_analysis_options"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         solidHeader = TRUE,
         fluidRow(
@@ -15,34 +15,23 @@ lowReportingUI <- function(id, i18n) {
         )
       ),
 
-      tabBox(
-        title = i18n$t("title_vaccination_coverage"),
+      box(
+        title = i18n$t("title_coverage"),
+        status = 'primary',
         width = 12,
-
-        tabPanel(
-          title = i18n$t("title_coverage"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('coverage'))),
-            downloadCoverageUI(ns('coverage_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("dropout"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('dropout'))),
-            downloadCoverageUI(ns('dropout_download'))
-          )
+        fluidRow(
+          column(12, plotCustomOutput(ns('coverage'))),
+          column(4, downloadButtonUI(ns('coverage_download')))
         )
       ),
 
       box(
         title = i18n$t('title_district_low_reporting'),
-        status = 'success',
+        status = 'primary',
         collapsible = TRUE,
         width = 6,
         fluidRow(
-          column(3, selectizeInput(ns('indicator'), label = i18n$t('title_indicator'), choice = list_vaccine_indicators())),
+          column(3, selectizeInput(ns('indicator'), label = i18n$t('title_indicator'), choice = get_all_indicators())),
           # column(3, selectizeInput(ns('year'), label = i18n$t('title_year'), choice = NULL)),
           column(3, offset = 6, downloadButtonUI(ns('download_regions'))),
           column(12, withSpinner(reactableOutput(ns('district_low_reporting'))))
@@ -108,37 +97,14 @@ lowReportingServer <- function(id, cache, i18n) {
                             preg_loss = rates$preg_loss)
       })
 
-      dropout_threshold <- reactive({
-        req(data(), admin_level(), all(!is.na(cache()$national_estimates)))
-        rates <- cache()$national_estimates
-        calculate_threshold(data(),
-                            admin_level = admin_level(),
-                            indicator = 'dropout',
-                            sbr = rates$sbr,
-                            nmr = rates$nmr,
-                            pnmr = rates$pnmr,
-                            anc1survey = rates$anc1,
-                            dpt1survey = rates$penta1,
-                            survey_year = cache()$survey_year,
-                            twin = rates$twin_rate,
-                            preg_loss = rates$preg_loss)
-      })
-
       district_coverage_rate <- reactive({
         req(coverage(), cache()$denominator, input$indicator)
 
         indicator <- paste0('cov_', input$indicator, '_', cache()$denominator)
 
-        threshold_func <- if (grepl('zerodose|undervax|dropout_penta13|dropout_measles12|dropout_penta3mcv1|dropout_penta1mcv1', input$indicator)) {
-          function(x) x < 10
-        } else {
-          function(x) x >= 90
-        }
-
         coverage() %>%
           mutate(!!sym(indicator) := round(!!sym(indicator))) %>%
-          # filter(!!sym(indicator) >= 90) %>%
-          filter(threshold_func(!!sym(indicator))) %>%
+          filter(!!sym(indicator) >= 90) %>%
           select(any_of(c('adminlevel_1', 'district', 'year', indicator)))
       })
 
@@ -177,7 +143,7 @@ lowReportingServer <- function(id, cache, i18n) {
         'low_reporting',
         cache = cache,
         objects = pageObjectsConfig(input),
-        md_title = i18n$t("title_vaccination_coverage"),
+        md_title = i18n$t("title_coverage"),
         md_file = '2_calculate_ratios.md',
         i18n = i18n
       )

@@ -6,7 +6,7 @@ calculateRatiosUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_ratio_options"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         fluidRow(
           column(3, offset = 1, numericInput(ns('anc1_coverage'),
@@ -22,7 +22,7 @@ calculateRatiosUI <- function(id, i18n) {
       ),
       box(
         title = i18n$t("title_ratio_plots"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         fluidRow(
           column(12, plotCustomOutput(ns('ratios_plot'))),

@@ -39,55 +39,6 @@ get_country_iso3 <- function(.data) {
   attr_or_abort(.data, "iso3")
 }
 
-#' List All Routine Vaccine Indicators
-#'
-#' Returns all vaccine indicators used in coverage estimates
-#'
-#' @return A character vector of vaccine names
-#'
-#' @export
-list_vaccines <- function() {
-  c(
-    "bcg", "ipv1", "ipv2", "measles1", "measles2", "opv1", "opv2", "opv3",
-    "penta1", "penta2", "penta3", "pcv1", "pcv2", "pcv3", "rota1", "rota2"
-  )
-}
-
-#' List All Vaccine and Related Coverage Indicators
-#'
-#' Returns a vector of standard vaccine and related indicators used in coverage
-#' and dropout analysis. This includes routine immunizations, tracer indicators,
-#' and derived dropout/coverage metrics commonly used in DHIS2-based health reporting.
-#'
-#' @return A character vector of 24 indicator names. These cover vaccine doses
-#'   (e.g., `penta1`, `measles1`, `pcv3`), derived indicators
-#'   (e.g., `dropout_penta13`, `undervax`), and service delivery markers
-#'   (e.g., `anc1`, `instdeliveries`).
-#'
-#' @examples
-#' list_vaccine_indicators()
-#'
-#' @export
-list_vaccine_indicators <- function() {
-  c(
-    "anc1", "bcg", "instlivebirths", "instdeliveries", "ipv1", "ipv2", "measles1", "measles2",
-    "opv1", "opv2", "opv3", "pcv1", "pcv2", "pcv3", "penta1", "penta2", "penta3",
-    "rota1", "rota2", "dropout_measles12", "dropout_penta13", "dropout_penta1mcv1",
-    "dropout_penta3mcv1", "undervax", "zerodose"
-  )
-}
-
-#' List Tracer Vaccines
-#'
-#' Returns a subset of vaccines used in tracer metrics
-#'
-#' @return A character vector of tracer vaccines
-#'
-#' @export
-list_tracer_vaccines <- function() {
-  c("bcg", "measles1", "opv1", "opv2", "opv3", "penta1", "penta2", "penta3")
-}
-
 #' Get Indicator Groups
 #'
 #' Default grouping of indicators used in CD2030 coverage framework
@@ -98,7 +49,7 @@ list_tracer_vaccines <- function() {
 get_indicator_groups <- function() {
   list(
     anc = c("anc1", "anc_1trimester", "anc4", "ipt2", "ipt3", "syphilis_test", "ifa90", "hiv_test"),
-    idelv = c("sba", "ideliv", "instlivebirths", "csection", "low_bweight", "pnc48h", "total_stillbirth", "stillbirth_f", "stillbirth_m", "maternal_deaths", "neonatal_deaths"),
+    idelv = c("sba", "instdeliveries", "instlivebirths", "csection", "low_bweight", "pnc48h", "total_stillbirth", "stillbirth_f", "stillbirth_m", "maternal_deaths", "neonatal_deaths"),
     vacc = c("penta1", "penta3", "measles1", "measles2", "bcg"),
     opd = c("opd_total", "opd_under5"),
     ipd = c("ipd_total", "ipd_under5")
@@ -115,6 +66,16 @@ get_indicator_group_names <- function() names(get_indicator_groups())
 #' @return Character vector of all indicators
 #' @export
 get_all_indicators <- function() sort(list_c(get_indicator_groups()))
+
+#' @title Get Indicators excluding indicators without denominator
+#' @description Flatten all indicators from all groups
+#' @return Character vector of all indicators
+#' @export
+get_indicator_without_opd_ipd <- function()  {
+  groups <- get_indicator_groups()
+  indicators <- sort(list_c(groups[!names(groups) %in% c("ipd", "opd")]))
+  indicators[!indicators %in% c('sba', "total_stillbirth", "stillbirth_f", "stillbirth_m", "maternal_deaths", "neonatal_deaths")]
+}
 
 #' @title Get Named Indicator Vector
 #' @description Each indicator is named by its group
@@ -136,21 +97,18 @@ get_named_indicators <- function() {
 #'
 #' @export
 get_population_column <- function(indicator, denominator) {
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator, c("dhis2", "anc1", "penta1", "penta1derived"))
   population <- case_match(
     indicator,
-    c("anc1", "anc4") ~ "totpreg",
-    c("bcg", "instlivebirths", "instdeliveries") ~ if_else(denominator == "dhis2", "totbirths", "totlbirths"),
-    c(
-      "penta1", "penta2", "penta3", "pcv1", "pcv2", "pcv3", "rota1",
-      "rota2", "ipv1", "ipv2", "opv1", "opv2", "opv3", "undervax", "dropout_penta13", "zerodose", "dropout_penta3mcv1", "dropout_penta1mcv1"
-    ) ~ "totinftpenta",
-    c("measles1", "dropout_measles12") ~ "totinftmeasles",
-    "measles2" ~ "totmeasles2"
+    c("anc1", "anc_1trimester", "anc4", "ipt2", "ipt3", "ifa90", "syphilis_test", "hiv_test") ~ "totpreg",
+    c("bcg", "instlivebirths", "low_bweight", "pnc48h", "bcg") ~ ifelse(denominator == 'dhis2', 'totbirths', "totlbirths"),
+    c("instdeliveries", "csection") ~ 'totdeliv',
+    c("penta1", "penta3") ~ "totinftpenta",
+    c("measles1", "measles2") ~ "totinftmeasles"
   )
   if (is.na(population)) {
-    return(NA)
+    return(NA_character_)
   }
   return(paste(population, denominator, sep = "_"))
 }

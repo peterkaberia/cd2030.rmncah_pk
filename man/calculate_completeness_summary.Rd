@@ -15,9 +15,7 @@ calculate_completeness_summary(
 the \code{mis_} prefix which represent missing value flags for each indicator.}
 
 \item{admin_level}{Character. The administrative level at which to calculate
-reporting rates. Must be one of \code{"national"}, \code{"adminlevel_1"} or \code{"district"}.}
-
-\item{include_year}{Integer. Whether to include the year}
+reporting rates. Must be one of \code{'national'}, \code{'adminlevel_1'} or \code{'district'}.}
 }
 \value{
 A \code{cd_completeness_summary} object containing a tibble. This tibble shows

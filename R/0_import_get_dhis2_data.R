@@ -86,8 +86,6 @@ get_dhis2_hfd <- function(country_iso3, start_date, end_date, level = 3, timeout
     pull(name) %>%
     make_clean_names()
 
-  print(org_units_headers)
-
   org_units <- get_organisations_by_level(level = level) %>%
     mutate(iso3 = country_iso3)
 
@@ -165,7 +163,6 @@ get_service_data <- function(country_iso3, start_date, end_date, org_units, org_
     district <- hfd_id <- hfd_title <- NULL
 
   last_col <- org_units_headers[length(org_units_headers)]
-  print(last_col)
 
   service_data <- data_elements %>%
     filter(str_detect(hfd_sheet, "^Service_data"), iso3 == country_iso3)

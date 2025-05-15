@@ -155,7 +155,7 @@ ui <- dashboardPage(
                menuSubItem(i18n$t('title_subnational_inequality'),
                            tabName = 'subnational_inequality',
                            icon = icon('balance-scale-right')),
-               menuSubItem(i18n$t('title_vaccination_coverage'),
+               menuSubItem(i18n$t('title_global_coverage'),
                            tabName = 'low_reporting',
                            icon = icon('user-slash')),
                menuSubItem(i18n$t('title_subnational_mapping'),
@@ -172,21 +172,21 @@ ui <- dashboardPage(
     useHostess(),
 
     waiterShowOnLoad(
-      color = '#f2f8ee',
+      color = '#eaf2f8',
       html = tagList(
         hostess_loader(
           'loader',
           preset = 'bubble',
-          text_color = '#7bc148',
+          text_color = '#3c8dbc',
           class = 'label-center',
           center_page = TRUE,
-          stroke_color  = "#7bc148"
+          stroke_color  = "#3c8dbc"
         ),
         br(),
         tagAppendAttributes(
           style = 'margin-left: -75px',
           p(
-            style = "color: #000000; font-weight: bold;",
+            style = "color: #3c8dbc; font-weight: bold;",
             sample(
               c(
                 'We are loading the app. Fetching stardust...',

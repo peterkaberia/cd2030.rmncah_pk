@@ -91,6 +91,8 @@ calculate_district_completeness_summary <- function(.data) {
   check_cd_data(.data)
 
   indicators <- get_all_indicators()
+  ipd_indicators <- get_indicator_groups()['ipd']
+  four_indicators <- paste0('mis_', indicators[which(!indicators %in% ipd_indicators)])
 
   data <- .data %>%
     add_missing_column(indicators) %>%
@@ -98,6 +100,7 @@ calculate_district_completeness_summary <- function(.data) {
     summarise(across(starts_with('mis_'), ~ mean(.x != 0, na.rm = TRUE)), .by = year) %>%
     mutate(
       mean_mis_all = rowMeans(select(., any_of(starts_with('mis_'))), na.rm = TRUE),
+      mean_mis_four = rowMeans(select(., any_of(four_indicators)), na.rm = TRUE),
       across(c(starts_with('mis_'), starts_with('mean_mis_')), ~ round((1 - .x) * 100, 2))
     )
 

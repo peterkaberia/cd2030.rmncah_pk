@@ -30,14 +30,8 @@ calculates an overall mean reporting rate per group.
 }
 \examples{
 \dontrun{
-# National summary
-calculate_average_reporting_rate(data, admin_level = "national")
-
 # Regional summary
 calculate_average_reporting_rate(data, admin_level = "adminlevel_1")
-
-# District-level summary
-calculate_average_reporting_rate(data, admin_level = "district")
 }
 
 }

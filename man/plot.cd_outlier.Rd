@@ -6,7 +6,7 @@
 \usage{
 \method{plot}{cd_outlier}(
   x,
-  selection_type = c("region", "vaccine", "heat_map"),
+  selection_type = c("region", "indicator", "heat_map"),
   indicator = NULL,
   ...
 )

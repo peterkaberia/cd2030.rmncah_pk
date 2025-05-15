@@ -133,7 +133,7 @@ equiplot_area <- function(.data,
 
   check_equity_data(.data)
 
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
 
   if (is.null(x_title)) {
     x_title <- paste0(indicator, " Coverage (%)")
@@ -180,7 +180,7 @@ equiplot_education <- function(.data,
 
   check_equity_data(.data)
 
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
 
   if (is.null(x_title)) {
     x_title <- paste0(indicator, " Coverage (%)")
@@ -235,7 +235,7 @@ equiplot_wealth <- function(.data,
 
   check_equity_data(.data)
 
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
 
   indicator_name <- paste0("r_", indicator)
 

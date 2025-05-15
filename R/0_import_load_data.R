@@ -462,7 +462,7 @@ standardize_data <- function(.data, call = caller_env()) {
     select(-matches("_reporting_received$|_reporting_expected$")) %>%
     rename(
       adminlevel_1 = any_of("first_admin_level"),
-      ideliv = any_of("instdelivery"),
+      instdeliveries = any_of("instdelivery"),
       pnc48h = any_of("pnc_48h"),
       pop_rate = any_of("pop_growth_rate"),
       total_pop = any_of("total_population"),

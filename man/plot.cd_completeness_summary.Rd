@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A \code{cd_outlier} object containing pre-processed outlier data.}
 
-\item{indicator}{Optional. One of the supported indicators (\code{"opv1"}, \code{"penta3"}, etc.)
+\item{indicator}{Optional. One of the supported indicators (\code{'opv1'}, \code{'penta3'}, etc.)
 to visualize in the plot. If \code{NULL} all indicators will be shown.}
 
 \item{...}{Reserved for future use.}
@@ -23,7 +23,7 @@ This method visualizes missing results for immunization indicators
 \examples{
 \dontrun{
 # Region-level summary
-plot(missing_data, indicator = "penta3")
+plot(missing_data, indicator = 'penta3')
 }
 
 }

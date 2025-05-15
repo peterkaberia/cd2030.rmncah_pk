@@ -30,7 +30,7 @@ plot.cd_inequality <- function(x,
   year <- nat <- madm <- NULL
 
   admin_level <- attr(x, "admin_level")
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator)
   data <- filter_inequality(x, indicator, denominator)
 

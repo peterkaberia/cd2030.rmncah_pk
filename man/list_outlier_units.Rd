@@ -16,7 +16,7 @@ list_outlier_units(
 \item{indicator}{Character. The name of a single indicator to evaluate for outliers.}
 
 \item{admin_level}{Character. The administrative level to summarize by.
-Options are \code{"adminlevel_1"} or \code{"district"}.}
+Options are \code{'adminlevel_1'} or \code{'district'}.}
 }
 \value{
 A \code{cd_outlier_list} object (a tibble) with the following columns:
@@ -43,10 +43,10 @@ suitable for plotting or time-series review at subnational levels.
 \examples{
 \dontrun{
 # Detect monthly outliers in Penta1 at district level
-outliers <- list_outlier_units(cd_data, indicator = "penta1", admin_level = "district")
+outliers <- list_outlier_units(cd_data, indicator = 'penta1', admin_level = 'district')
 
 # Plot flagged points in a specific region
-plot(outliers, region = "Nakuru")
+plot(outliers, region = 'Nakuru')
 }
 
 }

@@ -6,7 +6,7 @@ outlierDetectionUI <- function(id, i18n) {
     contentBody(
       box(
         title = 'Outlier Options',
-        status = 'success',
+        status = 'primary',
         solidHeader = TRUE,
         width = 12,
         fluidRow(
@@ -35,7 +35,7 @@ outlierDetectionUI <- function(id, i18n) {
       ),
       box(
         title = i18n$t('title_district_outliers'),
-        status = 'success',
+        status = 'primary',
         collapsible = TRUE,
         width = 6,
         fluidRow(
@@ -46,7 +46,7 @@ outlierDetectionUI <- function(id, i18n) {
       ),
       box(
         title = i18n$t('title_district_trends'),
-        status = 'success',
+        status = 'primary',
         collapsible = TRUE,
         width = 6,
         fluidRow(

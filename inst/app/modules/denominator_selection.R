@@ -6,7 +6,7 @@ denominatorSelectionUI <- function(id, i18n) {
     contentBody(
       box(
         title = i18n$t("title_analysis_options"),
-        status = 'success',
+        status = 'primary',
         width = 12,
         solidHeader = TRUE,
         fluidRow(column(3, denominatorInputUI(ns('denominator'), i18n)))
@@ -14,6 +14,15 @@ denominatorSelectionUI <- function(id, i18n) {
       tabBox(
         title = i18n$t("title_denominator_selection"),
         width = 12,
+
+        tabPanel(
+          title = i18n$t("opt_anc1"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('anc1'))),
+            column(3, downloadButtonUI(ns('anc1_plot')))
+          )
+        ),
+
         tabPanel(
           title = i18n$t("opt_penta3"),
           fluidRow(
@@ -87,6 +96,12 @@ denominatorSelectionServer <- function(id, cache, i18n) {
                                        survey_year = cache()$survey_year)
       })
 
+      output$anc1 <- renderCustomPlot({
+        req(indicator_coverage(), all(!is.na(survey_estimates())))
+        anc1_rate <- unname(survey_estimates()['anc1'])
+        plot_absolute_differences(indicator_coverage(), 'anc1', anc1_rate)
+      })
+
       output$penta3 <- renderCustomPlot({
         req(indicator_coverage(), all(!is.na(survey_estimates())))
         penta3_rate <- unname(survey_estimates()['penta3'])
@@ -109,6 +124,17 @@ denominatorSelectionServer <- function(id, cache, i18n) {
         req(indicator_coverage())
         plot_absolute_differences(indicator_coverage(), input$indicator)
       })
+
+      downloadPlot(
+        id = 'anc1_plot',
+        filename = reactive('anc1_plot'),
+        data = indicator_coverage,
+        i18n = i18n,
+        plot_function = function() {
+          anc1_rate <- unname(survey_estimates()['anc1'])
+          plot_absolute_differences(indicator_coverage(), 'anc1', penta3_rate)
+        }
+      )
 
       downloadPlot(
         id = 'penta3_plot',

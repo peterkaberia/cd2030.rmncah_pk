@@ -26,7 +26,7 @@ calculate_derived_coverage <- function(.data, indicator, base_year) {
   admin_level <- attr_or_abort(.data, "admin_level")
 
   # Match and reference the selected indicator
-  indicator <- arg_match(indicator, list_vaccine_indicators())
+  indicator <- arg_match(indicator, get_all_indicators())
   indicator_col <- sym(indicator)
 
   coverage <- paste0("cov_", indicator, "_penta1")
