@@ -4,11 +4,7 @@
 \alias{plot_absolute_differences}
 \title{Plot DHIS2-Based Indicator Coverage with Different Denominators and Survey Coverage}
 \usage{
-plot_absolute_differences(
-  .data,
-  indicator = c("bcg", "penta1", "penta3", "measles1", "measles2"),
-  survey_coverage = 88
-)
+plot_absolute_differences(.data, indicator, survey_coverage = 88)
 }
 \arguments{
 \item{.data}{A data frame containing columns for \code{country}, \code{year}, and the coverage values
