@@ -13,19 +13,25 @@ nationalRatesUI <- function(id, i18n) {
     status = 'primary',
     solidHeader = TRUE,
     width = 12,
+
     fluidRow(
-      column(3, offset = 1, numericInput(ns('neonatal_mortality_rate'), i18n$t("title_nmr"),
-                                         min = 0, max = 0.05, value = 0, step = 0.001)),
-      column(3, offset = 0, numericInput(ns('post_neonatal_mortality_rate'), i18n$t("title_pnmr"),
-                                         min = 0, max = 0.05, value = 0, step = 0.001)),
-      column(3, offset = 0, numericInput(ns('stillbirth_rate'), i18n$t("title_still_birth_rate"),
-                                         min = 0, max = 0.05, value = 0, step = 0.001))
+      column(3, numericInput(ns('anc1_prop'), i18n$t("title_anc1_survey"),
+                             min = 0, max = 100, value = NA, step = 1)),
+      column(3, numericInput(ns('pregnancy_loss'), i18n$t("title_pregnancy_loss"),
+                             min = 0, max = 0.05, value = 0, step = 0.001)),
+      column(3, numericInput(ns('twin_rate'), i18n$t("title_twin_rate"),
+                             min = 0, max = 0.05, value = 0, step = 0.001)),
+      column(3, numericInput(ns('neonatal_mortality_rate'), i18n$t("title_nmr"),
+                             min = 0, max = 0.05, value = 0, step = 0.001))
     ),
+
     fluidRow(
-      column(3, offset = 1, numericInput(ns('pregnancy_loss'), i18n$t("title_pregnancy_loss"),
-                                         min = 0, max = 0.05, value = 0, step = 0.001)),
-      column(3, offset = 0, numericInput(ns('twin_rate'), i18n$t("title_twin_rate"),
-                                         min = 0, max = 0.05, value = 0, step = 0.001))
+      column(3, numericInput(ns('post_neonatal_mortality_rate'), i18n$t("title_pnmr"),
+                             min = 0, max = 0.05, value = 0, step = 0.001)),
+      column(3, numericInput(ns('stillbirth_rate'), i18n$t("title_still_birth_rate"),
+                             min = 0, max = 0.05, value = 0, step = 0.001)),
+      column(3, numericInput(ns('penta1_prop'), i18n$t("title_penta1_survey"),
+                             min = 0, max = 100, value = NA, step = 1)),
     )
   )
 }
@@ -66,6 +72,10 @@ nationalRatesServer <- function(id, cache) {
         updateNumericInput(session, "pregnancy_loss", value = national_estimates$preg_loss)
         updateNumericInput(session, "stillbirth_rate", value = national_estimates$sbr)
 
+        if (!is.null(cache()$survey_source) && cache()$survey_source == 'ratios') {
+          updateNumericInput(session, "anc1_prop", value = national_estimates$anc1 * 100)
+          updateNumericInput(session, "penta1_prop", value = national_estimates$penta1 * 100)
+        }
       })
 
       observeEvent(c(input$neonatal_mortality_rate, input$post_neonatal_mortality_rate, input$stillbirth_rate, input$pregnancy_loss, input$twin_rate), {
@@ -80,6 +90,30 @@ nationalRatesServer <- function(id, cache) {
         )
 
          cache()$set_national_estimates(estimates)
+      })
+
+      observeEvent(c(input$anc1_prop, input$penta1_prop), {
+        req(cache())
+
+        if (!is.null(cache()$survey_source) && cache()$survey_source == 'ratios') {
+          return()
+        }
+
+        estimates <- cache()$survey_estimates
+        new_estimates <- c(
+          anc1 = as.numeric(input$anc1_prop),
+          anc4 = unname(estimates['anc4']),
+          penta1 = as.numeric(input$penta1_prop),
+          penta3 = unname(estimates['penta3']),
+          measles1 = unname(estimates['measles1']),
+          bcg = unname(estimates['bcg']),
+          ideliv = unname(estimates['ideliv']),
+          lbw = unname(estimates['lbw']),
+          csection = unname(estimates['csection'])
+        )
+
+        cache()$set_survey_estimates(new_estimates)
+        cache()$set_survey_source('setup')
       })
     }
   )

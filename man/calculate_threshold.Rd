@@ -7,7 +7,7 @@
 calculate_threshold(
   .data,
   admin_level = c("adminlevel_1", "district"),
-  indicator = c("coverage", "dropout"),
+  indicator = c("maternal", "vaccine"),
   sbr = 0.02,
   nmr = 0.025,
   pnmr = 0.024,

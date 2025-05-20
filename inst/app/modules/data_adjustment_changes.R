@@ -44,8 +44,8 @@ adjustmentChangesUI <- function(id, i18n) {
         tabPanel(
           title = i18n$t("opt_opd_under5"),
           fluidRow(
-            column(12, plotCustomOutput(ns('opd_under5'))),
-            column(3, downloadButtonUI(ns('opd_under5_plot')))
+            column(12, plotCustomOutput(ns('opd_total'))),
+            column(3, downloadButtonUI(ns('opd_total_plot')))
           )
         ),
 
@@ -97,7 +97,7 @@ adjustmentChangesServer <- function(id, cache, i18n) {
       output$live_births <- renderCustomPlot({
         req(adjustments())
         plot(adjustments(),
-             indicator = 'ideliv',
+             indicator = 'instlivebirths',
              title = i18n$t("figure_live_births_outlier"))
       })
 
@@ -118,15 +118,15 @@ adjustmentChangesServer <- function(id, cache, i18n) {
       output$ideliv <- renderCustomPlot({
         req(adjustments())
         plot(adjustments(),
-             indicator = 'ideliv',
+             indicator = 'instdeliveries',
              title = i18n$t("figure_ideliv_outlier"))
       })
 
-      output$opd_under5 <- renderCustomPlot({
+      output$opd_total <- renderCustomPlot({
         req(adjustments())
         plot(adjustments(),
-             indicator = 'opd_under5',
-             title = i18n$t("figure_opd_under5_outlier"))
+             indicator = 'opd_total',
+             title = i18n$t("figure_opd_total_outlier"))
       })
 
       output$custom_check <- renderCustomPlot({
@@ -185,14 +185,14 @@ adjustmentChangesServer <- function(id, cache, i18n) {
       )
 
       downloadPlot(
-        id = 'opd_under5_plot',
-        filename = reactive('opd_under5_plot'),
+        id = 'opd_total_plot',
+        filename = reactive('opd_total_plot'),
         data = adjustments,
         i18n = i18n,
         plot_function = function() {
           plot(adjustments(),
-               indicator = 'opd_under5',
-               title = i18n$t("figure_opd_under5_outlier"))
+               indicator = 'opd_total',
+               title = i18n$t("figure_opd_total_outlier"))
         }
       )
 

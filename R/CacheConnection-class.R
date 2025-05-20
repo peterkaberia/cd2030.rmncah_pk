@@ -240,7 +240,8 @@ CacheConnection <- R6::R6Class(
     #' @description Set survey estimates.
     #' @param value Named numeric vector.
     set_survey_estimates = function(value) {
-      if (!is.numeric(value) || !all(c('anc1', 'penta1', 'penta3', 'measles1', 'bcg') %in% names(value))) {
+      print(value)
+      if (!is.numeric(value) || !all(c('anc1', 'anc4', 'penta1', 'penta3', 'measles1', 'bcg', 'ideliv', 'lbw', 'csection') %in% names(value))) {
         cd_abort(c('x' = 'Survey must be a numeric vector containing {.val anc1}, {.val penta1} and {.val penta3}'))
       }
       private$update_field('survey_estimates', value)
@@ -265,6 +266,10 @@ CacheConnection <- R6::R6Class(
     #' @description Set denominator type.
     #' @param value Character scalar.
     set_denominator = function(value) private$setter('denominator', value, is_scalar_character),
+
+    #' @description Set denominator type.
+    #' @param value Character scalar.
+    set_maternal_denominator = function(value) private$setter('maternal_denominator', value, is_scalar_character),
 
     #' @description Set selected region.
     #' @param value Character scalar.
@@ -451,6 +456,9 @@ CacheConnection <- R6::R6Class(
     #' @field denominator Gets denominator.
     denominator = function(value) private$getter('denominator', value),
 
+    #' @field maternal_denominator Gets denominator.
+    maternal_denominator = function(value) private$getter('maternal_denominator', value),
+
     #' @field selected_admin_level_1 Gets selected region.
     selected_admin_level_1 = function(value) private$getter('selected_admin_level_1', value),
 
@@ -535,11 +543,12 @@ CacheConnection <- R6::R6Class(
       k_factors = c(anc = 0, idelv = 0, vacc = 0, opd = 0, ipd = 0),
       adjusted_flag = FALSE,
       survey_year = NULL,
-      survey_estimates = c(anc1 = NA, penta1 = NA, penta3 = NA, measles1 = NA, bcg = NA),
+      survey_estimates = c(anc1 = NA, penta1 = NA, penta3 = NA, measles1 = NA, bcg = NA, anc4 = NA, ideliv = NA, lbw = NA, csection = NA),
       national_estimates = list(nmr = NA, pnmr = NA, twin_rate = 0.015, preg_loss = 0.03, sbr = NA),
       start_survey_year = NULL,
       survey_source = NULL,
       denominator = 'penta1',
+      maternal_denominator = 'anc1',
       selected_admin_level_1 = NULL,
       selected_district = NULL,
       selected_mapping_years = NULL,

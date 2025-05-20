@@ -40,7 +40,7 @@ overallScoreServer <- function(id, cache, i18n) {
             type = case_when(
               no %in% c("1a", "1b", "1c") ~ i18n$t("title_monthly_completeness"),
               no %in% c("2a", "2b") ~ i18n$t("title_extreme_outliers"),
-              no %in% c("3a", "3b",'3f', '3g') ~ i18n$t("title_consistency_annual_reporting")
+              no %in% c("3a", "3b",'3c', '3d', '4') ~ i18n$t("title_consistency_annual_reporting")
             )
           )
 
@@ -48,6 +48,7 @@ overallScoreServer <- function(id, cache, i18n) {
           as_grouped_data(groups = 'type') %>%
           as_flextable() %>%
           bold(j = 1, i = ~ !is.na(type), bold = TRUE, part = "body") %>%
+          bold(i = ~ is.na(type) & no =='4', bold = TRUE, part = "body") %>%
           bold(part = "header", bold = TRUE) %>%
           colformat_double(i = ~ is.na(type) & !no %in% c("3a", "3b"), j = as.character(years), digits = 0, big.mark = ",") %>%
           colformat_double(i = ~ is.na(type) & no %in% c("3a", "3b"), j = as.character(years), digits = 2) %>%
@@ -56,13 +57,17 @@ overallScoreServer <- function(id, cache, i18n) {
             j = as.character(years),
             bg = function(x) {
               result <- map_chr(as.list(x), ~ {
-                case_when(
-                  is.na(.x) || is.null(.x) || !is.numeric(.x) ~ 'white',
-                  .x >= threshold ~ 'seagreen',
-                  .x > 40 & .x < threshold ~ 'yellow',
-                  .x <= 40 ~ 'red',
-                  .default = 'white'
-                )
+                if (is.na(.x) || is.null(.x)) {
+                  return("transparent")
+                } else if (.x >= threshold) {
+                  return("seagreen")
+                } else if (.x >= 70 && .x < threshold) {
+                  return("yellow")
+                } else if (.x < 70) {
+                  return("red")
+                } else {
+                  return("transparent")
+                }
               })
               return(result)
             },

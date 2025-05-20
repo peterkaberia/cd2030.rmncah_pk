@@ -176,7 +176,7 @@ plot.cd_outlier_list <- function(x, region = NULL) {
     ) +
     labs(
       title = NULL,
-      y = paste0(indicator, " doses given"),
+      y = indicator,
       x = "Month"
     ) +
     scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +

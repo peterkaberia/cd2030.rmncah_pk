@@ -1051,14 +1051,14 @@
       "fr": "Figure 1f : Comparaison du nombre d'accouchements en établissement avant et après ajustements pour complétude et valeurs aberrantes"
     },
     {
-      "key": "figure_opd_under5_outlier",
-      "en": "Figure 1f: Comparison of number of OPD under 5 years before and after adjustments for completeness and outliers",
-      "fr": "Figure 1f : Comparaison du nombre de consultations externes des enfants de moins de 5 ans avant et après ajustements pour complétude et valeurs aberrantes"
+      "key": "figure_opd_total_outlier",
+      "en": "Figure 1f: Comparison of number of OPD Visits before and after adjustments for completeness and outliers",
+      "fr": "Figure 1f : Comparaison du nombre total de consultations externes avant et après ajustements pour la complétude et les valeurs aberrantes"
     },
     {
       "key": "title_national_rates",
-      "en": "Setup National Rates (Proportions based on the most recent survey)",
-      "fr": "Configurer les taux nationaux (Proportions basées sur l'enquête la plus récente)"
+      "en": "National Rates for Denominator Calculation (Based on the most recent survey)",
+      "fr": "Taux nationaux pour le calcul du dénominateur (d’après la dernière enquête)"
     },
     {
       "key": "title_nmr",
@@ -1212,8 +1212,13 @@
     },
     {
       "key": "title_denominator",
-      "en": "Selected Denominator",
-      "fr": "Dénominateur sélectionné"
+      "en": "Select Denominator",
+      "fr": "Sélectionner le dénominateur"
+    },
+    {
+      "key": "title_maternal_denominator",
+      "en": "Select Maternal Denominator",
+      "fr": "Sélectionner le dénominateur maternel"
     },
     {
       "key": "title_survey_data_year",
@@ -1222,7 +1227,7 @@
     },
     {
       "key": "title_survey_year",
-      "en": "Survey Year",
+      "en": "Vaccines Survey Year",
       "fr": "Année de l'enquête"
     },
     {
@@ -1929,6 +1934,36 @@
   "key": "opt_sbr_ratio",
   "en": "Stillbirth Ratio",
   "fr": "Ratio des mortinaissances"
+},
+{
+  "key": "opt_maternal_coverage",
+  "en": "Maternal Indicators",
+  "fr": "Indicateurs de santé maternelle"
+},
+{
+  "key": "opt_vaccine_coverage",
+  "en": "Vaccine Indicators",
+  "fr": "Indicateurs de vaccination"
+},
+{
+  "key": "title_anc4_survey",
+  "en": "ANC4 Survey",
+  "fr": "Enquête sur les quatre consultations prénatales"
+},
+{
+  "key": "title_ideliv_survey",
+  "en": "Institutional Delivery Survey",
+  "fr": "Enquête sur les accouchements en établissement"
+},
+{
+  "key": "title_lbw_survey",
+  "en": "Low Birth Weight Survey",
+  "fr": "Enquête sur l’insuffisance pondérale à la naissance"
+},
+{
+  "key": "title_csection_survey",
+  "en": "Caesarean Section Survey",
+  "fr": "Enquête sur les accouchements par césarienne"
 }
   ]
 }
