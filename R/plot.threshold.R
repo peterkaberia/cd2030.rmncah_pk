@@ -7,14 +7,8 @@ plot.cd_threshold <- function(x,
   admin_level <- attr(x, "admin_level")
   admin_level <- switch(admin_level,
     adminlevel_1 = "Admin Level 1",
-    district = "District"
+    district = "Districts"
   )
-
-  title <- if (indicator == "coverage") {
-    str_glue("Pecentage of {admin_level} with Coverage > 90%")
-  } else {
-    str_glue("Percent of {admin_level} with Dropout Rate of < 10%")
-  }
 
   x %>%
     filter(denominator == denom) %>%
@@ -23,7 +17,7 @@ plot.cd_threshold <- function(x,
     geom_col(position = "dodge") +
     geom_hline(yintercept = 80, colour = "red", size = 1.5) +
     labs(
-      title = title,
+      title = 'Pecentage of {admin_level} with Coverage > 90%',
       x = "",
       y = ""
     ) +

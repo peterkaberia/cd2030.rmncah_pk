@@ -1051,14 +1051,14 @@
       "fr": "Figure 1f : Comparaison du nombre d'accouchements en établissement avant et après ajustements pour complétude et valeurs aberrantes"
     },
     {
-      "key": "figure_opd_under5_outlier",
-      "en": "Figure 1f: Comparison of number of OPD under 5 years before and after adjustments for completeness and outliers",
-      "fr": "Figure 1f : Comparaison du nombre de consultations externes des enfants de moins de 5 ans avant et après ajustements pour complétude et valeurs aberrantes"
+      "key": "figure_opd_total_outlier",
+      "en": "Figure 1f: Comparison of number of OPD Visits before and after adjustments for completeness and outliers",
+      "fr": "Figure 1f : Comparaison du nombre total de consultations externes avant et après ajustements pour la complétude et les valeurs aberrantes"
     },
     {
       "key": "title_national_rates",
-      "en": "Setup National Rates (Proportions based on the most recent survey)",
-      "fr": "Configurer les taux nationaux (Proportions basées sur l'enquête la plus récente)"
+      "en": "National Rates for Denominator Calculation (Based on the most recent survey)",
+      "fr": "Taux nationaux pour le calcul du dénominateur (d’après la dernière enquête)"
     },
     {
       "key": "title_nmr",
@@ -1113,6 +1113,11 @@
     {
       "key": "title_upload_un_estimates",
       "en": "Upload UN Estimates data",
+      "fr": "Téléverser les estimations des Nations Unies"
+    },
+    {
+      "key": "title_upload_un_mortality",
+      "en": "Upload UN Mortality data",
       "fr": "Téléverser les estimations des Nations Unies"
     },
     {
@@ -1207,8 +1212,13 @@
     },
     {
       "key": "title_denominator",
-      "en": "Selected Denominator",
-      "fr": "Dénominateur sélectionné"
+      "en": "Select Denominator",
+      "fr": "Sélectionner le dénominateur"
+    },
+    {
+      "key": "title_maternal_denominator",
+      "en": "Select Maternal Denominator",
+      "fr": "Sélectionner le dénominateur maternel"
     },
     {
       "key": "title_survey_data_year",
@@ -1217,7 +1227,7 @@
     },
     {
       "key": "title_survey_year",
-      "en": "Survey Year",
+      "en": "Vaccines Survey Year",
       "fr": "Année de l'enquête"
     },
     {
@@ -1759,7 +1769,201 @@
   "key": "title_derived_coverage",
   "en": "Population growth derived coverage",
   "fr": "Couverture dérivée de la croissance démographique"
+},
+{
+  "key": "title_national_health_system",
+  "en": "National Health System",
+  "fr": "Système de santé national"
+},
+{
+  "key": "title_subnational_health_system",
+  "en": "Sub-National Health System",
+  "fr": "Système de santé infranational"
+},
+{
+  "key": "title_health_system_comparison",
+  "en": "Health System Comparison",
+  "fr": "Comparaison des systèmes de santé"
+},
+{
+  "key": "opt_health_system_performance",
+  "en": "Health System Performance",
+  "fr": "Performance du système de santé"
+},
+{
+  "key": "opt_health_system_density",
+  "en": "Health System Density",
+  "fr": "Densité du système de santé"
+},
+{
+  "key": "opt_score_total",
+  "en": "Overall",
+  "fr": "Performance globale"
+},
+{
+  "key": "opt_score_infrastructure",
+  "en": "Health Infrastructure",
+  "fr": "Infrastructure sanitaire"
+},
+{
+  "key": "opt_score_workforce",
+  "en": "Health Workforce",
+  "fr": "Personnel de santé"
+},
+{
+  "key": "opt_score_utilization",
+  "en": "Service Utilization",
+  "fr": "Utilisation des services"
+},
+{
+  "key": "opt_ratio_fac_pop",
+  "en": "Health System Performance",
+  "fr": "Densité des établissements de santé"
+},
+{
+  "key": "opt_ratio_hstaff_pop",
+  "en": "Workforce Density",
+  "fr": "Densité du personnel de santé"
+},
+{
+  "key": "opt_ratio_bed_pop",
+  "en": "Bed Density",
+  "fr": "Densité des lits d’hôpital"
+},
+{
+  "key": "opt_ratio_opd_pop",
+  "en": "OPD Visits",
+  "fr": "Consultations externes (OPD)"
+},
+{
+  "key": "opt_ratio_ipd_pop",
+  "en": "IPD Admissions",
+  "fr": "Admissions en hospitalisation (IPD)"
+},
+{
+  "key": "opt_ratio_opd_u5_pop",
+  "en": "Under 5 OPD Visits",
+  "fr": "Consultations externes des moins de 5 ans"
+},
+{
+  "key": "opt_ratio_ipd_u5_pop",
+  "en": "Under 5 IPD Admissions",
+  "fr": "Admissions en hospitalisation des moins de 5 ans"
+},
+{
+  "key": "opt_cov_instdeliveries_hstaff",
+  "en": "Deliveries/Staff",
+  "fr": "Accouchements / Personnel"
+},
+{
+  "key": "opt_cov_instdeliveries_bed",
+  "en": "Deliveries/Beds",
+  "fr": "Accouchements / Lits"
+},
+{
+  "key": "opt_cov_instdeliveries_fac",
+  "en": "Deliveries/Facilities",
+  "fr": "Accouchements / Établissements"
+},
+{
+  "key": "title_service_utilization",
+  "en": "Service Utilization",
+  "fr": "Utilisation des services"
+},
+{
+  "key": "opt_opd_visits",
+  "en": "OPD Visits",
+  "fr": "Consultations externes"
+},
+{
+  "key": "opt_ipd_admissions",
+  "en": "IPD Admissions",
+  "fr": "Admissions hospitalières"
+},
+{
+  "key": "opt_under5",
+  "en": "Under 5",
+  "fr": "Enfants de moins de 5 ans"
+},
+{
+  "key": "opt_cfr",
+  "en": "Case Fatality Rate",
+  "fr": "Taux de létalité"
+},
+{
+  "key": "opt_deaths",
+  "en": "Deaths",
+  "fr": "Décès"
+},
+{
+  "key": "title_mortality",
+  "en": "Mortality",
+  "fr": "Mortalité"
+},
+{
+  "key": "opt_mmr_inst",
+  "en": "Maternal Mortality",
+  "fr": "Mortalité maternelle"
+},
+{
+  "key": "opt_ratio_md_sb",
+  "en": "SBR to Maternal Death Ratio",
+  "fr": "Ratio mortinatalité/décès maternels"
+},
+{
+  "key": "opt_sbr_inst",
+  "en": "Still Birth Rate",
+  "fr": "Taux de mortinatalité"
+},
+{
+  "key": "opt_nn_inst",
+  "en": "Neonatal Deaths",
+  "fr": "Décès néonatals"
+},
+{
+  "key": "title_mortality_completeness",
+  "en": "Mortality Completeness",
+  "fr": "Exhaustivité des données sur la mortalité"
+},
+{
+  "key": "opt_mmr_ratio",
+  "en": "Maternal Death Ratio",
+  "fr": "Ratio des décès maternels"
+},
+{
+  "key": "opt_sbr_ratio",
+  "en": "Stillbirth Ratio",
+  "fr": "Ratio des mortinaissances"
+},
+{
+  "key": "opt_maternal_coverage",
+  "en": "Maternal Indicators",
+  "fr": "Indicateurs de santé maternelle"
+},
+{
+  "key": "opt_vaccine_coverage",
+  "en": "Vaccine Indicators",
+  "fr": "Indicateurs de vaccination"
+},
+{
+  "key": "title_anc4_survey",
+  "en": "ANC4 Survey",
+  "fr": "Enquête sur les quatre consultations prénatales"
+},
+{
+  "key": "title_ideliv_survey",
+  "en": "Institutional Delivery Survey",
+  "fr": "Enquête sur les accouchements en établissement"
+},
+{
+  "key": "title_lbw_survey",
+  "en": "Low Birth Weight Survey",
+  "fr": "Enquête sur l’insuffisance pondérale à la naissance"
+},
+{
+  "key": "title_csection_survey",
+  "en": "Caesarean Section Survey",
+  "fr": "Enquête sur les accouchements par césarienne"
 }
-
   ]
 }

@@ -1,8 +1,8 @@
-denominatorInputUI <- function(id, i18n) {
+denominatorInputUI <- function(id, i18n, label = 'title_denominator') {
   ns <- NS(id)
   selectizeInput(
     ns('denominator'),
-    label = i18n$t("title_denominator"),
+    label = i18n$t(label),
     choices = c(
       'DHIS2' = 'dhis2',
       'ANC 1' = 'anc1',

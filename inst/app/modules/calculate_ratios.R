@@ -62,13 +62,13 @@ calculateRatiosServer <- function(id, cache, i18n) {
         }
       })
 
-      debounced_anc1 <- debounce(reactive(input$anc1_coverage), millis = 500)
-      debounced_penta1 <- debounce(reactive(input$penta1_coverage), millis = 500)
-      debounced_penta3 <- debounce(reactive(input$penta3_coverage), millis = 500)
-
       # Causing a loop the national_rates.R
-      observeEvent(c(debounced_anc1(), debounced_penta1(), debounced_penta3()), {
+      observeEvent(c(input$anc1_coverage, input$penta1_coverage, input$penta3_coverage), {
         req(cache())
+
+        if (!is.null(cache()$survey_source) && cache()$survey_source == 'setup') {
+          return()
+        }
 
         estimates <- cache()$survey_estimates
         estimates <- c(
@@ -76,7 +76,11 @@ calculateRatiosServer <- function(id, cache, i18n) {
           penta1 = as.numeric(input$penta1_coverage),
           penta3 = as.numeric(input$penta3_coverage),
           measles1 = unname(estimates['measles1']),
-          bcg = unname(estimates['bcg'])
+          bcg = unname(estimates['bcg']),
+          anc4 = unname(estimates['anc4']),
+          ideliv = unname(estimates['ideliv']),
+          lbw = unname(estimates['lbw']),
+          csection = unname(estimates['csection'])
         )
         cache()$set_survey_estimates(estimates)
         cache()$set_survey_source('ratios')

@@ -15,14 +15,26 @@ lowReportingUI <- function(id, i18n) {
         )
       ),
 
-      box(
+      tabBox(
         title = i18n$t("title_coverage"),
-        status = 'primary',
         width = 12,
-        fluidRow(
-          column(12, plotCustomOutput(ns('coverage'))),
-          column(4, downloadButtonUI(ns('coverage_download')))
+
+        tabPanel(
+          title = i18n$t("opt_maternal_coverage"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('maternal'))),
+            column(4, downloadButtonUI(ns('maternal_download')))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_vaccine_coverage"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('vaccine'))),
+            column(4, downloadButtonUI(ns('vaccine_download')))
+          )
         )
+
       ),
 
       box(
@@ -81,12 +93,28 @@ lowReportingServer <- function(id, cache, i18n) {
           )
       })
 
-      coverage_threshold <- reactive({
+      matternal_threshold <- reactive({
         req(data(), admin_level(), cache()$survey_year, all(!is.na(cache()$national_estimates)))
         rates <- cache()$national_estimates
         calculate_threshold(data(),
                             admin_level = admin_level(),
-                            indicator = 'coverage',
+                            indicator = 'maternal',
+                            sbr = rates$sbr,
+                            nmr = rates$nmr,
+                            pnmr = rates$pnmr,
+                            anc1survey = rates$anc1,
+                            dpt1survey = rates$penta1,
+                            survey_year = cache()$survey_year,
+                            twin = rates$twin_rate,
+                            preg_loss = rates$preg_loss)
+      })
+
+      vaccine_threshold <- reactive({
+        req(data(), admin_level(), cache()$survey_year, all(!is.na(cache()$national_estimates)))
+        rates <- cache()$national_estimates
+        calculate_threshold(data(),
+                            admin_level = admin_level(),
+                            indicator = 'vaccine',
                             sbr = rates$sbr,
                             nmr = rates$nmr,
                             pnmr = rates$pnmr,
@@ -108,14 +136,14 @@ lowReportingServer <- function(id, cache, i18n) {
           select(any_of(c('adminlevel_1', 'district', 'year', indicator)))
       })
 
-      output$coverage <- renderCustomPlot({
-        req(coverage_threshold(), denominator())
-        plot(coverage_threshold(), denominator = denominator())
+      output$maternal <- renderCustomPlot({
+        req(matternal_threshold(), denominator())
+        plot(matternal_threshold(), denominator = denominator())
       })
 
-      output$dropout <- renderCustomPlot({
-        req(dropout_threshold(), denominator())
-        plot(dropout_threshold(), denominator = denominator())
+      output$vaccine <- renderCustomPlot({
+        req(vaccine_threshold(), denominator())
+        plot(vaccine_threshold(), denominator = denominator())
       })
 
       output$district_low_reporting <- renderReactable({

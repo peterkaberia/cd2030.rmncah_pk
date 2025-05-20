@@ -9,17 +9,36 @@ denominatorSelectionUI <- function(id, i18n) {
         status = 'primary',
         width = 12,
         solidHeader = TRUE,
-        fluidRow(column(3, denominatorInputUI(ns('denominator'), i18n)))
+        fluidRow(
+          column(3, denominatorInputUI(ns('denominator'), i18n)),
+          column(3, denominatorInputUI(ns('maternal_denominator'), i18n, label = 'title_maternal_denominator'))
+        )
       ),
       tabBox(
         title = i18n$t("title_denominator_selection"),
         width = 12,
 
         tabPanel(
-          title = i18n$t("opt_anc1"),
+          title = i18n$t("opt_anc4"),
           fluidRow(
-            column(12, plotCustomOutput(ns('anc1'))),
-            column(3, downloadButtonUI(ns('anc1_plot')))
+            column(12, plotCustomOutput(ns('anc4'))),
+            column(3, downloadButtonUI(ns('anc4_plot')))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_lbw"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('lbw'))),
+            column(3, downloadButtonUI(ns('lbw_plot')))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_ideliv"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('ideliv'))),
+            column(3, downloadButtonUI(ns('ideliv_plot')))
           )
         ),
 
@@ -96,16 +115,28 @@ denominatorSelectionServer <- function(id, cache, i18n) {
                                        survey_year = cache()$survey_year)
       })
 
-      output$anc1 <- renderCustomPlot({
+      output$anc4 <- renderCustomPlot({
         req(indicator_coverage(), all(!is.na(survey_estimates())))
-        anc1_rate <- unname(survey_estimates()['anc1'])
-        plot_absolute_differences(indicator_coverage(), 'anc1', anc1_rate)
+        anc4_rate <- unname(survey_estimates()['anc4'])
+        plot_absolute_differences(indicator_coverage(), 'anc4', anc4_rate)
+      })
+
+      output$lbw <- renderCustomPlot({
+        req(indicator_coverage(), all(!is.na(survey_estimates())))
+        lbw_rate <- unname(survey_estimates()['lbw'])
+        plot_absolute_differences(indicator_coverage(), 'low_bweight', lbw_rate)
       })
 
       output$penta3 <- renderCustomPlot({
         req(indicator_coverage(), all(!is.na(survey_estimates())))
         penta3_rate <- unname(survey_estimates()['penta3'])
         plot_absolute_differences(indicator_coverage(), 'penta3', penta3_rate)
+      })
+
+      output$ideliv <- renderCustomPlot({
+        req(indicator_coverage(), all(!is.na(survey_estimates())))
+        ideliv_rate <- unname(survey_estimates()['ideliv'])
+        plot_absolute_differences(indicator_coverage(), 'instdeliveries', ideliv_rate)
       })
 
       output$measles1 <- renderCustomPlot({
@@ -126,13 +157,35 @@ denominatorSelectionServer <- function(id, cache, i18n) {
       })
 
       downloadPlot(
-        id = 'anc1_plot',
-        filename = reactive('anc1_plot'),
+        id = 'anc4_plot',
+        filename = reactive('anc4_plot'),
         data = indicator_coverage,
         i18n = i18n,
         plot_function = function() {
-          anc1_rate <- unname(survey_estimates()['anc1'])
-          plot_absolute_differences(indicator_coverage(), 'anc1', penta3_rate)
+          anc1_rate <- unname(survey_estimates()['anc4'])
+          plot_absolute_differences(indicator_coverage(), 'anc4', penta3_rate)
+        }
+      )
+
+      downloadPlot(
+        id = 'ideliv_plot',
+        filename = reactive('ideliv_plot'),
+        data = indicator_coverage,
+        i18n = i18n,
+        plot_function = function() {
+          ideliv_rate <- unname(survey_estimates()['ideliv'])
+          plot_absolute_differences(indicator_coverage(), 'instdeliveries', ideliv_rate)
+        }
+      )
+
+      downloadPlot(
+        id = 'lbw_plot',
+        filename = reactive('lbw_plot'),
+        data = indicator_coverage,
+        i18n = i18n,
+        plot_function = function() {
+          lbw_rate <- unname(survey_estimates()['lbw'])
+          plot_absolute_differences(indicator_coverage(), 'low_bweight', lbw_rate)
         }
       )
 

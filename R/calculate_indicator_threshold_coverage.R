@@ -96,7 +96,7 @@ calculate_indicator_threshold_coverage <- function(.data) {
 #' @export
 calculate_threshold <- function(.data,
                                 admin_level = c("adminlevel_1", "district"),
-                                indicator = c("coverage", "dropout"),
+                                indicator = c("maternal", "vaccine"),
                                 sbr = 0.02,
                                 nmr = 0.025,
                                 pnmr = 0.024,
@@ -108,16 +108,12 @@ calculate_threshold <- function(.data,
   check_cd_data(.data)
   indicator <- arg_match(indicator)
   admin_level <- arg_match(admin_level)
+  admin_level_cols <- get_admin_columns(admin_level)
 
-  indicators <- if (indicator == "dropout") {
-    "zerodose|undervax|dropout_penta13|dropout_measles12|dropout_penta3mcv1|dropout_penta1mcv1"
+  indicators <- if (indicator == "vaccine") {
+    "penta3|mealses1|bcg"
   } else {
-    "anc4|instdeliveries|penta3"
-  }
-  threshold_func <- if (indicator == "coverage") {
-    function(x) x > 90
-  } else {
-    function(x) x < 10
+    "anc4|instdeliveries"
   }
 
   threshold <- calculate_indicator_coverage(.data,
@@ -126,26 +122,14 @@ calculate_threshold <- function(.data,
     anc1survey = anc1survey, dpt1survey = dpt1survey,
     survey_year = survey_year, twin = twin, preg_loss = preg_loss
   ) %>%
-    select(year, adminlevel_1, matches(paste0("cov_(", indicators, ")"))) %>%
-    mutate(across(starts_with("cov_"), ~ threshold_func(.), .names = "below10_{.col}")) %>%
+    select(year, any_of(admin_level_cols), matches(paste0("cov_(", indicators, ")"))) %>%
+    mutate(across(starts_with("cov_"), ~ if_else(.x > 90, 1, 0), .names = "below10_{.col}")) %>%
     summarise(across(starts_with("below10"), ~ mean(., na.rm = TRUE)) * 100, .by = year) %>%
     pivot_longer(
       cols = starts_with("below10"),
       names_prefix = "below10_cov_",
       names_sep = "_(?=[^_]+$)",
       names_to = c("indicator", "denominator")
-    ) %>%
-    mutate(
-      indicator = case_match(
-        indicator,
-        "zerodose" ~ "Penta-zero dose",
-        "undervax" ~ "BCG to Penta1 dropout",
-        "dropout_penta13" ~ "Penta1 to Penta3 dropout",
-        "dropout_measles12" ~ "MCV1 to MCV2 dropout",
-        "dropout_penta1mcv1" ~ "Penta1 to MCV1 dropout",
-        "dropout_penta3mcv1" ~ "Penta3 to MCV1 dropout",
-        .default = indicator
-      )
     )
 
   new_tibble(

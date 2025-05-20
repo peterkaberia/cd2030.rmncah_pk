@@ -158,7 +158,7 @@ subnationalMappingServer <- function(id, cache, i18n) {
       output$anc4 <- renderCustomPlot({
         req(dt())
 
-        title <- str_glue(i18n$t("title_distribution_of_penta13_dropout"))
+        title <- str_glue(i18n$t("title_distribution_of_anc4"))
         plot(dt(), indicator = 'anc4',
              denominator = denominator(),
              palette = input$palette,
@@ -223,6 +223,48 @@ subnationalMappingServer <- function(id, cache, i18n) {
       })
 
       downloadPlot(
+        id = 'anc4_download',
+        filename = reactive(paste0('anc4_', admin_level(), '_map_', denominator())),
+        data = dt,
+        i18n = i18n,
+        plot_function = function() {
+          plot(dt(), indicator = 'anc4',
+               denominator = denominator(),
+               palette = input$palette,
+               title = str_glue(i18n$t("title_distribution_of_anc4")),
+               plot_year = years())
+        }
+      )
+
+      downloadPlot(
+        id = 'ideliv_download',
+        filename = reactive(paste0('ideliv_', admin_level(), '_map_', denominator())),
+        data = dt,
+        i18n = i18n,
+        plot_function = function() {
+          plot(dt(), indicator = 'instdeliveries',
+               denominator = denominator(),
+               palette = input$palette,
+               title = str_glue(i18n$t("title_distribution_of_ideliv")),
+               plot_year = years())
+        }
+      )
+
+      downloadPlot(
+        id = 'lbw_download',
+        filename = reactive(paste0('lbw_', admin_level(), '_map_', denominator())),
+        data = dt,
+        i18n = i18n,
+        plot_function = function() {
+          plot(dt(), indicator = 'lbw',
+               denominator = denominator(),
+               palette = input$palette,
+               title = str_glue(i18n$t("title_distribution_of_lbw")),
+               plot_year = years())
+        }
+      )
+
+      downloadPlot(
         id = 'penta3_download',
         filename = reactive(paste0('penta3_', admin_level(), '_map_', denominator())),
         data = dt,
@@ -246,34 +288,6 @@ subnationalMappingServer <- function(id, cache, i18n) {
                denominator = denominator(),
                palette = input$palette,
                title = str_glue(i18n$t("title_distribution_of_measles1")),
-               plot_year = years())
-        }
-      )
-
-      downloadPlot(
-        id = 'penta13_dropout_download',
-        filename = reactive(paste0('penta13_dropout_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = 'dropout_penta13',
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_penta13_dropout")),
-               plot_year = years())
-        }
-      )
-
-      downloadPlot(
-        id = 'penta3mcv1_droput_download',
-        filename = reactive(paste0('penta3mcv1_droput_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = 'dropout_penta3mcv1',
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_penta3_mcv1_dropout")),
                plot_year = years())
         }
       )
