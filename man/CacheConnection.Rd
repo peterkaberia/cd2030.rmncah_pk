@@ -63,6 +63,8 @@ from \code{.rds} files.
 
 \item{\code{un_estimates}}{Gets UN estimates.}
 
+\item{\code{un_mortality_estimates}}{Gets UN mortality estimates.}
+
 \item{\code{wuenic_estimates}}{Gets WUENIC estimates.}
 
 \item{\code{national_survey}}{Gets national survey.}
@@ -109,6 +111,7 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-set_selected_district}{\code{CacheConnection$set_selected_district()}}
 \item \href{#method-CacheConnection-set_mapping_years}{\code{CacheConnection$set_mapping_years()}}
 \item \href{#method-CacheConnection-set_un_estimates}{\code{CacheConnection$set_un_estimates()}}
+\item \href{#method-CacheConnection-set_un_mortality_estimates}{\code{CacheConnection$set_un_mortality_estimates()}}
 \item \href{#method-CacheConnection-set_wuenic_estimates}{\code{CacheConnection$set_wuenic_estimates()}}
 \item \href{#method-CacheConnection-set_national_survey}{\code{CacheConnection$set_national_survey()}}
 \item \href{#method-CacheConnection-set_regional_survey}{\code{CacheConnection$set_regional_survey()}}
@@ -529,6 +532,23 @@ Set mapping years.
 Set UN estimates.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_un_estimates(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Data frame.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_un_mortality_estimates"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_un_mortality_estimates}{}}}
+\subsection{Method \code{set_un_mortality_estimates()}}{
+Set UN mortality estimates
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_un_mortality_estimates(value)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

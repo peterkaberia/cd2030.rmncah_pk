@@ -78,6 +78,11 @@ source('modules/subnational_inequality.R')
 source('modules/subnational_mapping.R')
 source('modules/upload_data.R')
 source('modules/low_reporting.R')
+source('modules/5_mortality.R')
+source('modules/6_service_utilization.R')
+source('modules/7_health_system_national.R')
+source('modules/7_health_system_subnational.R')
+source('modules/7_health_system_comparison.R')
 
 i18n <- init_i18n(translation_json_path = 'translation/translation.json')
 i18n$set_translation_language('fr')
@@ -135,15 +140,15 @@ ui <- dashboardPage(
       menuItem(i18n$t('title_denominator_selection'),
                tabName = 'denom_assess',
                icon = icon('calculator'),
-               menuSubItem(i18n$t('title_derived_coverage'),
-                           tabName = 'derived_coverage',
-                           icon = icon('chart-line')),
                menuSubItem(i18n$t('title_denominator_assessment'),
                            tabName = 'denominator_assessment',
                            icon = icon('calculator')),
                menuSubItem(i18n$t('title_denominator_selection'),
                            tabName = 'denominator_selection',
-                           icon = icon('filter'))
+                           icon = icon('filter')),
+               menuSubItem(i18n$t('title_derived_coverage'),
+                           tabName = 'derived_coverage',
+                           icon = icon('chart-line'))
                ),
       menuItem(i18n$t('title_national_coverage'), tabName = 'national_coverage', icon = icon('flag')),
       menuItem(i18n$t('title_subnational_analysis'),
@@ -162,7 +167,22 @@ ui <- dashboardPage(
                            tabName = 'subnational_mapping',
                            icon = icon('map'))
                ),
-      menuItem(i18n$t('title_equity_assessment'), tabName = 'equity_assessment', icon = icon('balance-scale'))
+      menuItem(i18n$t('title_equity_assessment'), tabName = 'equity_assessment', icon = icon('balance-scale')),
+      menuItem(i18n$t('title_mortality'), tabName = 'mortality', icon = icon('balance-scale')),
+      menuItem(i18n$t('title_service_utilization'), tabName = 'service_utilization', icon = icon('balance-scale')),
+      menuItem(i18n$t('opt_health_system_performance'),
+               tabName = 'system_performance',
+               icon = icon('globe-africa'),
+               menuSubItem(i18n$t('title_national_health_system'),
+                           tabName = 'health_system_national',
+                           icon = icon('map-marked')),
+               menuSubItem(i18n$t('title_subnational_health_system'),
+                           tabName = 'health_system_subnational',
+                           icon = icon('balance-scale-right')),
+               menuSubItem(i18n$t('title_health_system_comparison'),
+                           tabName = 'health_system_comparison',
+                           icon = icon('user-slash'))
+      )
     )
   ),
   body = dashboardBody(
@@ -238,7 +258,12 @@ ui <- dashboardPage(
       tabItem(tabName = 'subnational_inequality', subnationalInequalityUI('subnational_inequality', i18n = i18n)),
       tabItem(tabName = 'low_reporting', lowReportingUI('low_reporting', i18n = i18n)),
       tabItem(tabName = 'subnational_mapping', subnationalMappingUI('subnational_mapping', i18n = i18n)),
-      tabItem(tabName = 'equity_assessment', equityUI('equity_assessment', i18n = i18n))
+      tabItem(tabName = 'equity_assessment', equityUI('equity_assessment', i18n = i18n)),
+      tabItem(tabName = 'mortality', mortalityUI('mortality', i18n = i18n)),
+      tabItem(tabName = 'service_utilization', serviceUtilizationUI('service_utilization', i18n = i18n)),
+      tabItem(tabName = 'health_system_national', healthSystemNationalUI('health_system_national', i18n = i18n)),
+      tabItem(tabName = 'health_system_subnational', healthSystemSubnationalUI('health_system_subnational', i18n = i18n)),
+      tabItem(tabName = 'health_system_comparison', healthSystemComparisonUI('health_system_comparison', i18n = i18n))
     ),
     tags$script(src = 'script.js')
   )
@@ -290,6 +315,11 @@ server <- function(input, output, session) {
   lowReportingServer('low_reporting', cache, i18n)
   subnationalMappingServer('subnational_mapping', cache, i18n)
   equityServer('equity_assessment', cache, i18n)
+  mortalityServer('mortality', cache, i18n)
+  serviceUtilizationServer('service_utilization', cache, i18n)
+  healthSystemNationalServer('health_system_national', cache, i18n)
+  healthSystemSubnationalServer('health_system_subnational', cache, i18n)
+  healthSystemComparisonServer('health_system_comparison', cache, i18n)
   downloadReportServer('download_report', cache, i18n)
   saveCacheServe('save_cache', cache, i18n)
 

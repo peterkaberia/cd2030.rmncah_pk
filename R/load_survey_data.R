@@ -24,6 +24,35 @@ load_un_estimates <- function(path = NULL, .data = NULL, country_iso, start_year
     new_tibble(class = "cd_un_estimates")
 }
 
+#' Load and Filter UN Mortality Estimates
+#'
+#' Loads UN mortality data from a file path or existing data frame, filters it by the given country ISO3 code,
+#' and returns cleaned mortality data sorted by year.
+#'
+#' @param path Optional. Path to an Excel or CSV file containing UN mortality estimates.
+#' @param .data Optional. A pre-loaded data frame with UN mortality estimates.
+#' @param country_iso Required. A 3-letter ISO country code used to filter the dataset.
+#'
+#' @return A tibble of class `cd_un_mortality`.
+#'
+#' @examples
+#' \dontrun{
+#'   load_un_mortality_data("data/un_mortality.csv", country_iso = "KEN")
+#'   load_un_mortality_data(.data = df, country_iso = "UGA")
+#' }
+#'
+#' @export
+load_un_mortality_data <- function(path = NULL, .data = NULL, country_iso) {
+  check_required(country_iso)
+  data <- load_data_or_file(path, .data)
+
+  data %>%
+    filter(isocode == country_iso) %>%
+    arrange(year) %>%
+    select(-countryname, -unicefregion, -isocode) %>%
+    new_tibble(class = "cd_un_mortality")
+}
+
 #' Load and Process Survey Data
 #'
 #' Loads national or subnational survey data, cleans labels and codes, and applies

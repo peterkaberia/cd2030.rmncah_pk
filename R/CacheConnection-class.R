@@ -282,6 +282,10 @@ CacheConnection <- R6::R6Class(
     #' @param value Data frame.
     set_un_estimates = function(value) private$setter('un_estimates', value, check_un_estimates_data),
 
+    #' @description Set UN mortality estimates
+    #' @param value Data frame.
+    set_un_mortality_estimates = function(value) private$setter('un_mortality_estimates', value, check_un_mortality_data),
+
     #' @description Set WUENIC estimates.
     #' @param value Data frame.
     set_wuenic_estimates = function(value) private$setter('wuenic_estimates', value, check_wuenic_data),
@@ -459,6 +463,9 @@ CacheConnection <- R6::R6Class(
     #' @field un_estimates Gets UN estimates.
     un_estimates = function(value) private$getter('un_estimates', value),
 
+    #' @field un_mortality_estimates Gets UN mortality estimates.
+    un_mortality_estimates = function(value) private$getter('un_mortality_estimates', value),
+
     #' @field wuenic_estimates Gets WUENIC estimates.
     wuenic_estimates = function(value) private$getter('wuenic_estimates', value),
 
@@ -538,6 +545,7 @@ CacheConnection <- R6::R6Class(
       selected_mapping_years = NULL,
       # palette = c(coverage = 'Greens', dropout = 'Reds'),
       un_estimates = NULL,
+      un_mortality_estimates = NULL,
       wuenic_estimates = NULL,
       national_survey = NULL,
       regional_survey = NULL,

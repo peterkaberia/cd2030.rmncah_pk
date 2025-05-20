@@ -75,6 +75,10 @@ check_un_estimates_data <- function(.data = NULL,
   invisible(TRUE)
 }
 
+check_un_mortality_data <- function(.data, arg = caller_arg(.data), call = caller_env()) {
+  check_cd_class(.data, "cd_un_mortality", arg = arg, call = call)
+}
+
 check_wuenic_data <- function(.data, arg = caller_arg(.data), call = caller_env()) {
   check_cd_class(.data, "cd_wuenic_data", arg = arg, call = call)
 
@@ -107,6 +111,14 @@ check_survey_data <- function(.data,
 
 check_equity_data <- function(.data, arg = caller_arg(.data), call = caller_env()) {
   check_cd_class(.data, "cd_equity_data", arg = arg, call = call)
+}
+
+check_service_utilization <- function(.data, arg = caller_arg(.data), call = caller_env()) {
+  check_cd_class(.data, "cd_service_utilization", arg = arg, call = call)
+}
+
+check_un_mortality <- function(.data, arg = caller_arg(.data), call = caller_env()) {
+  check_cd_class(.data, "cd_un_mortality", arg = arg, call = call)
 }
 
 check_ratio_pairs <- function(.list, arg = call_args(.list), call = caller_env()) {

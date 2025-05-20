@@ -253,7 +253,7 @@ read_and_clean_sheet <- function(path, sheet_name, sheet_ids, start_year = NULL,
   check_required(sheet_ids, call = call)
 
   # Columns that are required to have data
-  required_columns <- c("country", "first_admin_level", "district", "year", "month", "total_number_health_facilities")
+  required_columns <- c("country", "first_admin_level", "district", "year", "month")
 
   data <- tryCatch(
     read_excel(path, sheet = sheet_name, .name_repair = "unique") %>% # Read sheet
