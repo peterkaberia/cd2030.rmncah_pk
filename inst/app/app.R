@@ -56,6 +56,7 @@ source('ui/region-input.R')
 source('ui/report_button.R')
 source('ui/save_cache.R')
 
+source('modules/0_upload_data.R')
 source('modules/1a_checks_reporting_rate.R')
 source('modules/1a_checks_outlier_detection.R')
 source('modules/calculate_ratios.R')
@@ -76,7 +77,6 @@ source('modules/setup.R')
 source('modules/subnational_coverage.R')
 source('modules/subnational_inequality.R')
 source('modules/subnational_mapping.R')
-source('modules/upload_data.R')
 source('modules/low_reporting.R')
 source('modules/5_mortality.R')
 source('modules/6_service_utilization.R')
@@ -229,11 +229,19 @@ ui <- dashboardPage(
       tags$script(src = "jquery.slimscroll.min.js"),
       tags$script(HTML("
         $(function() {
-          $('.sidebar').slimScroll({
-            height: '100%',
-            alwaysVisible: true,
-            size: '6px'
+          $('body, html, ' + '.wrapper').css({
+            'height'    : 'auto',
+            'min-height': '100%'
           });
+          $('body').addClass('fixed');
+          var windowHeight  = $(window).height();
+          var footerHeight  = $('.main-footer').outerHeight() || 0;
+          $('.content-wrapper').css('min-height', windowHeight - footerHeight);
+          if ($('.main-sidebar').find('slimScrollDiv').length === 0) {
+            $('.sidebar').slimScroll({
+              height: (windowHeight - $('.main-header').height()) + 'px'
+            });
+          }
         });
       "))
     ),
@@ -282,7 +290,6 @@ server <- function(input, output, session) {
 
     # shinyjs::delay(500, {
     updateHeader(cache()$country, i18n)
-    shinyjs::addClass(selector = 'body', class = 'fixed')
     # })
   })
 
