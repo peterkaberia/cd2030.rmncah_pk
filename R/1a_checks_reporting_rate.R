@@ -26,13 +26,9 @@ calculate_average_reporting_rate <- function(.data,
   check_cd_data(.data)
 
   admin_level <- arg_match(admin_level)
-  admin_level_cols <- get_admin_columns(admin_level)
+  admin_level_cols <- get_admin_columns(admin_level, region)
   if (admin_level != 'adminlevel_1' && !is.null(region)) {
     cd_abort(c('x' = 'Region can only be specified for {.arg adminlevel_1}'))
-  }
-
-  if (admin_level == 'adminlevel_1' && !is.null(region)) {
-    admin_level_cols <- c(admin_level_cols, 'district')
   }
 
   allindicators <- get_indicator_group_names()
@@ -48,12 +44,11 @@ calculate_average_reporting_rate <- function(.data,
     ) %>%
     mutate(across(ends_with("_rr"), round, 0))
 
-  show_district <-  admin_level == 'district' || !is.null(region)
   new_tibble(
     reporting_rate,
     class = "cd_average_reporting_rate",
     admin_level = admin_level,
-    admin_level_col = if (show_district) 'district' else 'adminlevel_1'
+    region = region
   )
 }
 

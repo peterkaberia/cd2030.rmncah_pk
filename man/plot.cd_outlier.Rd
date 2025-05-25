@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.outlier.R
 \name{plot.cd_outlier}
 \alias{plot.cd_outlier}
-\title{Plot Outlier Detection Summary}
+\title{Visualize Summary of Outlier Detection}
 \usage{
 \method{plot}{cd_outlier}(
   x,
@@ -12,50 +12,37 @@
 )
 }
 \arguments{
-\item{x}{A \code{cd_outlier} object containing pre-processed outlier data.}
+\item{x}{A \code{cd_outlier} object with precomputed outlier flags.}
 
-\item{selection_type}{One of \code{"region"}, \code{"vaccine"}, or \code{"heat_map"}:
+\item{selection_type}{One of \code{"region"}, \code{"indicator"}, or \code{"heat_map"}:
 \itemize{
-\item \code{"region"}: Non-outlier rates for each region over time.
-\item \code{"vaccine"}: Average non-outlier rates for each vaccine over time.
-\item \code{"heat_map"}: Tile plot of indicators or a specific one.
+\item \code{"region"}: Non-outlier rates by year and region.
+\item \code{"indicator"}: Yearly average non-outlier rate per indicator.
+\item \code{"heat_map"}: Year-by-unit heat map of all or selected indicators.
 }}
 
-\item{indicator}{Optional. One of the supported indicators (\code{"opv1"}, \code{"penta3"}, etc.)
-to visualize in the plot. If \code{NULL} and \code{selection_type = "heat_map"}, all indicators
-will be shown.}
+\item{indicator}{Optional. Specific indicator name (e.g., \code{"penta3"}). Required
+for \code{"region"} view.}
 
-\item{...}{Reserved for future use.}
+\item{...}{Not used.}
 }
 \value{
-A \code{ggplot} or \code{plotly} object depending on the selection type.
+A \code{ggplot} object.
 }
 \description{
-This method visualizes outlier detection results for immunization indicators
-at subnational levels. The output plot depends on the \code{selection_type}:
-\itemize{
-\item \code{'region'}: Plots percent of non-outliers by year and region.
-\item \code{'vaccine'}: Plots average non-outlier rate by year across all vaccines.
-\item \code{'heat_map'}: Shows either a heatmap of all indicators (if \code{indicator = NULL})
-or a single indicator by year and region.
-}
+Plots annual trends or heat maps of non-outlier rates for immunization indicators
+at subnational levels.
 }
 \details{
 \itemize{
-\item Outliers are identified using the Hampel X84 method and summarized by indicator.
-\item Region and vaccine plots show \% non-outliers using a diverging gradient scale.
-\item Heatmaps display the raw \verb{*_outlier5std} values directly.
+\item Values are assumed to be percentages of non-outliers (i.e., 100 = no outliers).
+\item \code{"region"} and \code{"indicator"} use bar plots with gradient fill.
+\item \code{"heat_map"} shows indicator values by year and region.
 }
 }
 \examples{
 \dontrun{
-# Region-level summary
 plot(outlier_data, selection_type = "region", indicator = "penta3")
-
-# Heatmap of all indicators
 plot(outlier_data, selection_type = "heat_map")
-
-# Heatmap of one indicator
-plot(outlier_data, selection_type = "heat_map", indicator = "bcg")
 }
 }

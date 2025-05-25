@@ -707,8 +707,8 @@
     },
     {
       "key": "title_district_outliers",
-      "en": "Sub-National Units with Outliers",
-      "fr": "Unités infranationales avec des valeurs aberrantes"
+      "en": "Sub-National Units with Extreme Outliers",
+      "fr": "Unités infranationales avec des valeurs extrêmes"
     },
     {
       "key": "title_district_trends",

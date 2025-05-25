@@ -2,21 +2,27 @@
 % Please edit documentation in R/utils-cd-data.R
 \name{get_admin_columns}
 \alias{get_admin_columns}
-\title{Get Grouping Columns by Administrative Level}
+\title{Determine Grouping Columns for Administrative Levels}
 \usage{
-get_admin_columns(admin_level)
+get_admin_columns(admin_level, region = NULL)
 }
 \arguments{
-\item{admin_level}{A character string specifying the administrative level.
-Must be one of \code{"national"}, \code{"adminlevel_1"}, or \code{"district"}.}
+\item{admin_level}{A string. One of \code{"national"}, \code{"adminlevel_1"}, or \code{"district"}.}
+
+\item{region}{Optional. If provided, must be used only with \code{admin_level = "adminlevel_1"}.}
 }
 \value{
-A character vector of column names to group by, or \code{NULL} if \code{admin_level = "national"}.
+A character vector of column names to use in grouping. Returns:
+\itemize{
+\item \code{NULL} for \code{"national"}
+\item \code{"adminlevel_1"} or \code{c("adminlevel_1", "district")} for \code{"adminlevel_1"}
+\item \code{c("adminlevel_1", "district")} for \code{"district"}
+}
 }
 \description{
-Returns the appropriate column(s) to use for grouping data based on the selected
-administrative level. This utility is commonly used in functions that need to dynamically
-group or filter data by administrative hierarchy.
+Returns the appropriate grouping column(s) based on the specified administrative level.
+If a region is specified and \code{admin_level = "adminlevel_1"}, districts are included to allow
+further disaggregation within that region.
 }
 \examples{
 get_admin_columns("national")
@@ -24,6 +30,9 @@ get_admin_columns("national")
 
 get_admin_columns("adminlevel_1")
 #> "adminlevel_1"
+
+get_admin_columns("adminlevel_1", region = "Eastern")
+#> c("adminlevel_1", "district")
 
 get_admin_columns("district")
 #> c("adminlevel_1", "district")

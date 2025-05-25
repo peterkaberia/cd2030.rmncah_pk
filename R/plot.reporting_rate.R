@@ -67,20 +67,21 @@ plot.cd_average_reporting_rate <- function(x,
     cd_abort(c('x' = '{.fun plot.cd_average_reporting_ratee} does not support national-level data.'))
   }
 
-  admin_level_col <- attr_or_abort(x, 'admin_level_col')
+  region <- attr_or_null(x, 'region')
+  admin_level_col <- get_plot_admin_column(admin_level, region)
 
   labels <- list(
     heat_map = list(
       legend = str_glue('{indicator} Category'),
       x = if (admin_level_col == 'district') 'District' else 'Admin Level 1',
       y = 'Year',
-      title = str_glue('Reporting rates by years and {str_to_title(admin_level_col)}')
+      title = str_glue('Reporting rates by years and {str_to_title(admin_level_col)} in {region}')
     ),
     bar = list(
       legend = 'Reporting Rate',
       x = 'Year',
       y = 'Reporting Rate',
-      title = str_glue('Reporting rates by years and {str_to_title(admin_level_col)}')
+      title = str_glue('Reporting rates by years and {str_to_title(admin_level_col)} in {region}')
     )
   )
 

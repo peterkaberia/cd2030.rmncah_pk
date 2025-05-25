@@ -1,46 +1,38 @@
-#' Plot Outlier Detection Summary
+#' Visualize Summary of Outlier Detection
 #'
-#' This method visualizes outlier detection results for immunization indicators
-#' at subnational levels. The output plot depends on the `selection_type`:
-#' - `'region'`: Plots percent of non-outliers by year and region.
-#' - `'vaccine'`: Plots average non-outlier rate by year across all vaccines.
-#' - `'heat_map'`: Shows either a heatmap of all indicators (if `indicator = NULL`)
-#'   or a single indicator by year and region.
+#' Plots annual trends or heat maps of non-outlier rates for immunization indicators
+#' at subnational levels.
 #'
-#' @param x A `cd_outlier` object containing pre-processed outlier data.
-#' @param selection_type One of `"region"`, `"vaccine"`, or `"heat_map"`:
-#'   - `"region"`: Non-outlier rates for each region over time.
-#'   - `"vaccine"`: Average non-outlier rates for each vaccine over time.
-#'   - `"heat_map"`: Tile plot of indicators or a specific one.
-#' @param indicator Optional. One of the supported indicators (`"opv1"`, `"penta3"`, etc.)
-#'   to visualize in the plot. If `NULL` and `selection_type = "heat_map"`, all indicators
-#'   will be shown.
-#' @param ... Reserved for future use.
+#' @param x A `cd_outlier` object with precomputed outlier flags.
+#' @param selection_type One of `"region"`, `"indicator"`, or `"heat_map"`:
+#'   - `"region"`: Non-outlier rates by year and region.
+#'   - `"indicator"`: Yearly average non-outlier rate per indicator.
+#'   - `"heat_map"`: Year-by-unit heat map of all or selected indicators.
+#' @param indicator Optional. Specific indicator name (e.g., `"penta3"`). Required
+#'    for `"region"` view.
+#' @param ... Not used.
 #'
 #' @details
-#' - Outliers are identified using the Hampel X84 method and summarized by indicator.
-#' - Region and vaccine plots show % non-outliers using a diverging gradient scale.
-#' - Heatmaps display the raw `*_outlier5std` values directly.
+#' - Values are assumed to be percentages of non-outliers (i.e., 100 = no outliers).
+#' - `"region"` and `"indicator"` use bar plots with gradient fill.
+#' - `"heat_map"` shows indicator values by year and region.
 #'
-#' @return A `ggplot` or `plotly` object depending on the selection type.
+#' @return A `ggplot` object.
 #'
 #' @examples
 #' \dontrun{
-#' # Region-level summary
 #' plot(outlier_data, selection_type = "region", indicator = "penta3")
-#'
-#' # Heatmap of all indicators
 #' plot(outlier_data, selection_type = "heat_map")
-#'
-#' # Heatmap of one indicator
-#' plot(outlier_data, selection_type = "heat_map", indicator = "bcg")
 #' }
 #' @export
 plot.cd_outlier <- function(x,
                             selection_type = c("region", "indicator", "heat_map"),
                             indicator = NULL,
                             ...) {
-  admin_level <- attr(x, "admin_level")
+
+  admin_level <- attr_or_abort(x, "admin_level")
+  region <- attr_or_null(x, 'region')
+  admin_level_col <- get_plot_admin_column(admin_level, region)
 
   indicator <- if (is.null(indicator) || indicator == "") {
     NULL
@@ -55,7 +47,7 @@ plot.cd_outlier <- function(x,
       if (is.null(indicator) || indicator == '') return(NULL)
       x %>%
         mutate(
-          category = !!sym(admin_level),
+          category = !!sym(admin_level_col),
           value = !!sym(paste0(indicator, "_outlier5std"))
         )
     } else {
@@ -95,96 +87,96 @@ plot.cd_outlier <- function(x,
   } else if (selection_type == "heat_map") {
     if (is.null(indicator)) {
       x <- x %>%
-        summarise(across(ends_with('_outlier5std'), ~ round(mean(.x, na.rm = TRUE))), .by = all_of(admin_level)) %>%
+        summarise(across(ends_with('_outlier5std'), ~ round(mean(.x, na.rm = TRUE))), .by = all_of(admin_level_col)) %>%
         pivot_longer(cols = ends_with("_outlier5std"), names_to = "indicator") %>%
         mutate(indicator = str_remove(indicator, "_outlier5std"))
 
-      ggplot(x, aes(x = !!sym(admin_level), y = indicator, fill = value)) +
+      ggplot(x, aes(x = !!sym(admin_level_col), y = indicator, fill = value)) +
         geom_tile(color = "white") +
         geom_text(aes(label = value), color = "black", size = 3, vjust = 0.5) +
         scale_fill_gradient2(low = "red3", mid = "orange", high = "forestgreen", midpoint = 80) +
-        labs(x = admin_level, y = "Indicator", fill = "Value") +
+        labs(x = admin_level_col, y = "Indicator", fill = "Value") +
         theme_minimal() +
         theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 9))
     } else {
       column_name <- paste0(indicator, "_outlier5std")
-      ggplot(x, aes(x = !!sym(admin_level), y = factor(year), fill = !!sym(column_name))) +
+      ggplot(x, aes(x = !!sym(admin_level_col), y = factor(year), fill = !!sym(column_name))) +
         geom_tile(color = "white") +
         geom_text(aes(label = !!sym(column_name)), color = "black", size = 3, vjust = 0.5) +
         scale_fill_gradient2(low = "red3", mid = "orange", high = "forestgreen", midpoint = 80) +
-        labs(x = admin_level, y = "Year", fill = paste0(indicator, " Value")) +
+        labs(x = admin_level_col, y = "Year", fill = paste0(indicator, " Value")) +
         theme_minimal() +
         theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 9))
     }
   }
 }
 
-#' Plot Outlier Series for a Single Region and Indicator
+#' Plot Outlier Time Series for a Region
 #'
-#' This method visualizes the time series of a specific indicator for a single
-#' region or district. It highlights outlier points beyond 5 MAD from the median.
+#' Displays a time-series plot of one indicator for a single region or district,
+#' with outlier highlights.
 #'
-#' @param x A `cd_outlier_list` object, typically from `list_outlier_units()`.
-#' @param region Character. Name of the region or district to plot.
+#' @param x A `cd_outlier_list` object from `list_outlier_units()`.
+#' @param region_name The name of the unit to plot.
+#' @param ... Not used.
 #'
 #' @details
-#' - The plot includes:
-#'   - Observed indicator values (green line and dots)
-#'   - Median trend (cyan dashed line)
-#'   - Shaded band for the 5×MAD threshold
-#'   - Red points for flagged outliers
-#'
-#' This is intended for diagnostic plots during indicator validation or quality checks.
+#' - Plots observed values, median trend, and 5×MAD range.
+#' - Flags outliers in red.
 #'
 #' @return A `ggplot` object.
 #'
 #' @examples
 #' \dontrun{
-#' # Visualize outliers for 'pcv1' in Nakuru
-#' dt %>%
-#'   list_outlier_units("pcv1") %>%
-#'   plot(region = "Nakuru")
+#' list_outlier_units(cd_data, "penta1") %>%
+#'   plot(region_name = "Nakuru")
 #' }
-#'
 #' @export
-plot.cd_outlier_list <- function(x, region = NULL) {
-  indicator <- attr(x, "indicator")
-  admin_level <- attr(x, "admin_level")
-  if (is.null(region) || !is_scalar_character(region)) {
-    abort("region must be a string")
+plot.cd_outlier_list <- function(x, region_name = NULL, ...) {
+
+  admin_level <- attr_or_abort(x, "admin_level")
+  indicator <- attr_or_abort(x, "indicator")
+  region <- attr_or_null(x, 'region')
+
+  if (is.null(region_name) || !is_scalar_character(region_name)) {
+    cd_abort(c('x' = "{.arg region} must be a scalar string"))
   }
+
+  admin_level_col <- get_plot_admin_column(admin_level, region)
 
   med <- paste0(indicator, "_med")
   mad <- paste0(indicator, "_mad")
 
+  year = max(x$year)
+
   x %>%
+    filter(!!sym(admin_level_col) == region_name) %>%
     mutate(
       date = ym(paste0(year, month, sep = "-")),
       upper_bound = !!sym(med) + !!sym(mad) * 5,
       lower_bound = !!sym(med) - !!sym(mad) * 5,
       outlier_flag = !!sym(indicator) > upper_bound | !!sym(indicator) < lower_bound
     ) %>%
-    filter(!!sym(admin_level) == region) %>%
     ggplot(aes(date)) +
-    geom_line(aes(y = !!sym(indicator)), colour = "forestgreen") +
-    geom_point(aes(y = !!sym(indicator)), colour = "forestgreen") +
-    geom_line(aes(y = !!sym(med)), colour = "cyan", linetype = "dashed") +
-    geom_ribbon(aes(ymin = lower_bound, ymax = upper_bound), fill = "gray80", alpha = 0.5) +
-    geom_point(
-      data = function(df) filter(df, outlier_flag),
-      aes(y = !!sym(indicator)), color = "red", size = 2
-    ) +
-    labs(
-      title = NULL,
-      y = indicator,
-      x = "Month"
-    ) +
-    scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
-    scale_x_date(date_breaks = "1 months", date_labels = "%Y %b") +
-    cd_plot_theme() +
-    # theme_minimal() +
-    theme(
-      axis.text.x = element_text(angle = 45, hjust = 1),
-      plot.title = element_text(hjust = 0.5, size = 16)
-    )
+      geom_line(aes(y = !!sym(indicator)), colour = "forestgreen") +
+      geom_point(aes(y = !!sym(indicator)), colour = "forestgreen") +
+      geom_line(aes(y = !!sym(med)), colour = "cyan", linetype = "dashed") +
+      geom_ribbon(aes(ymin = lower_bound, ymax = upper_bound), fill = "gray80", alpha = 0.5) +
+      geom_point(
+        data = function(df) filter(df, outlier_flag),
+        aes(y = !!sym(indicator)), color = "red", size = 2
+      ) +
+      labs(
+        title = str_glue('{indicator} trend for {region_name} in {year}'),
+        y = indicator,
+        x = "Month"
+      ) +
+      scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
+      scale_x_date(date_breaks = "1 months", date_labels = "%b") +
+      cd_plot_theme() +
+      # theme_minimal() +
+      theme(
+        axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5, size = 16)
+      )
 }

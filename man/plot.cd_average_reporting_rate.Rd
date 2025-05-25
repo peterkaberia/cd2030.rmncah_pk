@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.reporting_rate.R
 \name{plot.cd_average_reporting_rate}
 \alias{plot.cd_average_reporting_rate}
-\title{Plot Reporting Rates for Subnational Units}
+\title{Plot Sub-National Reporting Rates by Year and Unit}
 \usage{
 \method{plot}{cd_average_reporting_rate}(
   x,
@@ -13,63 +13,70 @@
 )
 }
 \arguments{
-\item{x}{A \code{cd_average_reporting_rate} object. This should be the output of a reporting rate
-calculation function containing subnational reporting rate data.}
+\item{x}{A \code{cd_average_reporting_rate} object, typically the output from
+\code{calculate_average_reporting_rate()}. Must contain subnational data.}
 
-\item{plot_type}{A character string specifying the plot type. Options:
+\item{plot_type}{Either \code{"heat_map"} or \code{"bar"}:
 \itemize{
-\item \code{'heat_map'}: Creates a tile map of reporting rates across years and units.
-\item \code{'bar'}: Creates bar plots faceted by region/district showing year-wise trends.
+\item \code{"heat_map"}: Shows reporting rates using color-coded tiles by year and unit.
+\item \code{"bar"}: Displays reporting rates as bars, grouped by year and faceted by unit.
 }}
 
-\item{indicator}{A character. The indicator to visualize. Must be one of:
+\item{indicator}{One of the following:
 \itemize{
-\item \code{'anc_rr'}: Reporting rate for antenatal care visits
-\item \code{'idelv_rr'}: Reporting rate for institutional deliveries
-\item \code{'vacc_rr'}: Reporting rate for vaccination services
+\item \code{"anc_rr"}: Antenatal care
+\item \code{"idelv_rr"}: Institutional deliveries
+\item \code{"vacc_rr"}: Vaccination
+\item \code{"opd_rr"}: Outpatient visits
+\item \code{"ipd_rr"}: Inpatient admissions
 }}
 
-\item{threshold}{Numeric. The threshold for categorizing high, medium, and low reporting
-(default = 90). Used in \code{heat_map} mode only.}
+\item{threshold}{Numeric value (default = 90). Used only in \code{"heat_map"} mode to define
+the boundary for high reporting rates.}
 
-\item{...}{Additional arguments passed to internal methods (currently unused).}
+\item{...}{Reserved for future use.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
-This S3 method visualizes reporting rates for ANC, delivery, or vaccination indicators
-at subnational administrative levels using either heat maps or bar plots.
+Visualizes reporting rates for selected health service indicators at sub-national levels,
+using heat maps or bar plots. Intended for use with outputs from
+\code{calculate_average_reporting_rate()} at \code{"adminlevel_1"} or \code{"district"} level.
 }
 \details{
-The plot adapts based on:
+Only subnational objects are accepted. If the data was computed at \code{"adminlevel_1"} with a
+\code{region} argument, the object is automatically treated as \code{"district"} level and plotted
+by district name.
+
+\strong{Heat Map Mode}:
 \itemize{
-\item \code{plot_type = 'heat_map'}:
+\item Each tile represents a reporting rate for a unit and year.
+\item Colors:
 \itemize{
-\item Classifies reporting rates into three bands:
-\itemize{
-\item Red: \verb{< 70}
-\item Orange: \verb{>= 70 & < threshold}
 \item Green: \verb{>= threshold}
+\item Orange: \verb{70 <= value < threshold}
+\item Red: \verb{< 70}
 }
-\item Labels are overlaid on each tile.
-}
-\item \code{plot_type = 'bar'}:
-\itemize{
-\item Displays reporting rates as filled bars, faceted by district or adminlevel_1.
-\item Colors are scaled using a gradient from red to green.
-}
+\item Labels display the actual percentage.
 }
 
-This function only supports subnational data. National-level objects will trigger an error.
+\strong{Bar Mode}:
+\itemize{
+\item Bars show values per year.
+\item Units (regions or districts) appear as facets.
+\item Color gradient shows low to high reporting.
+}
 }
 \examples{
 \dontrun{
-# Example: Plot heat map of vaccination reporting rates
-plot(cd_reporting_rate_obj, plot_type = 'heat_map', indicator = 'vacc_rr')
+# Heat map for vaccination at district level
+x <- calculate_average_reporting_rate(data, admin_level = "district")
+plot(x, plot_type = "heat_map", indicator = "vacc_rr")
 
-# Example: Plot bar charts for institutional delivery reporting
-plot(cd_reporting_rate_obj, plot_type = 'bar', indicator = 'idelv_rr')
+# Bar chart by district in selected region
+x <- calculate_average_reporting_rate(data, admin_level = "adminlevel_1", region = "Nairobi")
+plot(x, plot_type = "bar", indicator = "idelv_rr")
 }
 
 }

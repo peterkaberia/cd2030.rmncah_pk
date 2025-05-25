@@ -4,9 +4,10 @@ regionInputUI <- function(id, i18n) {
   uiOutput(ns('region_ui'))
 }
 
-regionInputServer <- function(id, cache, admin_level, i18n, allow_select_all = FALSE, show_district = TRUE, show_region = TRUE) {
+regionInputServer <- function(id, cache, admin_level, i18n, allow_select_all = FALSE, show_district = TRUE, show_region = TRUE, selected_region = reactive(NULL)) {
   stopifnot(is.reactive(cache))
   stopifnot(is.reactive(admin_level))
+  stopifnot(is.reactive(selected_region))
 
   moduleServer(
     id = id,
@@ -73,6 +74,7 @@ regionInputServer <- function(id, cache, admin_level, i18n, allow_select_all = F
 
         # Prepare data with value, label, and optional optgroup
         region_data <- data() %>%
+          filter(if (!is.null(selected_region())) adminlevel_1 == selected_region() else TRUE) %>%
           distinct(!!sym(admin_col), .keep_all = TRUE) %>%
           arrange(!!sym(admin_col)) %>%
           mutate(
