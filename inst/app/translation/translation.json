@@ -521,6 +521,11 @@
       "fr": "Erreur : un pays doit être sélectionné"
     },
     {
+      "key": "opt_select_all",
+      "en": "Select All",
+      "fr": "Tout sélectionner"
+    },
+    {
       "key": "error_username",
       "en": "Error: Username must be provided",
       "fr": "Erreur : le nom d'utilisateur doit être fourni"
@@ -634,6 +639,11 @@
       "key": "title_national_reporting_rate",
       "en": "National Reporting Rate",
       "fr": "Taux de notification national"
+    },
+    {
+      "key": "title_region_reporting_rate",
+      "en": "District Reporting Rate in {region_name}",
+      "fr": "Taux de notification des districts dans {region_name}"
     },
     {
       "key": "title_subnational_low_reporting",

@@ -1,19 +1,46 @@
 regionInputUI <- function(id, i18n) {
   ns <- NS(id)
-  selectizeInput(
-    ns('region'),
-    label = i18n$t('opt_admin_level_1'),
-    choices = NULL
-  )
+
+  uiOutput(ns('region_ui'))
 }
 
-regionInputServer <- function(id, cache, admin_level, i18n, selected_region = NULL) {
+regionInputServer <- function(id, cache, admin_level, i18n, allow_select_all = FALSE, show_district = TRUE, show_region = TRUE) {
   stopifnot(is.reactive(cache))
   stopifnot(is.reactive(admin_level))
 
   moduleServer(
     id = id,
     module = function(input, output, session) {
+      ns <- session$ns
+
+      created <- reactiveVal(FALSE)
+
+      show_select <- reactive({
+        req(admin_level())
+        switch (
+          admin_level(),
+          national = FALSE,
+          adminlevel_1 = show_region,
+          district = show_district,
+          TRUE
+        )
+      })
+
+      output$region_ui <- renderUI({
+        req(admin_level())
+        if (show_select()) {
+          select_input <- selectizeInput(
+            ns('region'),
+            label = i18n$t('opt_admin_level_1'),
+            choices = NULL
+          )
+          created(TRUE)
+          return(select_input)
+        } else {
+          created(FALSE)
+          return(NULL)
+        }
+      })
 
       data <- reactive({
         req(cache())
@@ -21,15 +48,22 @@ regionInputServer <- function(id, cache, admin_level, i18n, selected_region = NU
       })
 
       region <- reactive({
-        region <- if (admin_level() == 'national') {
+       if (
+          admin_level() == 'national' ||
+          !isTruthy(input$region) ||
+          (allow_select_all && input$region == '_all_') ||
+          (admin_level() == 'adminlevel_1' && !show_region) ||
+          (admin_level() == 'district' && !show_district)
+        ) {
           NULL
-        } else {
+        }
+        else {
           input$region
         }
       })
 
-      observe({
-        req(data(), admin_level() %in% c('adminlevel_1', 'district'))
+      observeEvent(c(created(), admin_level()), {
+        req(data(), created(), admin_level() %in% c('adminlevel_1', 'district'))
 
         admin_col <- admin_level()
 
@@ -47,6 +81,17 @@ regionInputServer <- function(id, cache, admin_level, i18n, selected_region = NU
             optgroup = if (use_optgroup) adminlevel_1 else NA
           ) %>%
           select(value, label, optgroup)
+
+        if (allow_select_all) {
+          region_data <- bind_rows(
+            tibble(
+              value = '_all_',
+              label = i18n$t('opt_select_all'),
+              optgroup = if (use_optgroup) NA else NULL
+            ),
+            region_data
+          )
+        }
 
         # Convert to list of lists (rows)
         options_list <- region_data %>% pmap(~ list(...))

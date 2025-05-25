@@ -10,32 +10,43 @@ reportingRateUI <- function(id, i18n) {
         solidHeader = TRUE,
         width = 12,
         fluidRow(
-          column(3, numericInput(ns('threshold'), label = i18n$t("title_performance_threshold"), value = 90)),
-          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
           # TODO: to include translation
           column(3, selectInput(ns('indicator'),
-                                   label = i18n$t("title_indicator"),
-                                   choices = c('ANC' = 'anc_rr',
-                                               'Institutional Delivery' = 'idelv_rr',
-                                               'Vaccination' = 'vacc_rr',
-                                               'OPD' = 'opd_rr',
-                                               'IPD' = 'ipd_rr')))
+                                label = i18n$t("title_indicator"),
+                                choices = c('ANC' = 'anc_rr',
+                                            'Institutional Delivery' = 'idelv_rr',
+                                            'Vaccination' = 'vacc_rr',
+                                            'OPD' = 'opd_rr',
+                                            'IPD' = 'ipd_rr'))),
+          column(3, numericInput(ns('threshold'), label = i18n$t("title_performance_threshold"), value = 90)),
+          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
+          column(3, regionInputUI(ns('region'), i18n))
         )
       ),
       tabBox(
         title = i18n$t("title_subnational_reporting_rate"),
         width = 12,
 
-        tabPanel(title = i18n$t("title_heat_map"), fluidRow(
-          column(12, withSpinner(plotlyOutput(ns('district_missing_heatmap'))))
-        )),
+        tabPanel(
+          title = i18n$t("title_heat_map"),
+          fluidRow(
+            column(12, withSpinner(plotlyOutput(ns('district_missing_heatmap')))),
+            column(4, downloadButtonUI(ns('download_heatmap_plot'))),
+            column(4, downloadButtonUI(ns('download_subnational_data_hm')))
+          )
+        ),
 
-        tabPanel(title = i18n$t("title_bar_graph"), fluidRow(
-          column(12, plotCustomOutput(ns('district_missing_bar')))
-        ))
+        tabPanel(
+          title = i18n$t("title_bar_graph"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('district_missing_bar'))),
+            column(4, downloadButtonUI(ns('download_bar_plot'))),
+            column(4, downloadButtonUI(ns('download_subnational_data_bg')))
+          )
+        )
       ),
       box(
-        title = i18n$t("title_national_reporting_rate"),
+        title = uiOutput(ns('district_rr_title')),
         status = 'primary',
         collapsible = TRUE,
         width = 6,
@@ -67,9 +78,11 @@ reportingRateServer <- function(id, cache, i18n) {
   moduleServer(
     id = id,
     module = function(input, output, session) {
+      ns <- session$ns
 
       state <- reactiveValues(loaded = FALSE)
       admin_level <- adminLevelInputServer('admin_level')
+      region <- regionInputServer('region', cache, admin_level, i18n, allow_select_all = TRUE, show_district = FALSE)
 
       data <- reactive({
         req(cache())
@@ -81,18 +94,11 @@ reportingRateServer <- function(id, cache, i18n) {
         cache()$performance_threshold
       })
 
-      national_rr <- reactive({
-        req(data())
-
-        data() %>%
-          calculate_average_reporting_rate()
-      })
-
       subnational_rr <- reactive({
         req(data(), input$indicator, admin_level(), threshold())
 
         data() %>%
-          calculate_average_reporting_rate(admin_level()) %>%
+          calculate_average_reporting_rate(admin_level(), region = region()) %>%
           select(any_of(c('adminlevel_1', 'district', 'year', input$indicator)))
       })
 
@@ -100,7 +106,7 @@ reportingRateServer <- function(id, cache, i18n) {
         req(data(), threshold())
 
         data() %>%
-          calculate_district_reporting_rate(threshold())
+          calculate_district_reporting_rate(threshold(), region())
       })
 
       district_low_rr <- reactive({
@@ -135,6 +141,15 @@ reportingRateServer <- function(id, cache, i18n) {
           pull(year)
 
         updateSelectizeInput(session, 'year', choices = years)
+      })
+
+      output$district_rr_title <- renderUI({
+        if (is.null(region())) {
+          i18n$t("title_national_reporting_rate")
+        } else {
+          region_name <- region()
+          str_glue(i18n$t('title_region_reporting_rate'))
+        }
       })
 
       output$district_missing_heatmap <- renderPlotly({
@@ -182,6 +197,62 @@ reportingRateServer <- function(id, cache, i18n) {
       })
 
       downloadPlot(
+        id = 'download_heatmap_plot',
+        filename = reactive('heatmap_plot'),
+        data = subnational_rr,
+        i18n = i18n,
+        plot_function = function() {
+          plot(subnational_rr(),
+               plot_type = 'heat_map',
+               indicator = input$indicator,
+               threshold = threshold())
+        }
+      )
+
+      downloadPlot(
+        id = 'download_bar_plot',
+        filename = reactive('bar_plot'),
+        data = subnational_rr,
+        i18n = i18n,
+        plot_function = function() {
+          plot(subnational_rr(),
+               plot_type = 'bar',
+               indicator = input$indicator,
+               threshold = threshold())
+        }
+      )
+
+      downloadExcel(
+        id = 'download_subnational_data_hm',
+        filename = reactive('subnational_reporting_rate'),
+        data = subnational_rr,
+        i18n = i18n,
+        excel_write_function = function(wb) {
+          low_rr_national <- subnational_rr()
+
+          sheet_name_1 <- i18n$t("title_average_rr")
+          addWorksheet(wb, sheet_name_1)
+          writeData(wb, sheet = sheet_name_1, x = i18n$t("table_reporting_rate"), startCol = 1, startRow = 1)
+          writeData(wb, sheet = sheet_name_1, x = low_rr_national, startCol = 1, startRow = 3)
+        }
+      )
+
+      downloadExcel(
+        id = 'download_subnational_data_bg',
+        filename = reactive('subnational_reporting_rate'),
+        data = subnational_rr,
+        i18n = i18n,
+        excel_write_function = function(wb) {
+          low_rr_national <- subnational_rr()
+
+          sheet_name_1 <- i18n$t("title_average_rr")
+          addWorksheet(wb, sheet_name_1)
+          writeData(wb, sheet = sheet_name_1, x = i18n$t("table_reporting_rate"), startCol = 1, startRow = 1)
+          writeData(wb, sheet = sheet_name_1, x = low_rr_national, startCol = 1, startRow = 3)
+        }
+      )
+
+      downloadPlot(
         id = 'download_plot',
         filename = reactive('district_rr_plot'),
         data = district_rr,
@@ -194,16 +265,10 @@ reportingRateServer <- function(id, cache, i18n) {
       downloadExcel(
         id = 'download_data',
         filename = reactive('checks_reporting_rate'),
-        data = national_rr,
+        data = district_rr,
         i18n = i18n,
         excel_write_function = function(wb) {
-          low_rr_national <- national_rr()
           district_rr_national <- district_rr()
-
-          sheet_name_1 <- i18n$t("title_average_rr")
-          addWorksheet(wb, sheet_name_1)
-          writeData(wb, sheet = sheet_name_1, x = i18n$t("table_reporting_rate"), startCol = 1, startRow = 1)
-          writeData(wb, sheet = sheet_name_1, x = low_rr_national, startCol = 1, startRow = 3)
 
           # Check if sheet exists; if not, add it
           sheet_name_2 <- str_glue(i18n$t("sheet_reporting_district"))

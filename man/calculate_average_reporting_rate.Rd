@@ -6,32 +6,30 @@
 \usage{
 calculate_average_reporting_rate(
   .data,
-  admin_level = c("national", "adminlevel_1", "district")
+  admin_level = c("national", "adminlevel_1", "district"),
+  region = NULL
 )
 }
 \arguments{
 \item{.data}{A tibble of class \code{cd_data}.}
 
-\item{admin_level}{Character. The administrative level at which to calculate
-reporting rates. Must be one of \code{"national"}, \code{"adminlevel_1"} or \code{"district"}.}
+\item{admin_level}{Character. One of \code{"national"}, \code{"adminlevel_1"}, or \code{"district"}.}
+
+\item{region}{Optional. Name of a specific region (\code{adminlevel_1}) to filter results.
+Only used when \code{admin_level = "adminlevel_1"}.}
 }
 \value{
-A tibble of class \code{cd_average_reporting_rate}, containing:
-\itemize{
-\item One row per grouping (\code{year}, \code{adminlevel_1}, \code{district} as applicable).
-\item One column per reporting indicator.
-\item \code{mean_rr}: average of all indicators per group.
-}
+A tibble of class \code{cd_average_reporting_rate}.
 }
 \description{
-\code{calculate_average_reporting_rate()} computes the average reporting rate for each indicator
-across available years, disaggregated by the specified administrative level. It also
-calculates an overall mean reporting rate per group.
+\code{calculate_average_reporting_rate()} computes the average reporting rate for
+each indicator by year and administrative level. For \code{adminlevel_1}, you can
+limit the results to a single region.
 }
 \examples{
 \dontrun{
-# Regional summary
 calculate_average_reporting_rate(data, admin_level = "adminlevel_1")
+calculate_average_reporting_rate(data, admin_level = "adminlevel_1", region = "Nairobi")
 }
 
 }
