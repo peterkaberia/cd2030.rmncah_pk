@@ -2,51 +2,47 @@
 % Please edit documentation in R/1a_checks_outlier.R
 \name{list_outlier_units}
 \alias{list_outlier_units}
-\title{Identify Outlier Units by Month for a Given Indicator}
+\title{Identify Monthly Outliers for a Single Indicator}
 \usage{
 list_outlier_units(
   .data,
   indicator,
-  admin_level = c("adminlevel_1", "district")
+  admin_level = c("adminlevel_1", "district"),
+  region = NULL
 )
 }
 \arguments{
-\item{.data}{A \code{cd_data} object containing monthly health indicator data.}
+\item{.data}{A \code{cd_data} object with monthly data.}
 
-\item{indicator}{Character. The name of a single indicator to evaluate for outliers.}
+\item{indicator}{A single indicator name to assess.}
 
-\item{admin_level}{Character. The administrative level to summarize by.
-Options are \code{'adminlevel_1'} or \code{'district'}.}
+\item{admin_level}{\code{'adminlevel_1'} or \code{'district'}.}
+
+\item{region}{Optional. Filter results to a specific \code{adminlevel_1}.}
 }
 \value{
-A \code{cd_outlier_list} object (a tibble) with the following columns:
+A \code{cd_outlier_list} tibble with:
 \itemize{
-\item Grouping columns (\code{adminlevel_1}, \code{district}, \code{year}, \code{month})
-\item The selected indicator
+\item Grouping columns
+\item Raw values for \code{indicator}
 \item Median (\verb{<indicator>_med})
 \item MAD (\verb{<indicator>_mad})
 \item Outlier flag (\verb{<indicator>_outlier5std})
 }
 }
 \description{
-This function summarizes a single immunization indicator by month and administrative level,
-then applies a Hampel filter (5 × MAD) to flag extreme outliers. It returns a tidy object
-suitable for plotting or time-series review at subnational levels.
+Flags extreme monthly values for a given immunization indicator using the Hampel method.
 }
 \details{
 \itemize{
-\item Computes monthly means of the specified indicator by administrative unit and time.
-\item Calculates median and MAD (Median Absolute Deviation) for outlier detection.
-\item Flags outliers when values exceed ±5×MAD from the median.
+\item Aggregates by \code{year}, \code{month}, and administrative unit.
+\item Computes median and MAD (Median Absolute Deviation).
+\item Flags outliers when values are ±5×MAD from median.
 }
 }
 \examples{
 \dontrun{
-# Detect monthly outliers in Penta1 at district level
-outliers <- list_outlier_units(cd_data, indicator = 'penta1', admin_level = 'district')
-
-# Plot flagged points in a specific region
-plot(outliers, region = 'Nakuru')
+list_outlier_units(cd_data, indicator = 'penta1', admin_level = 'district')
 }
 
 }

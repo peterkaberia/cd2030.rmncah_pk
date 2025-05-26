@@ -521,6 +521,11 @@
       "fr": "Erreur : un pays doit être sélectionné"
     },
     {
+      "key": "opt_select_all",
+      "en": "Select All",
+      "fr": "Tout sélectionner"
+    },
+    {
       "key": "error_username",
       "en": "Error: Username must be provided",
       "fr": "Erreur : le nom d'utilisateur doit être fourni"
@@ -569,6 +574,11 @@
       "key": "title_to",
       "en": " to ",
       "fr": " à "
+    },
+    {
+      "key": "title_overall_score_options",
+      "en": "Overall Score Options",
+      "fr": "Options de score global"
     },
     {
       "key": "title_reporting_rate_options",
@@ -636,6 +646,11 @@
       "fr": "Taux de notification national"
     },
     {
+      "key": "title_region_reporting_rate",
+      "en": "District Reporting Rate in {region_name}",
+      "fr": "Taux de notification des districts dans {region_name}"
+    },
+    {
       "key": "title_subnational_low_reporting",
       "en": "Sub-National Units with Low Reporting",
       "fr": "Unités infranationales à faible notification"
@@ -697,8 +712,8 @@
     },
     {
       "key": "title_district_outliers",
-      "en": "Sub-National Units with Outliers",
-      "fr": "Unités infranationales avec des valeurs aberrantes"
+      "en": "Sub-National Units with Extreme Outliers",
+      "fr": "Unités infranationales avec des valeurs extrêmes"
     },
     {
       "key": "title_district_trends",

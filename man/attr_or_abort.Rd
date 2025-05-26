@@ -2,19 +2,29 @@
 % Please edit documentation in R/utils-cd-data.R
 \name{attr_or_abort}
 \alias{attr_or_abort}
-\title{Retrieve Attribute or Abort}
+\title{Retrieve an Attribute or Abort with Error}
 \usage{
 attr_or_abort(.data, attr_name)
 }
 \arguments{
-\item{.data}{An object}
+\item{.data}{An object to inspect.}
 
-\item{attr_name}{The name of the attribute to retrieve}
+\item{attr_name}{A string. The name of the attribute to retrieve.}
 }
 \value{
-The attribute value
+The value of the specified attribute.
 }
 \description{
-Safely retrieves an attribute from an object or aborts with an error.
+Safely retrieves a named attribute from an object. If the attribute is missing,
+raises an error with a clear message. Intended for internal use to enforce
+required metadata on structured objects.
+}
+\examples{
+obj <- structure(list(a = 1), attr = list(my_attr = "value"))
+attr_or_abort(obj, "my_attr")
+#> "value"
+
+# attr_or_abort(obj, "missing") would throw an error
+
 }
 \keyword{internal}

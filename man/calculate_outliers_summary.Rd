@@ -2,52 +2,52 @@
 % Please edit documentation in R/1a_checks_outlier.R
 \name{calculate_outliers_summary}
 \alias{calculate_outliers_summary}
-\title{Calculate Outliers Summary by Year}
+\title{Annual Summary of Outlier-Free Reporting Rates}
 \usage{
 calculate_outliers_summary(
   .data,
-  admin_level = c("national", "adminlevel_1", "district")
+  admin_level = c("national", "adminlevel_1", "district"),
+  region = NULL
 )
 }
 \arguments{
-\item{.data}{A data frame with district-level health indicators. This data
-frame must include a \code{district} and \code{year} column, along with indicator columns
-for calculating outliers. Outlier flags should be computed prior and named
-with the suffix \verb{_outlier5std} (e.g., \code{anc1_outlier5std} where 1 indicates an
-outlier and 0 indicates non-outliers).}
+\item{.data}{A \code{cd_data} object with \verb{_outlier5std} flag columns (0 = valid, 1 = outlier).}
 
-\item{admin_level}{Character. The administrative level at which to calculate
-reporting rates. Must be one of \code{'national'}, \code{'adminlevel_1'} or \code{'district'}.}
-}
-\value{
-A \code{cd_outliers_summary} object (tibble) with:
+\item{admin_level}{Character. Aggregation level. One of:
 \itemize{
-\item Each indicator's non-outlier percentage (\verb{_outlier5std} columns).
-\item Overall non-outlier summaries across all indicators, vaccination indicators, and tracers.
-}
+\item \code{"national"}
+\item \code{"adminlevel_1"}
+\item \code{"district"}
+}}
+
+\item{region}{Optional. Restrict to a specific region (only when \code{admin_level = "adminlevel_1"}).}
 }
 \description{
-\code{calculate_outliers_summary} provides an annual overview of data quality by
-summarizing extreme outliers for health indicators. Outliers are identified
-based on robust statistical metrics (Median Absolute Deviation, MAD) and
-flagged when they deviate significantly (beyond five MADs from the median).
+\code{calculate_outliers_summary} computes yearly percentages of non-outlier values
+for each health indicator, based on precomputed 5-MAD outlier flags. Summarizes
+data quality by administrative level and year.
 }
 \details{
+Outliers are defined using a Hampel filter with a 5-MAD threshold.
+
+This function:
 \itemize{
-\item \strong{Outlier Detection}: Outliers are calculated based on Hampel’s robust X84
-method, using the Median Absolute Deviation (MAD). This method identifies values
-that exceed five times the MAD from the median, reducing the influence of extreme
-values on the analysis.
-\item \strong{Annual Non-Outlier Rate}: For each indicator and each year, the function calculates the
-percentage of non-outliers. Additionally, the function aggregates the non-outlier
-rates across all indicators, as well as vaccination-only and tracer-only indicators,
-providing an overall data quality summary.
+\item Aggregates outlier flags by year and administrative level
+\item Computes the share of valid (non-outlier) values per indicator
+\item Adds overall summary metrics:
+\itemize{
+\item \code{mean_out_all}: average non-outlier rate across all indicators
+\item \code{mean_out_four}: average across a subset of key indicators (excluding IPD)
 }
+}
+
+Values are expressed as percentages (0–100).
+
+@return A tibble of class \code{cd_outlier}.
 }
 \examples{
 \dontrun{
-# Check for extreme outliers in indicator data
-calculate_outliers_summary(data)
+  calculate_outliers_summary(data, admin_level = "district")
 }
 
 }

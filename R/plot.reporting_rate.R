@@ -1,49 +1,57 @@
-#' Plot Reporting Rates for Subnational Units
+#' Plot Sub-National Reporting Rates by Year and Unit
 #'
-#' This S3 method visualizes reporting rates for ANC, delivery, or vaccination indicators
-#' at subnational administrative levels using either heat maps or bar plots.
+#' Visualizes reporting rates for selected health service indicators at sub-national levels,
+#' using heat maps or bar plots. Intended for use with outputs from
+#' `calculate_average_reporting_rate()` at `"adminlevel_1"` or `"district"` level.
 #'
-#' @param x A `cd_average_reporting_rate` object. This should be the output of a reporting rate
-#'   calculation function containing subnational reporting rate data.
-#' @param plot_type A character string specifying the plot type. Options:
-#'   - `'heat_map'`: Creates a tile map of reporting rates across years and units.
-#'   - `'bar'`: Creates bar plots faceted by region/district showing year-wise trends.
-#' @param indicator A character. The indicator to visualize. Must be one of:
-#'   - `'anc_rr'`: Reporting rate for antenatal care visits
-#'   - `'idelv_rr'`: Reporting rate for institutional deliveries
-#'   - `'vacc_rr'`: Reporting rate for vaccination services
-#' @param threshold Numeric. The threshold for categorizing high, medium, and low reporting
-#'   (default = 90). Used in `heat_map` mode only.
-#' @param ... Additional arguments passed to internal methods (currently unused).
+#' @param x A `cd_average_reporting_rate` object, typically the output from
+#'   `calculate_average_reporting_rate()`. Must contain subnational data.
+#' @param plot_type Either `"heat_map"` or `"bar"`:
+#'   - `"heat_map"`: Shows reporting rates using color-coded tiles by year and unit.
+#'   - `"bar"`: Displays reporting rates as bars, grouped by year and faceted by unit.
+#' @param indicator One of the following:
+#'   - `"anc_rr"`: Antenatal care
+#'   - `"idelv_rr"`: Institutional deliveries
+#'   - `"vacc_rr"`: Vaccination
+#'   - `"opd_rr"`: Outpatient visits
+#'   - `"ipd_rr"`: Inpatient admissions
+#' @param threshold Numeric value (default = 90). Used only in `"heat_map"` mode to define
+#'   the boundary for high reporting rates.
+#' @param ... Reserved for future use.
 #'
 #' @details
-#' The plot adapts based on:
+#' Only subnational objects are accepted. If the data was computed at `"adminlevel_1"` with a
+#' `region` argument, the object is automatically treated as `"district"` level and plotted
+#' by district name.
 #'
-#' - `plot_type = 'heat_map'`:
-#'   - Classifies reporting rates into three bands:
-#'     - Red: `< 70`
-#'     - Orange: `>= 70 & < threshold`
-#'     - Green: `>= threshold`
-#'   - Labels are overlaid on each tile.
+#' **Heat Map Mode**:
+#' - Each tile represents a reporting rate for a unit and year.
+#' - Colors:
+#'   - Green: `>= threshold`
+#'   - Orange: `70 <= value < threshold`
+#'   - Red: `< 70`
+#' - Labels display the actual percentage.
 #'
-#' - `plot_type = 'bar'`:
-#'   - Displays reporting rates as filled bars, faceted by district or adminlevel_1.
-#'   - Colors are scaled using a gradient from red to green.
-#'
-#' This function only supports subnational data. National-level objects will trigger an error.
+#' **Bar Mode**:
+#' - Bars show values per year.
+#' - Units (regions or districts) appear as facets.
+#' - Color gradient shows low to high reporting.
 #'
 #' @return A `ggplot` object.
 #'
 #' @examples
 #' \dontrun{
-#' # Example: Plot heat map of vaccination reporting rates
-#' plot(cd_reporting_rate_obj, plot_type = 'heat_map', indicator = 'vacc_rr')
+#' # Heat map for vaccination at district level
+#' x <- calculate_average_reporting_rate(data, admin_level = "district")
+#' plot(x, plot_type = "heat_map", indicator = "vacc_rr")
 #'
-#' # Example: Plot bar charts for institutional delivery reporting
-#' plot(cd_reporting_rate_obj, plot_type = 'bar', indicator = 'idelv_rr')
+#' # Bar chart by district in selected region
+#' x <- calculate_average_reporting_rate(data, admin_level = "adminlevel_1", region = "Nairobi")
+#' plot(x, plot_type = "bar", indicator = "idelv_rr")
 #' }
 #'
 #' @export
+
 plot.cd_average_reporting_rate <- function(x,
                                            plot_type = c('heat_map', 'bar'),
                                            indicator = c('anc_rr', 'idelv_rr', 'vacc_rr', 'opd_rr', 'ipd_rr'),
@@ -53,11 +61,31 @@ plot.cd_average_reporting_rate <- function(x,
 
   plot_type <- arg_match(plot_type)
   indicator <- arg_match(indicator)
-  admin_level <- attr(x, 'admin_level')
 
+  admin_level <- attr_or_abort(x, 'admin_level')
   if (admin_level == 'national') {
     cd_abort(c('x' = '{.fun plot.cd_average_reporting_ratee} does not support national-level data.'))
   }
+
+  region <- attr_or_null(x, 'region')
+  admin_level_col <- get_plot_admin_column(admin_level, region)
+
+  labels <- list(
+    heat_map = list(
+      legend = str_glue('{indicator} Category'),
+      x = if (admin_level_col == 'district') 'District' else 'Admin Level 1',
+      y = 'Year',
+      title = str_glue('Reporting rates by years and {str_to_title(admin_level_col)} in {region}')
+    ),
+    bar = list(
+      legend = 'Reporting Rate',
+      x = 'Year',
+      y = 'Reporting Rate',
+      title = str_glue('Reporting rates by years and {str_to_title(admin_level_col)} in {region}')
+    )
+  )
+
+  label <- labels[[plot_type]]
 
   all_years <- sort(unique(x$year))
 
@@ -77,15 +105,15 @@ plot.cd_average_reporting_rate <- function(x,
         )
       )
 
-    ggplot(dt, aes(x = !!sym(admin_level), y = year, fill = color_category)) +
+    ggplot(dt, aes(x = !!sym(admin_level_col), y = year, fill = color_category)) +
       geom_tile(color = 'white') +
       scale_fill_manual(
         values = set_names(c('forestgreen', 'orange', 'red'), c(greater, mid, low)),
-        name = str_glue('{indicator} Category'),
+        name = label$legend,
         drop = FALSE
       ) +
       geom_text(aes(label = !!sym(indicator)), color = 'black', size = 3, vjust = 0.5) +
-      labs(title = NULL, x = if (admin_level == 'district') 'District' else 'Admin Level 1', y = 'Year', fill = 'Value') +
+      labs(title = label$title, x = label$x, y = label$y, fill = 'Value') +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, size = 9, hjust = 1))
   } else {
@@ -103,19 +131,19 @@ plot.cd_average_reporting_rate <- function(x,
 
     ggplot(x, aes(year, !!sym(indicator), fill = !!sym(indicator))) +
       geom_col() +
-      facet_wrap(as.formula(paste0('~', admin_level))) +
+      facet_wrap(as.formula(paste0('~', admin_level_col))) +
       scale_x_continuous(
         breaks = all_years,
         expand = expansion(mult = c(0, 0.05))
       ) +
-      labs(title = paste0('Reporting rates by years and ', admin_level), x = 'Year', y = 'Reporting Rate') +
+      labs(title = label$title, x = label$x, y = label$y) +
       scale_fill_gradientn(
         colors = color_vals,
         values = scales::rescale(breaks_vals, to = c(0, 1)), # Ensures precise cutoffs
         breaks = scales::pretty_breaks(n = 5)(c(low_value, 100)), # Uniformly spread breaks
         labels = scales::pretty_breaks(n = 5)(c(low_value, 100)),
         limits = c(low_value, 100), # Ensure full scale is covered
-        name = 'Reporting Rate'
+        name = label$legend
       ) +
       theme(
         panel.background = element_blank(),
@@ -186,7 +214,7 @@ plot.cd_district_reporting_rate <- function(x, ...) {
 
   # Invert the reporting rates and reshape for plotting
   x %>%
-    select(-low_mean_rr) %>%
+    select(-starts_with('low_mean_')) %>%
     mutate(across(starts_with('low_'), ~ 100 - ., .names = 'inv_{col}')) %>%
     pivot_longer(cols = starts_with('inv_low_'), names_to = 'indicator') %>%
     # Define indicator names and corresponding titles
@@ -203,25 +231,25 @@ plot.cd_district_reporting_rate <- function(x, ...) {
     ) %>%
     # Create the plot with facet_wrap
     ggplot(aes(x = as.factor(year), y = value, fill = as.factor(year))) +
-    geom_col(position = 'dodge') +
-    geom_text(aes(label = round(value, 0)), position = position_dodge(width = 0.9), vjust = -1.5, color = 'black', size = 3) +
-    facet_wrap(~title, scales = 'free_y', ncol = 3) +
-    labs(
-      title = paste('Figure 1a - Percentage of districts with low reporting rate (<', threshold, '%) by service and by year'),
-      x = NULL, y = '%',
-      caption = paste('Low reporting rate (<', threshold, '%)')
-    ) +
-    # scale_x_continuous(labels = scales::label_number()) +
-    scale_y_continuous(
-      limits = c(0, 100),
-      breaks = scales::pretty_breaks(n = 6),
-      expand = c(0, 0)
-    ) +
-    cd_plot_theme() +
-    theme(
-      panel.grid.major.y = element_line(colour = 'gray90', size = 0.5),
-      axis.text.x = element_blank(),
-      axis.ticks = element_blank()
-    ) +
-    scale_fill_manual(values = colors)
+      geom_col(position = 'dodge') +
+      geom_text(aes(label = round(value, 0)), position = position_dodge(width = 0.9), vjust = -1.5, color = 'black', size = 3) +
+      facet_wrap(~title, scales = 'free_y', ncol = 3) +
+      labs(
+        title = paste('Figure 1a - Percentage of districts with low reporting rate (<', threshold, '%) by service and by year'),
+        x = NULL, y = '%',
+        caption = paste('Low reporting rate (<', threshold, '%)')
+      ) +
+      # scale_x_continuous(labels = scales::label_number()) +
+      scale_y_continuous(
+        limits = c(0, 100),
+        breaks = scales::pretty_breaks(n = 6),
+        expand = c(0, 0)
+      ) +
+      cd_plot_theme() +
+      theme(
+        panel.grid.major.y = element_line(colour = 'gray90', size = 0.5),
+        axis.text.x = element_blank(),
+        axis.ticks = element_blank()
+      ) +
+      scale_fill_manual(values = colors)
 }

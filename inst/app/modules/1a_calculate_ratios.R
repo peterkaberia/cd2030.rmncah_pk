@@ -7,6 +7,7 @@ calculateRatiosUI <- function(id, i18n) {
       box(
         title = i18n$t("title_ratio_options"),
         status = 'primary',
+        solidHeader = TRUE,
         width = 12,
         fluidRow(
           column(3, offset = 1, numericInput(ns('anc1_coverage'),

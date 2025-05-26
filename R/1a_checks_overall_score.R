@@ -33,21 +33,24 @@
 #' @export
 calculate_overall_score <- function(.data,
                                     threshold,
-                                    ratio_pairs = list(ratioAP = c("anc1", "penta1"), ratioPP = c("penta1", "penta3"))) {
-  year <- mean_rr <- low_mean_rr <- mean_mis_vacc_tracer <- mean_out_vacc_tracer <-
+                                    ratio_pairs = list(ratioAP = c("anc1", "penta1"), ratioPP = c("penta1", "penta3")),
+                                    region = NULL) {
+
+  year = mean_rr = low_mean_rr = mean_mis_vacc_tracer <- mean_out_vacc_tracer <-
     value <- `Data Quality Metrics` <- value <- no <- NULL
 
   check_cd_data(.data)
 
-  avg_reporting_rate <- calculate_average_reporting_rate(.data) %>%
-    select(year, mean_four_rr) %>%
+  avg_reporting_rate <- calculate_average_reporting_rate(.data, 'adminlevel_1', region = region) %>%
+    # select(year, mean_four_rr) %>%
+    summarise(mean_four_rr = mean(mean_four_rr, na.rm = TRUE), .by = year) %>%
     pivot_wider(names_from = year, values_from = mean_four_rr) %>%
     mutate(
       `Data Quality Metrics` = "% of expected monthly facility reports (national)",
       no = "1a"
     )
 
-  district_reporting_rate <- calculate_district_reporting_rate(.data, threshold = threshold) %>%
+  district_reporting_rate <- calculate_district_reporting_rate(.data, threshold = threshold, region = region) %>%
     select(year, low_mean_four_rr) %>%
     pivot_wider(names_from = year, values_from = low_mean_four_rr) %>%
     mutate(
@@ -55,7 +58,7 @@ calculate_overall_score <- function(.data,
       no = "1b"
     )
 
-  district_completeness <- calculate_district_completeness_summary(.data) %>%
+  district_completeness <- calculate_district_completeness_summary(.data, region = region) %>%
     # select(year, mean_mis_vacc_tracer) %>%
     # pivot_wider(names_from = year, values_from = mean_mis_vacc_tracer) %>%
     select(year, mean_mis_four) %>%
@@ -65,17 +68,18 @@ calculate_overall_score <- function(.data,
       no = "1c"
     )
 
-  outliers <- calculate_outliers_summary(.data) %>%
+  outliers <- calculate_outliers_summary(.data, admin_level = 'adminlevel_1', region = region) %>%
     # select(year, mean_out_vacc_tracer) %>%
     # pivot_wider(names_from = year, values_from = mean_out_vacc_tracer) %>%
-    select(year, mean_out_four) %>%
+    # select(year, mean_out_four) %>%
+    summarise(mean_out_four = mean(mean_out_four, na.rm = TRUE), .by = year) %>%
     pivot_wider(names_from = year, values_from = mean_out_four) %>%
     mutate(
       `Data Quality Metrics` = "% of monthly values that are not extreme outliers (national)",
       no = "2a"
     )
 
-  outliersd <- calculate_district_outlier_summary(.data) %>%
+  outliersd <- calculate_district_outlier_summary(.data, region = region) %>%
     # select(year, mean_out_vacc_tracer) %>%
     # pivot_wider(names_from = year, values_from = mean_out_vacc_tracer) %>%
     select(year, mean_out_four) %>%
@@ -85,7 +89,7 @@ calculate_overall_score <- function(.data,
       no = "2b"
     )
 
-  adeqratiosd <- calculate_ratios_and_adequacy(.data, ratio_pairs = ratio_pairs) %>%
+  adeqratiosd <- calculate_ratios_and_adequacy(.data, ratio_pairs = ratio_pairs, region = region) %>%
     select(year, starts_with("Ratio"), starts_with("% district with")) %>%
     pivot_longer(-year, names_to = "Data Quality Metrics", values_to = "value") %>%
     pivot_wider(names_from = year, values_from = value) %>%

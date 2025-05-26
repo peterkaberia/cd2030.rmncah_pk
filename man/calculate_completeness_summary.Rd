@@ -2,47 +2,34 @@
 % Please edit documentation in R/1a_checks_missing.R
 \name{calculate_completeness_summary}
 \alias{calculate_completeness_summary}
-\title{Calculate Percentage of Non-Missing Values by Year}
+\title{Summarize Data Completeness by Year}
 \usage{
 calculate_completeness_summary(
   .data,
   admin_level = c("national", "adminlevel_1", "district"),
-  include_year = TRUE
+  region = NULL
 )
 }
 \arguments{
-\item{.data}{A \code{cd_data} object containing indicator data, including columns with
-the \code{mis_} prefix which represent missing value flags for each indicator.}
+\item{.data}{A \code{cd_data} object.}
 
-\item{admin_level}{Character. The administrative level at which to calculate
-reporting rates. Must be one of \code{'national'}, \code{'adminlevel_1'} or \code{'district'}.}
+\item{admin_level}{One of \code{'national'}, \code{'adminlevel_1'}, or \code{'district'}.}
 }
 \value{
-A \code{cd_completeness_summary} object containing a tibble. This tibble shows
-the yearly percentages of non-missing values for each indicator and the average
-percentage of non-missing values across all indicators per year.
+A \code{cd_completeness_summary} tibble:
+\itemize{
+\item One row per year and group
+\item \verb{mis_<indicator>} columns with \% non-missing values
+\item \code{mean_mis_all} summarizing all indicators
+}
 }
 \description{
-\code{calculate_completeness_summary} computes the yearly percentage of non-missing
-values across specified indicators, summarizing data completeness for each year.
-Indicators with missing value flags are identified by a \code{mis_} prefix, representing
-the completeness of various indicators for each year.
-}
-\details{
-This function aggregates the percentage of non-missing values for each indicator
-and calculates the overall average completeness across all indicators. This
-provides a comprehensive view of data availability trends over time.
-
-The function computes non-missing percentages as follows:
-\itemize{
-\item For each indicator, calculates the mean percentage of non-missing values by year.
-\item Calculates additional summaries specifically for vaccination and tracer indicators.
-\item Rounds results to two decimal places to maintain readability.
-}
+Computes yearly percentage of non-missing values for each indicator, along with
+overall completeness summaries.
 }
 \examples{
 \dontrun{
-# Calculate the percentage of non-missing values by year for the data
 calculate_completeness_summary(data)
 }
+
 }

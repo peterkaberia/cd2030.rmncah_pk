@@ -10,7 +10,8 @@ calculate_ratios_summary(
     0.78, pcv1 = 0.97, rota1 = 0.96),
   anc1_penta1_mortality = 1.07,
   ratio_pairs = list(ratioAP = c("anc1", "penta1"), ratioPP = c("penta1", "penta3")),
-  adequate_range = c(1, 1.5)
+  adequate_range = c(1, 1.5),
+  region = NULL
 )
 }
 \arguments{
@@ -39,6 +40,8 @@ Default pairs include:
 \item{adequate_range}{A numeric vector of length 2 defining the acceptable
 range for adequacy checks. Ratios within this range are marked adequate;
 outside this range, inadequate. Default is \code{c(1, 1.5)}.}
+
+\item{region}{Optional. Restrict analysis to one region (\code{adminlevel_1}).}
 }
 \value{
 A \code{cd_ratios_summary} object, a data frame containing:
@@ -67,14 +70,14 @@ the adequacy of each indicator's ratio.
 }
 \examples{
 \dontrun{
-# Basic usage with default parameters
-calculate_ratios_summary(cd_data)
+  # Basic usage with default parameters
+  calculate_ratios_summary(cd_data)
 
-# Custom survey coverage and mortality adjustments for "ratioAP"
-calculate_ratios_summary(cd_data,
-  survey_coverage = c(anc1 = 0.95, penta1 = 0.92, penta3 = 0.85),
-  anc1_penta1_mortality = 1.05
-)
+  # Custom survey coverage and mortality adjustments for "ratioAP"
+  calculate_ratios_summary(cd_data,
+    survey_coverage = c(anc1 = 0.95, penta1 = 0.92, penta3 = 0.85),
+    anc1_penta1_mortality = 1.05
+  )
 }
 
 }

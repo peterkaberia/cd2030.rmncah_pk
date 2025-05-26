@@ -4,32 +4,28 @@
 \alias{calculate_district_reporting_rate}
 \title{District-Level Reporting Rates by Year}
 \usage{
-calculate_district_reporting_rate(.data, threshold = 90)
+calculate_district_reporting_rate(.data, threshold = 90, region = NULL)
 }
 \arguments{
 \item{.data}{A tibble of class \code{cd_data}.}
 
-\item{threshold}{Numeric. Minimum acceptable reporting rate (as a percentage).
-Default: 90.}
+\item{threshold}{Minimum reporting rate (\%) for a district to be considered
+compliant. Default is 90.}
+
+\item{region}{Optional. Filter results for a specific region (admin level 1 name).}
 }
 \value{
-A tibble of class \code{cd_district_reporting_rate} with:
-\itemize{
-\item One row per year.
-\item Columns \verb{low_<indicator>}: percentage of districts meeting the threshold.
-\item \code{low_mean_rr}: mean percentage of districts meeting the threshold across
-indicators.
-}
+A tibble of class \code{cd_district_reporting_rate}.
 }
 \description{
-\code{calculate_district_reporting_rate} calculates the percentage of districts that
+\code{calculate_district_reporting_rate} Calculates the percentage of districts that
 meet or exceed a specified reporting rate threshold for each indicator, by year.
-Also computes an overall yearly mean.
+Also computes a yearly average across all indicators.
 }
 \examples{
 \dontrun{
-# Calculate district-level reporting rates with a threshold of 90\%
-district_summary <- calculate_district_reporting_rate(data, threshold = 90)
+  calculate_district_reporting_rate(data, threshold = 90)
+  calculate_district_reporting_rate(data, threshold = 85, region = "Eastern")
 }
 
 }

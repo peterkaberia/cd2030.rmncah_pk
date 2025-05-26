@@ -2,38 +2,27 @@
 % Please edit documentation in R/1a_checks_missing.R
 \name{calculate_district_completeness_summary}
 \alias{calculate_district_completeness_summary}
-\title{Check for Missing Values by District and Year}
+\title{District-Level Completeness Summary}
 \usage{
-calculate_district_completeness_summary(.data)
+calculate_district_completeness_summary(.data, region = NULL)
 }
 \arguments{
-\item{.data}{A \code{cd_data} object containing indicator data with columns prefixed by
-\code{mis_}, indicating missing values for each district and year.}
+\item{.data}{A \code{cd_data} object.}
 }
 \value{
-A \code{cd_district_completeness_summary} object containing a tibble. This
-tibble summarizes the percentage of districts with no missing values for each
-indicator per year, as well as an overall yearly summary across all indicators.
+A \code{cd_district_completeness_summary} tibble:
+\itemize{
+\item One row per year
+\item \verb{\% non-missing} per indicator
+\item \code{mean_mis_all}, \code{mean_mis_four} summaries
+}
 }
 \description{
-\code{calculate_district_completeness_summary} calculates the percentage of districts
-with complete data (no missing values) for each year. By assessing missingness
-across all districts for each indicator, it provides a summary of data completeness
-on a per-district basis.
-}
-\details{
-\itemize{
-\item For each year, the function calculates the percentage of districts without missing
-values per indicator.
-\item The output includes specific summary statistics for key indicator groups, such as
-vaccination indicators and tracer indicators, providing insights into data
-completeness at a granular level.
-\item All percentages are rounded to two decimal places.
-}
+Calculates yearly \% of districts with complete data for each indicator.
 }
 \examples{
 \dontrun{
-# Calculate the percentage of districts with complete data per year
 calculate_district_completeness_summary(data)
 }
+
 }

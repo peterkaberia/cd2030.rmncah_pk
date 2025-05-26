@@ -19,7 +19,9 @@
 plot.cd_completeness_summary <- function(x,
                                          indicator = NULL,
                                          ...) {
-  admin_level <- attr(x, 'admin_level')
+  admin_level <- attr_or_abort(x, 'admin_level')
+  region <- attr_or_null(x, 'region')
+  admin_level_col <- get_plot_admin_column(admin_level, region)
 
   indicator <- if (is.null(indicator) || indicator == '') {
     NULL
@@ -29,24 +31,24 @@ plot.cd_completeness_summary <- function(x,
 
   if (is.null(indicator)) {
     x <- x %>%
-      summarise(across(starts_with('mis_'), ~ round(mean(.x, na.rm = TRUE))), .by = all_of(admin_level)) %>%
+      summarise(across(starts_with('mis_'), ~ round(mean(.x, na.rm = TRUE))), .by = all_of(admin_level_col)) %>%
       pivot_longer(cols = starts_with('mis_'), names_to = 'indicator') %>%
       mutate(indicator = str_remove(indicator, 'mis_'))
 
-    ggplot(x, aes(x = !!sym(admin_level), y = indicator, fill = value)) +
+    ggplot(x, aes(x = !!sym(admin_level_col), y = indicator, fill = value)) +
       geom_tile(color = 'white') +
       geom_text(aes(label = value), color = 'black', size = 3, vjust = 0.5) +
-      scale_fill_gradient2(low = 'red3', mid = 'orange', high = 'forestgreen', midpoint = 80) +
-      labs(x = admin_level, y = 'Indicator', fill = 'Value') +
+      scale_fill_gradient(low = 'red3', high = 'forestgreen', limits = c(0, 100)) +
+      labs(x = admin_level_col, y = 'Indicator', fill = 'Value') +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 9))
   } else {
     column_name <- paste0('mis_', indicator)
-    ggplot(x, aes(x = !!sym(admin_level), y = factor(year), fill = !!sym(column_name))) +
+    ggplot(x, aes(x = !!sym(admin_level_col), y = factor(year), fill = !!sym(column_name))) +
       geom_tile(color = 'white') +
       geom_text(aes(label = !!sym(column_name)), color = 'black', size = 3, vjust = 0.5) +
-      scale_fill_gradient2(low = 'red3', mid = 'orange', high = 'forestgreen', midpoint = 80) +
-      labs(x = admin_level, y = 'Year', fill = paste0(indicator, ' Value')) +
+      scale_fill_gradient(low = 'red3', high = 'forestgreen', limits = c(0, 100)) +
+      labs(x = admin_level_col, y = 'Year', fill = paste0(indicator, ' Value')) +
       theme_minimal() +
       theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 9))
   }

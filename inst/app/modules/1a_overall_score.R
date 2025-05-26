@@ -5,6 +5,15 @@ overallScoreUI <- function(id, i18n) {
     contentHeader(ns('overall_scoring'), i18n$t("title_overall"), include_buttons = FALSE),
     contentBody(
       box(
+        title = i18n$t("title_overall_score_options"),
+        status = 'primary',
+        solidHeader = TRUE,
+        width = 12,
+        fluidRow(
+          column(3, regionInputUI(ns('region'), i18n))
+        )
+      ),
+      box(
         title = i18n$t("title_overall"),
         status = 'primary',
         width = 12,
@@ -23,6 +32,8 @@ overallScoreServer <- function(id, cache, i18n) {
     id = id,
     module = function(input, output, session) {
 
+      region <- regionInputServer('region', cache, reactive('adminlevel_1'), i18n, allow_select_all = TRUE, show_district = FALSE)
+
       data <- reactive({
         req(cache())
         cache()$countdown_data
@@ -35,7 +46,7 @@ overallScoreServer <- function(id, cache, i18n) {
         threshold <- cache()$performance_threshold
 
         dt <- data() %>%
-          calculate_overall_score(threshold) %>%
+          calculate_overall_score(threshold, region = region()) %>%
           mutate(
             type = case_when(
               no %in% c("1a", "1b", "1c") ~ i18n$t("title_monthly_completeness"),

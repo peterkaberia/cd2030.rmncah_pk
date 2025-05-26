@@ -56,28 +56,35 @@ source('ui/region-input.R')
 source('ui/report_button.R')
 source('ui/save_cache.R')
 
+source('modules/introduction.R')
+
+source('modules/0_upload_data.R')
 source('modules/1a_checks_reporting_rate.R')
 source('modules/1a_checks_outlier_detection.R')
-source('modules/calculate_ratios.R')
-source('modules/consistency_check.R')
-source('modules/data_adjustment_changes.R')
-source('modules/data_adjustment.R')
-source('modules/data_completeness.R')
-source('modules/derived_coverage.R')
-source('modules/denominator_assessment.R')
-source('modules/denominator_selection.R')
-source('modules/equity.R')
-source('modules/introduction.R')
-source('modules/national_coverage.R')
-source('modules/overall_score.R')
-source('modules/remove_years.R')
+source('modules/1a_consistency_check.R')
+source('modules/1a_data_completeness.R')
+source('modules/1a_calculate_ratios.R')
+source('modules/1a_overall_score.R')
+
+source('modules/1b_remove_years.R')
+
+source('modules/1c_data_adjustment_changes.R')
+source('modules/1c_data_adjustment.R')
 
 source('modules/setup.R')
-source('modules/subnational_coverage.R')
-source('modules/subnational_inequality.R')
-source('modules/subnational_mapping.R')
-source('modules/upload_data.R')
-source('modules/low_reporting.R')
+
+source('modules/2_denominator_assessment.R')
+source('modules/2_denominator_selection.R')
+source('modules/2_derived_coverage.R')
+
+source('modules/3_national_coverage.R')
+source('modules/3_subnational_inequality.R')
+source('modules/3_subnational_mapping.R')
+source('modules/3_low_reporting.R')
+source('modules/3_equity.R')
+
+source('modules/4_subnational_coverage.R')
+
 source('modules/5_mortality.R')
 source('modules/6_service_utilization.R')
 source('modules/7_health_system_national.R')
@@ -150,13 +157,12 @@ ui <- dashboardPage(
                            tabName = 'derived_coverage',
                            icon = icon('chart-line'))
                ),
-      menuItem(i18n$t('title_national_coverage'), tabName = 'national_coverage', icon = icon('flag')),
-      menuItem(i18n$t('title_subnational_analysis'),
-               tabName = 'subnational_analysis',
-               icon = icon('globe-africa'),
-               menuSubItem(i18n$t('title_subnational_coverage'),
-                           tabName = 'subnational_coverage',
-                           icon = icon('map-marked')),
+      menuItem(i18n$t('title_national_analysis'),
+               tabName = 'national_analysis',
+               icon = icon('flag'),
+               menuSubItem(i18n$t('title_national_coverage'),
+                           tabName = 'national_coverage',
+                           icon = icon('flag')),
                menuSubItem(i18n$t('title_subnational_inequality'),
                            tabName = 'subnational_inequality',
                            icon = icon('balance-scale-right')),
@@ -165,9 +171,27 @@ ui <- dashboardPage(
                            icon = icon('user-slash')),
                menuSubItem(i18n$t('title_subnational_mapping'),
                            tabName = 'subnational_mapping',
-                           icon = icon('map'))
+                           icon = icon('map')),
+               menuSubItem(i18n$t('title_equity_assessment'),
+                           tabName = 'equity_assessment',
+                           icon = icon('balance-scale'))
+              ),
+      menuItem(i18n$t('title_subnational_analysis'),
+               tabName = 'subnational_analysis',
+               icon = icon('globe-africa'),
+               menuSubItem(i18n$t('title_subnational_coverage'),
+                           tabName = 'subnational_coverage',
+                           icon = icon('map-marked'))#,
+               # menuSubItem(i18n$t('title_subnational_inequality'),
+               #             tabName = 'subnational_inequality',
+               #             icon = icon('balance-scale-right')),
+               # menuSubItem(i18n$t('title_global_coverage'),
+               #             tabName = 'low_reporting',
+               #             icon = icon('user-slash')),
+               # menuSubItem(i18n$t('title_subnational_mapping'),
+               #             tabName = 'subnational_mapping',
+               #             icon = icon('map'))
                ),
-      menuItem(i18n$t('title_equity_assessment'), tabName = 'equity_assessment', icon = icon('balance-scale')),
       menuItem(i18n$t('title_mortality'), tabName = 'mortality', icon = icon('balance-scale')),
       menuItem(i18n$t('title_service_utilization'), tabName = 'service_utilization', icon = icon('balance-scale')),
       menuItem(i18n$t('opt_health_system_performance'),
@@ -229,11 +253,19 @@ ui <- dashboardPage(
       tags$script(src = "jquery.slimscroll.min.js"),
       tags$script(HTML("
         $(function() {
-          $('.sidebar').slimScroll({
-            height: '100%',
-            alwaysVisible: true,
-            size: '6px'
+          $('body, html, ' + '.wrapper').css({
+            'height'    : 'auto',
+            'min-height': '100%'
           });
+          $('body').addClass('fixed');
+          var windowHeight  = $(window).height();
+          var footerHeight  = $('.main-footer').outerHeight() || 0;
+          $('.content-wrapper').css('min-height', windowHeight - footerHeight);
+          if ($('.main-sidebar').find('slimScrollDiv').length === 0) {
+            $('.sidebar').slimScroll({
+              height: (windowHeight - $('.main-header').height()) + 'px'
+            });
+          }
         });
       "))
     ),
@@ -282,7 +314,6 @@ server <- function(input, output, session) {
 
     # shinyjs::delay(500, {
     updateHeader(cache()$country, i18n)
-    shinyjs::addClass(selector = 'body', class = 'fixed')
     # })
   })
 

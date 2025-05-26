@@ -2,45 +2,38 @@
 % Please edit documentation in R/1a_checks_outlier.R
 \name{calculate_district_outlier_summary}
 \alias{calculate_district_outlier_summary}
-\title{Calculate District-Level Outliers Summary by Year}
+\title{District-Level Outlier Summary by Year}
 \usage{
-calculate_district_outlier_summary(.data)
+calculate_district_outlier_summary(.data, region = NULL)
 }
 \arguments{
-\item{.data}{A data frame containing district-level health indicator data. This data
-frame must include precomputed outlier flags (columns ending in \verb{_outlier5std}),
-where 1 represents an outlier and 0 represents non-outliers.}
+\item{.data}{A \code{cd_data} object with outlier flags (\verb{_outlier5std} columns).}
+
+\item{region}{Optional. Filter results to a specific \code{adminlevel_1}.}
 }
 \value{
-A \code{cd_district_outliers_summary} object (tibble) with:
-\itemize{
-\item Each indicator's percentage of districts without extreme outliers, calculated yearly.
-\item Aggregated summaries for non-outliers across all indicators, vaccination indicators,
-and tracer indicators.
-}
+A \code{cd_district_outliers_summary} tibble.
 }
 \description{
-\code{calculate_district_outlier_summary} computes a district-level summary of extreme
-outliers for specified health indicators. This function aggregates extreme outlier counts
-for each indicator by first identifying the maximum outlier flag within each district
-and year. An outlier is flagged based on Hampel's X84 method, where values exceeding
-five Median Absolute Deviations (MAD) from the median are considered extreme outliers.
+Calculates the yearly percentage of districts without extreme outliers for each health indicator.
+Flags are based on the Hampel X84 method (beyond 5 MAD from median).
 }
 \details{
 \itemize{
-\item \strong{Outlier Aggregation}: The function first calculates the maximum outlier flag within
-each district and year. This district-level flag is used to determine if extreme outliers
-are present for each indicator.
-\item \strong{Non-Outlier Percentage}: After aggregating by district and year, it computes the
-mean percentage of districts without extreme outliers for each indicator, as well as
-overall summaries for vaccination-only and tracer indicators.
-\item \strong{Rounding}: Non-outlier percentages are rounded to two decimal places for clarity
-in reporting and analysis.
+\item Aggregates by \code{district} and \code{year}, using the max flag per group.
+\item Computes percent of non-outliers per indicator.
+\item Returns yearly summaries including:
+\itemize{
+\item Per-indicator non-outlier rates
+\item \code{mean_out_all}: all indicators
+\item \code{mean_out_four}: excludes IPD
 }
+}
+
+All results are rounded to two decimals.
 }
 \examples{
 \dontrun{
-# Summarize the proportion of districts without extreme outliers
 calculate_district_outlier_summary(data)
 }
 

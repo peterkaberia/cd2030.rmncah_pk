@@ -10,28 +10,41 @@ outlierDetectionUI <- function(id, i18n) {
         solidHeader = TRUE,
         width = 12,
         fluidRow(
-          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
           column(3, selectizeInput(ns('indicator'),
                                    label = i18n$t('title_indicator'),
-                                   choice = c('Select Indicator' = '', get_all_indicators())))
+                                   choice = c('Select Indicator' = '', get_all_indicators()))),
+          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
+          column(3, regionInputUI(ns('region'), i18n))
         )
       ),
       tabBox(
         title = tags$span(icon('chart-line'), i18n$t('title_indicators_with_outlier')),
         width = 12,
 
-        tabPanel(title = i18n$t('title_heat_map'), fluidRow(
-          column(12, withSpinner(plotlyOutput(ns('district_outlier_heatmap')))),
-          column(4, downloadButtonUI(ns('download_data')))
-        )),
+        tabPanel(
+          title = i18n$t('title_heat_map'),
+          fluidRow(
+            column(12, withSpinner(plotlyOutput(ns('district_outlier_heatmap')))),
+            column(3, downloadButtonUI(ns('district_outlier_heatmap_plot'))),
+            column(3, downloadButtonUI(ns('download_data')))
+          )
+        ),
 
-        tabPanel(title = i18n$t('title_indicator_bar_graph'), fluidRow(
-          column(12, plotCustomOutput(ns('indicator_bar_graph')))
-        )),
+        tabPanel(
+          title = i18n$t('title_indicator_bar_graph'),
+          fluidRow(
+            column(12, plotCustomOutput(ns('indicator_bar_graph'))),
+            column(3, downloadButtonUI(ns('indicator_bar_graph_plot')))
+          )
+        ),
 
-        tabPanel(title = i18n$t('title_region_bar_graph'), fluidRow(
-          column(12, plotCustomOutput(ns('region_bar_graph')))
-        ))
+        tabPanel(
+          title = i18n$t('title_region_bar_graph'),
+          fluidRow(
+            column(12, plotCustomOutput(ns('region_bar_graph'))),
+            column(3, downloadButtonUI(ns('region_bar_graph_plot')))
+          )
+        )
       ),
       box(
         title = i18n$t('title_district_outliers'),
@@ -50,7 +63,7 @@ outlierDetectionUI <- function(id, i18n) {
         collapsible = TRUE,
         width = 6,
         fluidRow(
-          column(6, regionInputUI(ns('region'), i18n)),
+          column(6, regionInputUI(ns('region_trend'), i18n)),
           column(12, withSpinner(plotCustomOutput(ns('district_trend'))))
         )
       )
@@ -66,7 +79,14 @@ outlierDetectionServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       admin_level <- adminLevelInputServer('admin_level')
-      region <- regionInputServer('region', cache, admin_level, i18n)
+      region <- regionInputServer('region', cache, admin_level, i18n, allow_select_all = TRUE, show_district = FALSE)
+
+      admin_level_trend <- reactive({
+        req(admin_level())
+        get_plot_admin_column(admin_level(), region())
+      })
+
+      region_trend <- regionInputServer('region_trend', cache, admin_level_trend, i18n, selected_region = region)
 
       data <- reactive({
         req(cache())
@@ -77,14 +97,15 @@ outlierDetectionServer <- function(id, cache, i18n) {
         req(data(), admin_level())
 
         data() %>%
-          calculate_outliers_summary(admin_level())
+          calculate_outliers_summary(admin_level(), region())
       })
 
       outlier_districts <- reactive({
         req(data(), admin_level(), input$indicator, input$year)
 
-        list_outlier_units(data(), input$indicator, admin_level()) %>%
-          filter(year == as.integer(input$year))
+        data() %>%
+          list_outlier_units(input$indicator, admin_level(), region()) %>%
+          filter(year == as.integer(input$year), if (!is.null(region())) adminlevel_1 == region() else TRUE)
       })
 
       observe({
@@ -146,9 +167,39 @@ outlierDetectionServer <- function(id, cache, i18n) {
       })
 
       output$district_trend <- renderCustomPlot({
-        req(outlier_districts(), region())
-        plot(outlier_districts(), region())
+        req(outlier_districts(), region_trend())
+        plot(outlier_districts(), region_trend())
       })
+
+      downloadPlot(
+        id = 'district_outlier_heatmap_plot',
+        filename = reactive('district_outlier_heatmap_plot'),
+        data = outlier_summary,
+        i18n = i18n,
+        plot_function = function() {
+          plot(outlier_summary(), 'heat_map', input$indicator)
+        }
+      )
+
+      downloadPlot(
+        id = 'indicator_bar_graph_plot',
+        filename = reactive('indicator_bar_graph_plot'),
+        data = outlier_summary,
+        i18n = i18n,
+        plot_function = function() {
+          plot(outlier_summary(), 'indicator', input$indicator)
+        }
+      )
+
+      downloadPlot(
+        id = 'region_bar_graph_plot',
+        filename = reactive('region_bar_graph_plot'),
+        data = outlier_summary,
+        i18n = i18n,
+        plot_function = function() {
+          plot(outlier_summary(), 'region', input$indicator)
+        }
+      )
 
       downloadExcel(
         id = 'download_data',

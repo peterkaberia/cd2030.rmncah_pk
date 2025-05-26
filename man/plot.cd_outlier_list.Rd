@@ -2,41 +2,33 @@
 % Please edit documentation in R/plot.outlier.R
 \name{plot.cd_outlier_list}
 \alias{plot.cd_outlier_list}
-\title{Plot Outlier Series for a Single Region and Indicator}
+\title{Plot Outlier Time Series for a Region}
 \usage{
-\method{plot}{cd_outlier_list}(x, region = NULL)
+\method{plot}{cd_outlier_list}(x, region_name = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{cd_outlier_list} object, typically from \code{list_outlier_units()}.}
+\item{x}{A \code{cd_outlier_list} object from \code{list_outlier_units()}.}
 
-\item{region}{Character. Name of the region or district to plot.}
+\item{region_name}{The name of the unit to plot.}
+
+\item{...}{Not used.}
 }
 \value{
 A \code{ggplot} object.
 }
 \description{
-This method visualizes the time series of a specific indicator for a single
-region or district. It highlights outlier points beyond 5 MAD from the median.
+Displays a time-series plot of one indicator for a single region or district,
+with outlier highlights.
 }
 \details{
 \itemize{
-\item The plot includes:
-\itemize{
-\item Observed indicator values (green line and dots)
-\item Median trend (cyan dashed line)
-\item Shaded band for the 5×MAD threshold
-\item Red points for flagged outliers
+\item Plots observed values, median trend, and 5×MAD range.
+\item Flags outliers in red.
 }
-}
-
-This is intended for diagnostic plots during indicator validation or quality checks.
 }
 \examples{
 \dontrun{
-# Visualize outliers for 'pcv1' in Nakuru
-dt \%>\%
-  list_outlier_units("pcv1") \%>\%
-  plot(region = "Nakuru")
+list_outlier_units(cd_data, "penta1") \%>\%
+  plot(region_name = "Nakuru")
 }
-
 }

@@ -1,91 +1,67 @@
-#' Calculate Percentage of Non-Missing Values by Year
+#' Summarize Data Completeness by Year
 #'
-#' `calculate_completeness_summary` computes the yearly percentage of non-missing
-#' values across specified indicators, summarizing data completeness for each year.
-#' Indicators with missing value flags are identified by a `mis_` prefix, representing
-#' the completeness of various indicators for each year.
+#' Computes yearly percentage of non-missing values for each indicator, along with
+#' overall completeness summaries.
 #'
-#' This function aggregates the percentage of non-missing values for each indicator
-#' and calculates the overall average completeness across all indicators. This
-#' provides a comprehensive view of data availability trends over time.
+#' @param .data A `cd_data` object.
+#' @param admin_level One of `'national'`, `'adminlevel_1'`, or `'district'`.
 #'
-#' @param .data A `cd_data` object containing indicator data, including columns with
-#'   the `mis_` prefix which represent missing value flags for each indicator.
-#' @param admin_level Character. The administrative level at which to calculate
-#'   reporting rates. Must be one of `'national'`, `'adminlevel_1'` or `'district'`.
-#'
-#' @return A `cd_completeness_summary` object containing a tibble. This tibble shows
-#'   the yearly percentages of non-missing values for each indicator and the average
-#'   percentage of non-missing values across all indicators per year.
-#'
-#' @details
-#' The function computes non-missing percentages as follows:
-#' - For each indicator, calculates the mean percentage of non-missing values by year.
-#' - Calculates additional summaries specifically for vaccination and tracer indicators.
-#' - Rounds results to two decimal places to maintain readability.
+#' @return A `cd_completeness_summary` tibble:
+#'   - One row per year and group
+#'   - `mis_<indicator>` columns with % non-missing values
+#'   - `mean_mis_all` summarizing all indicators
 #'
 #' @examples
 #' \dontrun{
-#' # Calculate the percentage of non-missing values by year for the data
 #' calculate_completeness_summary(data)
 #' }
+#'
 #' @export
-calculate_completeness_summary <- function(.data, admin_level = c('national', 'adminlevel_1', 'district'), include_year = TRUE) {
+calculate_completeness_summary <- function(.data,
+                                           admin_level = c('national', 'adminlevel_1', 'district'),
+                                           region = NULL) {
   year <- . <- NULL
 
   check_cd_data(.data)
   admin_level <- arg_match(admin_level)
-  admin_level_cols <- get_admin_columns(admin_level)
+  admin_level_cols <- get_admin_columns(admin_level, region)
 
   allindicators <- get_all_indicators()
 
   data <- .data %>%
-    add_missing_column(indicators = allindicators) %>%
-    summarise(
-      across(starts_with('mis_'), mean, na.rm = TRUE),
-      .by = c(admin_level_cols, 'year')
-    ) %>%
+    calculate_completeness_core(allindicators, region) %>%
+    summarise(across(starts_with("mis_"), mean, na.rm = TRUE), .by = c(admin_level_cols, "year")) %>%
     mutate(
       mean_mis_all = rowMeans(select(., any_of(starts_with('mis_'))), na.rm = TRUE),
       across(c(starts_with('mis_'), starts_with('mean_mis_')), ~ round((1 - .x) * 100, 2))
-      # across(starts_with('mis_'), ~ round((1 - .x) * 100, 0))
     )
 
   new_tibble(
     data,
     class = 'cd_completeness_summary',
-    admin_level = admin_level
+    admin_level = admin_level,
+    region = region
   )
 }
 
-#' Check for Missing Values by District and Year
+#' District-Level Completeness Summary
 #'
-#' `calculate_district_completeness_summary` calculates the percentage of districts
-#' with complete data (no missing values) for each year. By assessing missingness
-#' across all districts for each indicator, it provides a summary of data completeness
-#' on a per-district basis.
+#' Calculates yearly % of districts with complete data for each indicator.
 #'
-#' @param .data A `cd_data` object containing indicator data with columns prefixed by
-#'   `mis_`, indicating missing values for each district and year.
-#' @return A `cd_district_completeness_summary` object containing a tibble. This
-#'   tibble summarizes the percentage of districts with no missing values for each
-#'   indicator per year, as well as an overall yearly summary across all indicators.
+#' @param .data A `cd_data` object.
 #'
-#' @details
-#' - For each year, the function calculates the percentage of districts without missing
-#'   values per indicator.
-#' - The output includes specific summary statistics for key indicator groups, such as
-#'   vaccination indicators and tracer indicators, providing insights into data
-#'   completeness at a granular level.
-#' - All percentages are rounded to two decimal places.
+#' @return A `cd_district_completeness_summary` tibble:
+#'   - One row per year
+#'   - `% non-missing` per indicator
+#'   - `mean_mis_all`, `mean_mis_four` summaries
 #'
 #' @examples
 #' \dontrun{
-#' # Calculate the percentage of districts with complete data per year
 #' calculate_district_completeness_summary(data)
 #' }
+#'
 #' @export
-calculate_district_completeness_summary <- function(.data) {
+calculate_district_completeness_summary <- function(.data, region = NULL) {
   year <- district <- . <- NULL
 
   check_cd_data(.data)
@@ -95,7 +71,7 @@ calculate_district_completeness_summary <- function(.data) {
   four_indicators <- paste0('mis_', indicators[which(!indicators %in% ipd_indicators)])
 
   data <- .data %>%
-    add_missing_column(indicators) %>%
+    calculate_completeness_core(indicators, region) %>%
     summarise(across(starts_with('mis_'), mean, na.rm = TRUE), .by = c(year, district)) %>%
     summarise(across(starts_with('mis_'), ~ mean(.x != 0, na.rm = TRUE)), .by = year) %>%
     mutate(
@@ -114,16 +90,17 @@ calculate_district_completeness_summary <- function(.data) {
 #' @export
 list_missing_units <- function(.data,
                                indicator,
-                               admin_level = c('adminlevel_1', 'district')) {
+                               region = NULL) {
   check_cd_data(.data)
   indicator <- arg_match(indicator, get_all_indicators())
-  admin_level <- arg_match(admin_level)
 
-  admin_level_cols <- get_admin_columns(admin_level)
-  admin_level_cols <- c(admin_level_cols, 'year', 'month')
+  # admin_level_cols <- get_admin_columns('adminlevel_1', region)
+  # admin_level_cols <- c(admin_level_cols, 'year', 'month')
+
+  # print(admin_level_cols)
 
   x <- .data %>%
-    add_missing_column(indicators = indicator) %>%
+    calculate_completeness_core(indicator, region) %>%
     # summarise(
     #   across(starts_with('mis_'), mean, na.rm  = TRUE),
     #   .by = admin_level_cols
@@ -131,12 +108,36 @@ list_missing_units <- function(.data,
     # mutate(
     #   across(starts_with('mis_'), ~ round((1 - .x) * 100, 0))
     # ) %>%
-    select(any_of(c(admin_level_cols, paste0('mis_', indicator))))
+    filter(!!sym(paste0('mis_', indicator)) == 1) %>%
+    select(adminlevel_1, district, year, month)
+
 
   new_tibble(
     x,
     class = 'cd_missing_list',
-    indicator = indicator,
-    admin_level = admin_level
+    indicator = indicator
   )
 }
+
+#' Core Function to Calculate Completeness Metrics
+#'
+#' Computes completeness (non-missing rate) for selected indicators grouped by admin level.
+#'
+#' @param .data A `cd_data` object
+#' @param indicators Character vector of indicator names
+#' @param region Optional. Only used if `admin_level = "adminlevel_1"`
+#'
+#' @return A tibble with one row per group and columns for each `mis_<indicator>`
+#'
+#' @noRd
+calculate_completeness_core <- function(.data,
+                                        indicators,
+                                        region = NULL) {
+  check_cd_data(.data)
+  check_required(indicators)
+
+  .data %>%
+    add_missing_column(indicators) %>%
+    filter(if (!is.null(region)) adminlevel_1 == region else TRUE)
+}
+
