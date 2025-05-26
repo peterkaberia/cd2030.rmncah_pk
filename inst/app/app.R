@@ -56,31 +56,35 @@ source('ui/region-input.R')
 source('ui/report_button.R')
 source('ui/save_cache.R')
 
+source('modules/introduction.R')
+
 source('modules/0_upload_data.R')
 source('modules/1a_checks_reporting_rate.R')
 source('modules/1a_checks_outlier_detection.R')
 source('modules/1a_consistency_check.R')
 source('modules/1a_data_completeness.R')
-source('modules/calculate_ratios.R')
-source('modules/overall_score.R')
+source('modules/1a_calculate_ratios.R')
+source('modules/1a_overall_score.R')
 
-source('modules/data_adjustment_changes.R')
-source('modules/data_adjustment.R')
+source('modules/1b_remove_years.R')
 
-source('modules/derived_coverage.R')
-source('modules/denominator_assessment.R')
-source('modules/denominator_selection.R')
-source('modules/equity.R')
-source('modules/introduction.R')
-source('modules/national_coverage.R')
-
-source('modules/remove_years.R')
+source('modules/1c_data_adjustment_changes.R')
+source('modules/1c_data_adjustment.R')
 
 source('modules/setup.R')
-source('modules/subnational_coverage.R')
-source('modules/subnational_inequality.R')
-source('modules/subnational_mapping.R')
-source('modules/low_reporting.R')
+
+source('modules/2_denominator_assessment.R')
+source('modules/2_denominator_selection.R')
+source('modules/2_derived_coverage.R')
+
+source('modules/3_national_coverage.R')
+source('modules/3_subnational_inequality.R')
+source('modules/3_subnational_mapping.R')
+source('modules/3_low_reporting.R')
+source('modules/3_equity.R')
+
+source('modules/4_subnational_coverage.R')
+
 source('modules/5_mortality.R')
 source('modules/6_service_utilization.R')
 source('modules/7_health_system_national.R')

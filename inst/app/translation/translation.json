@@ -576,6 +576,11 @@
       "fr": " à "
     },
     {
+      "key": "title_overall_score_options",
+      "en": "Overall Score Options",
+      "fr": "Options de score global"
+    },
+    {
       "key": "title_reporting_rate_options",
       "en": "Reporting Rate Options",
       "fr": "Options de taux de notification"

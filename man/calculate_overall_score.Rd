@@ -7,7 +7,8 @@
 calculate_overall_score(
   .data,
   threshold,
-  ratio_pairs = list(ratioAP = c("anc1", "penta1"), ratioPP = c("penta1", "penta3"))
+  ratio_pairs = list(ratioAP = c("anc1", "penta1"), ratioPP = c("penta1", "penta3")),
+  region = NULL
 )
 }
 \arguments{

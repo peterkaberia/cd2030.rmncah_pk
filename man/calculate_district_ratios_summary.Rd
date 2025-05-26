@@ -9,7 +9,8 @@ calculate_district_ratios_summary(
   ratio_pairs = list(ratioAP = c("anc1", "penta1"), ratioPP = c("penta1", "penta3"),
     ratioOO = c("opv1", "opv3"), ratioPPcv = c("penta1", "pcv1"), ratioPR = c("penta1",
     "rota1")),
-  adequate_range = c(1, 1.5)
+  adequate_range = c(1, 1.5),
+  region = NULL
 )
 }
 \arguments{
@@ -27,6 +28,8 @@ for ratio calculation. The default pairs are:
 \item{adequate_range}{A numeric vector of length 2 that specifies the lower
 and upper bounds for adequacy. Ratios within this range will be flagged as adequate.
 Default is \code{c(1, 1.5)}.}
+
+\item{region}{Optional. Restrict analysis to one region (\code{adminlevel_1}).}
 }
 \value{
 A tibble of class \code{cd_district_ratios_summary}, containing the summary of
