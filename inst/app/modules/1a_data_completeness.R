@@ -10,10 +10,11 @@ dataCompletenessUI <- function(id, i18n) {
         solidHeader = TRUE,
         width = 12,
         fluidRow(
-          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
           column(3, selectizeInput(ns('indicator'),
                                    label = i18n$t('title_indicator'),
-                                   choice = c('Select Indicator' = '', get_all_indicators())))
+                                   choice = c('Select Indicator' = '', get_all_indicators()))),
+          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
+          column(3, regionInputUI(ns('region'), i18n))
         )
       ),
       tabBox(
@@ -67,6 +68,7 @@ dataCompletenessServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       admin_level <- adminLevelInputServer('admin_level')
+      region <- regionInputServer('region', cache, admin_level, i18n, allow_select_all = TRUE, show_district = FALSE)
 
       data <- reactive({
         req(cache())
@@ -77,13 +79,13 @@ dataCompletenessServer <- function(id, cache, i18n) {
         req(data(), admin_level())
 
         data() %>%
-          calculate_completeness_summary(admin_level = admin_level())
+          calculate_completeness_summary(admin_level = admin_level(), region = region())
       })
 
       incomplete_district <- reactive({
-        req(data(), admin_level(), input$indicator, input$year)
+        req(data(), input$indicator, input$year)
 
-        list_missing_units(data(), input$indicator, admin_level()) %>%
+        list_missing_units(data(), input$indicator, region()) %>%
           filter(year == as.integer(input$year))
       })
 
@@ -101,11 +103,7 @@ dataCompletenessServer <- function(id, cache, i18n) {
       output$incomplete_district <- renderReactable({
         req(incomplete_district())
 
-        missing_units <- incomplete_district() %>%
-          filter(!!sym(paste0('mis_', input$indicator)) == 1) %>%
-          select(-!!sym(paste0('mis_', input$indicator)))
-
-        missing_units %>%
+        incomplete_district() %>%
           reactable(
             filterable = FALSE,
             minRows = 10,
@@ -130,36 +128,6 @@ dataCompletenessServer <- function(id, cache, i18n) {
           )
       })
 
-      # output$incomplete_district <- renderReactable({
-      #   req(completeness_summary())
-      #
-      #   incomplete_district() %>%
-      #     reactable(
-      #       filterable = FALSE,
-      #       minRows = 10,
-      #       groupBy = c('district'),
-      #       columns = list(
-      #         year = colDef(
-      #           aggregate = 'unique'
-      #         ),
-      #         month = colDef(
-      #           aggregate = 'count',
-      #           format = list(
-      #             aggregated = colFormat(suffix = ' month(s)')
-      #           )
-      #         )
-      #       ),
-      #       defaultColDef = colDef(
-      #         cell = function(value) {
-      #           if (!is.numeric(value)) {
-      #             return(value)
-      #           }
-      #           format(round(value), nsmall = 0)
-      #         }
-      #       )
-      #     )
-      # })
-
       output$district_missing_heatmap <- renderCustomPlot({
         req(completeness_summary())
         # ggplotly(
@@ -168,10 +136,11 @@ dataCompletenessServer <- function(id, cache, i18n) {
       })
 
       output$complete_vaccines <- renderReactable({
-        req(data())
+        req(data(), input$indicator)
 
         data() %>%
-          calculate_district_completeness_summary() %>%
+          calculate_district_completeness_summary(region()) %>%
+          select(year, contains(input$indicator)) %>%
           reactable(
             filterable = FALSE,
             minRows = 10
@@ -180,13 +149,11 @@ dataCompletenessServer <- function(id, cache, i18n) {
 
       output$incomplete_region <- renderCustomPlot({
 
-        req(data())
+        req(completeness_summary())
 
         all_indicators <- get_all_indicators()
-
-        data() %>%
-          add_missing_column(all_indicators) %>%
-          summarise(across(starts_with('mis_'), ~ (1 - mean(.x, na.rm = TRUE))) * 100, .by = c(year, admin_level())) %>%
+        completeness_summary() %>%
+          mutate(across(starts_with('mis_'), ~ 100 - .x)) %>%
           group_by(!!sym(admin_level())) %>%
           select(year, any_of(admin_level()), where(~ any(.x < 100, na.rm = TRUE))) %>%
           pivot_longer(cols = starts_with('mis_'),
