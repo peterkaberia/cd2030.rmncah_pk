@@ -82,6 +82,16 @@ nationalCoverageServer <- function(id, cache, i18n) {
 
       denominator <- denominatorInputServer('denominator', cache)
 
+      vacc_denom <- reactive({
+        req(cache())
+        cache()$denominator
+      })
+
+      mat_denom <- reactive({
+        req(cache())
+        cache()$maternal_denominator
+      })
+
       survey_data <- reactive({
         req(cache())
         cache()$national_survey
@@ -110,41 +120,46 @@ nationalCoverageServer <- function(id, cache, i18n) {
       })
 
       output$anc4 <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'anc4', denominator = denominator())
+        req(coverage(), mat_denom())
+        plot(coverage(), indicator = 'anc4', denominator = mat_denom())
       })
 
       output$ideliv <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'instdeliveries', denominator = denominator())
+        req(coverage(), mat_denom())
+        plot(coverage(), indicator = 'instdeliveries', denominator = mat_denom())
       })
 
       output$lbw <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'low_bweight', denominator = denominator())
+        req(coverage(), mat_denom())
+        plot(coverage(), indicator = 'low_bweight', denominator = mat_denom())
       })
 
       output$penta1 <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'penta1', denominator = denominator())
+        req(coverage(), vacc_denom())
+        plot(coverage(), indicator = 'penta1', denominator = vacc_denom())
       })
 
       output$measles1 <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'measles1', denominator = denominator())
+        req(coverage(), vacc_denom())
+        plot(coverage(), indicator = 'measles1', denominator = vacc_denom())
       })
 
       output$custom_check <- renderCustomPlot({
-        req(coverage(), denominator(), input$indicator)
-        plot(coverage(), indicator = input$indicator, denominator = denominator())
+        req(coverage(), input$indicator)
+        denom <- if (is_maternal_indicator(input$indicator)) {
+          mat_denom()
+        } else {
+          vacc_denom()
+        }
+        plot(coverage(), indicator = input$indicator, denominator = denom)
       })
 
       downloadCoverageServer(
         id = 'anc4_download',
         data = coverage,
-        filename = reactive(paste0('anc4_survey_', denominator())),
+        filename = reactive(paste0('anc4_survey_', mat_denom())),
         indicator = reactive('anc4'),
-        denominator = denominator,
+        denominator = mat_denom,
         data_fn = filter_coverage,
         sheet_name = reactive(i18n$t("title_anc4")),
         i18n = i18n
@@ -153,9 +168,9 @@ nationalCoverageServer <- function(id, cache, i18n) {
       downloadCoverageServer(
         id = 'ideliv_download',
         data = coverage,
-        filename = reactive(paste0('ideliv_survey_', denominator())),
+        filename = reactive(paste0('ideliv_survey_', mat_denom())),
         indicator = reactive('instdeliveries'),
-        denominator = denominator,
+        denominator = mat_denom,
         data_fn = filter_coverage,
         sheet_name = reactive(i18n$t("title_ideliv_coverage")),
         i18n = i18n
@@ -164,9 +179,9 @@ nationalCoverageServer <- function(id, cache, i18n) {
       downloadCoverageServer(
         id = 'lbw_download',
         data = coverage,
-        filename = reactive(paste0('lbw_survey_', denominator())),
+        filename = reactive(paste0('lbw_survey_', mat_denom())),
         indicator = reactive('low_bweight'),
-        denominator = denominator,
+        denominator = mat_denom,
         data_fn = filter_coverage,
         sheet_name = reactive(i18n$t("title_lbw_coverage")),
         i18n = i18n
@@ -175,9 +190,9 @@ nationalCoverageServer <- function(id, cache, i18n) {
       downloadCoverageServer(
         id = 'penta1_download',
         data = coverage,
-        filename = reactive(paste0('penta1_survey_', denominator())),
+        filename = reactive(paste0('penta1_survey_', mat_denom())),
         indicator = reactive('penta1'),
-        denominator = denominator,
+        denominator = mat_denom,
         data_fn = filter_coverage,
         sheet_name = reactive(i18n$t("title_penta1_coverage")),
         i18n = i18n
@@ -186,24 +201,24 @@ nationalCoverageServer <- function(id, cache, i18n) {
       downloadCoverageServer(
         id = 'measles1_download',
         data = coverage,
-        filename = reactive(paste0('measles1_survey_', denominator())),
+        filename = reactive(paste0('measles1_survey_', vacc_denom())),
         indicator = reactive('measles1'),
-        denominator = denominator,
+        denominator = vacc_denom,
         data_fn = filter_coverage,
         sheet_name = reactive(i18n$t("title_mcv1_coverage")),
         i18n = i18n
       )
 
-      downloadCoverageServer(
-        id = 'custom_download',
-        data = coverage,
-        filename = reactive(paste0(input$indicator, '_survey_', denominator())),
-        indicator = reactive(input$indicator),
-        denominator = denominator,
-        data_fn = filter_coverage,
-        sheet_name = reactive(paste(input$indicator, i18n$t("title_coverage"))),
-        i18n = i18n
-      )
+      # downloadCoverageServer(
+      #   id = 'custom_download',
+      #   data = coverage,
+      #   filename = reactive(paste0(input$indicator, '_survey_', if (is_maternal_indicator(input$indicator)) mat_denom() else vacc_denom())),
+      #   indicator = reactive(input$indicator),
+      #   denominator = if (is_maternal_indicator(input$indicator)) mat_denom else vacc_denom,
+      #   data_fn = filter_coverage,
+      #   sheet_name = reactive(paste(input$indicator, i18n$t("title_coverage"))),
+      #   i18n = i18n
+      # )
 
       contentHeaderServer(
         'national_coverage',

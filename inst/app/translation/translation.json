@@ -1077,38 +1077,38 @@
     },
     {
       "key": "title_nmr",
-      "en": "Neonatal Mortality Rate",
-      "fr": "Taux de mortalité néonatale"
+      "en": "Neonatal Mortality (/1k LB, proportion)",
+      "fr": "Mortalité néonatale (/1k NV, proportion)"
     },
     {
       "key": "title_pnmr",
-      "en": "Post Neonatal Mortality Rate",
-      "fr": "Taux de mortalité post-néonatale"
+      "en": "Post-Neonatal Mortality (/1k LB, proportion)",
+      "fr": "Mortalité post-néonatale (/1k NV, proportion)"
     },
     {
       "key": "title_twin_rate",
-      "en": "Twin Rate",
-      "fr": "Taux de naissances gémellaires"
+      "en": "Twin Births (% deliveries, proportion)",
+      "fr": "Naissances gémellaires (% accouchements, proportion)"
     },
     {
       "key": "title_pregnancy_loss",
-      "en": "Pregnancy Loss",
-      "fr": "Perte de grossesse"
+      "en": "Pregnancy Loss (% pregnancies, proportion)",
+      "fr": "Perte de grossesse (% grossesses, proportion)"
     },
     {
       "key": "title_still_birth_rate",
-      "en": "Still Birth Rate",
-      "fr": "Taux de mortinatalité"
+      "en": "Stillbirth Rate (/1k births, proportion)",
+      "fr": "Taux de mortinatalité (/1k naissances, proportion)"
     },
     {
       "key": "title_anc1_survey",
-      "en": "ANC1 Survey",
-      "fr": "Enquête ANC1"
+      "en": "ANC1 Coverage from Survey (%)",
+      "fr": "Couverture ANC1 selon l’enquête (%)"
     },
     {
       "key": "title_penta1_survey",
-      "en": "Penta1 Survey",
-      "fr": "Enquête Penta1"
+      "en": "Penta1 Coverage from Survey (%)",
+      "fr": "Couverture Penta1 selon l’enquête (%)"
     },
     {
       "key": "title_penta3_survey",
@@ -1832,8 +1832,13 @@
 },
 {
   "key": "opt_ratio_fac_pop",
-  "en": "Health System Performance",
+  "en": "Health Facility Density",
   "fr": "Densité des établissements de santé"
+},
+{
+  "key": "opt_ratio_hos_pop",
+  "en": "Hospital Density/10,000 population",
+  "fr": "Densité des hôpitaux pour 10 000 habitants"
 },
 {
   "key": "opt_ratio_hstaff_pop",
@@ -1942,13 +1947,13 @@
 },
 {
   "key": "opt_mmr_ratio",
-  "en": "Maternal Death Ratio",
-  "fr": "Ratio des décès maternels"
+  "en": "Institutional MMR",
+  "fr": "Taux de mortalité maternelle institutionnelle"
 },
 {
   "key": "opt_sbr_ratio",
-  "en": "Stillbirth Ratio",
-  "fr": "Ratio des mortinaissances"
+  "en": "Institutional SBR",
+  "fr": "Taux de mortinaissance institutionnelle"
 },
 {
   "key": "opt_maternal_coverage",

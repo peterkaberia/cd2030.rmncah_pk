@@ -89,5 +89,6 @@ plot.cd_service_utilization <- function(x, plot_type = c('opd', 'ipd', 'under5',
     geom_point(aes(y = !!sym(labels_val$y2), color = labels_val$y2_label), size = 2) +
     geom_line(aes(y = !!sym(labels_val$y2), color = labels_val$y2_label), size = 1) +
     labs(title = labels_val$title, y = labels_val$y_label, x = 'Year') +
+    scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25), expand = expansion(mult = c(0, 0.1))) +
     cd_plot_theme()
 }

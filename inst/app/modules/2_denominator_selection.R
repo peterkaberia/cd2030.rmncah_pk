@@ -78,6 +78,7 @@ denominatorSelectionServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       denominatorInputServer('denominator', cache, allowInput = TRUE)
+      denominatorInputServer('maternal_denominator', cache, allowInput = TRUE, maternal = TRUE)
 
       data <- reactive({
         req(cache())
