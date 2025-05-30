@@ -111,6 +111,11 @@
       "fr": "Couverture infranationale"
     },
     {
+      "key": "title_national_inequality",
+      "en": "National Inequality",
+      "fr": "Inégalités nationales"
+    },
+    {
       "key": "title_subnational_inequality",
       "en": "Sub-National Inequality",
       "fr": "Inégalités infranationales"
@@ -1984,6 +1989,26 @@
   "key": "title_csection_survey",
   "en": "Caesarean Section Survey",
   "fr": "Enquête sur les accouchements par césarienne"
+},
+{
+  "key": "title_family_planning",
+  "en": "Family Planning",
+  "fr": "Planification familiale"
+},
+{
+  "key": "title_fpet",
+  "en": "FPET FP Projection",
+  "fr": "Projection de la PF par FPET"
+},
+{
+  "key": "btn_upload_fpet_data",
+  "en": "Upload FPET data",
+  "fr": "Téléverser les données FPET"
+},
+{
+  "key": "fpet_projection_option",
+  "en": "FPET Projections Options",
+  "fr": "Options de projection FPET"
 }
   ]
 }
