@@ -115,6 +115,7 @@ plot.cd_mortality_ratio <- function(x, plot_type = c('mmr', 'sbr'), lbr_mean = 0
     geom_line(size = 2) +
     geom_point(size = 13) +
     geom_text(aes(label = rat), color = "black", size = 4) +
+    scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25), expand = expansion(mult = c(0, 0.1))) +
     labs(
       title = label_values$title,
       x = label_values$x,

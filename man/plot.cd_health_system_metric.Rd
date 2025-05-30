@@ -7,8 +7,9 @@
 \method{plot}{cd_health_system_metric}(
   x,
   indicator = c("score_total", "score_infrastructure", "score_workforce",
-    "score_utilization", "ratio_fac_pop", "ratio_hstaff_pop", "ratio_bed_pop",
-    "ratio_opd_pop", "ratio_ipd_pop", "ratio_opd_u5_pop", "ratio_ipd_u5_pop"),
+    "score_utilization", "ratio_fac_pop", "ratio_hos_pop", "ratio_hstaff_pop",
+    "ratio_bed_pop", "ratio_opd_pop", "ratio_ipd_pop", "ratio_opd_u5_pop",
+    "ratio_ipd_u5_pop"),
   national_score = NULL,
   target = NULL
 )

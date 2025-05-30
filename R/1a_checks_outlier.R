@@ -38,20 +38,19 @@ calculate_outliers_summary <- function(.data, admin_level = c('national', 'admin
   admin_level <- arg_match(admin_level)
   admin_level_cols <- get_admin_columns(admin_level, region)
 
-  allindicators <- get_all_indicators()
-  ipd_indicators <- get_indicator_groups()['ipd']
-  four_indicator <- paste0(allindicators[which(!allindicators %in% ipd_indicators)], '_outlier5std')
+  all_indicators <- get_all_indicators()
+  ipd <- get_indicator_groups()[['ipd']]
+  four_indicators <- paste0(setdiff(all_indicators, ipd), '_outlier5std')
+
+  outlier_cols <- paste0(all_indicators, '_outlier5std')
 
   data <- .data %>%
-    calculate_outlier_core(indicators = allindicators, admin_level = admin_level, region = region) %>%
-    summarise(
-      across(ends_with('_outlier5std'), mean, na.rm = TRUE),
-      .by =c(admin_level_cols, 'year')
-    ) %>%
+    calculate_outlier_core(indicators = all_indicators, admin_level = admin_level, region = region) %>%
+    summarise(across(any_of(outlier_cols), mean, na.rm = TRUE), .by =c(admin_level_cols, 'year')) %>%
     mutate(
-      mean_out_all = rowMeans(select(., ends_with('_outlier5std')), na.rm = TRUE),
-      mean_out_four = rowMeans(select(., any_of(four_indicator)), na.rm = TRUE),
-      across(c(ends_with('_outlier5std'), starts_with('mean_out_')), ~ round((1 - .x) * 100, 0))
+      mean_out_all = rowMeans(pick(any_of(outlier_cols)), na.rm = TRUE),
+      mean_out_four = rowMeans(pick(any_of(four_indicators)), na.rm = TRUE),
+      across(c(any_of(outlier_cols), starts_with('mean_out_')), ~ round((1 - .x) * 100, 0))
     )
 
   new_tibble(
@@ -93,22 +92,21 @@ calculate_district_outlier_summary <- function(.data, region = NULL) {
 
   check_cd_data(.data)
 
-  allindicators <- get_all_indicators()
-  ipd_indicators <- get_indicator_groups()['ipd']
-  four_indicator <- paste0(allindicators[which(!allindicators %in% ipd_indicators)], '_outlier5std')
+  all_indicators <- get_all_indicators()
+  ipd <- get_indicator_groups()[['ipd']]
+  four_indicators <- paste0(setdiff(all_indicators, ipd), '_outlier5std')
+
+  outlier_cols <- paste0(all_indicators, '_outlier5std')
 
   data <- .data %>%
-    calculate_outlier_core(indicators = allindicators, admin_level = 'district') %>%
+    calculate_outlier_core(indicators = all_indicators, admin_level = 'district') %>%
     filter(if(!is.null(region)) adminlevel_1 == region else TRUE) %>%
-    summarise(
-      across(ends_with('_outlier5std'), ~ robust_max(.)),
-      .by = c(district, year)
-    ) %>%
-    summarise(across(ends_with('_outlier5std'), mean, na.rm = TRUE), .by = year) %>%
+    summarise(across(all_of(outlier_cols), robust_max), .by = c(district, year)) %>%
+    summarise(across(all_of(outlier_cols), mean, na.rm = TRUE), .by = year) %>%
     mutate(
-      mean_out_all = rowMeans(select(., ends_with('_outlier5std')), na.rm = TRUE),
-      mean_out_four = rowMeans(select(., any_of(four_indicator)), na.rm = TRUE),
-      across(c(ends_with('_outlier5std'), starts_with('mean_out_')), ~ round((1 - .x) * 100, 2))
+      mean_out_all = rowMeans(pick(all_of(outlier_cols)), na.rm = TRUE),
+      mean_out_four = rowMeans(pick(all_of(four_indicators)), na.rm = TRUE),
+      across(c(all_of(outlier_cols), starts_with("mean_out_")), ~ round((1 - .x) * 100, 2))
     )
 
   new_tibble(
@@ -196,7 +194,7 @@ calculate_outlier_core <- function(.data, indicators, admin_level = c('national'
   group_vars <- get_admin_columns(admin_level, region)
 
   .data %>%
+    filter(if (!is.null(region)) adminlevel_1 == region else TRUE) %>%
     summarise(across(any_of(indicators), mean, na.rm = TRUE), .by = c(group_vars, 'year', 'month')) %>%
-    add_outlier5std_column(indicators = indicators, group_by = group_vars) %>%
-    filter(if (!is.null(region)) adminlevel_1 == region else TRUE)
+    add_outlier5std_column(indicators = indicators, group_by = group_vars)
 }

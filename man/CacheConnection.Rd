@@ -94,6 +94,8 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-save_to_disk}{\code{CacheConnection$save_to_disk()}}
 \item \href{#method-CacheConnection-append_page_note}{\code{CacheConnection$append_page_note()}}
 \item \href{#method-CacheConnection-get_notes}{\code{CacheConnection$get_notes()}}
+\item \href{#method-CacheConnection-check_coverage_params}{\code{CacheConnection$check_coverage_params()}}
+\item \href{#method-CacheConnection-calculate_inequality}{\code{CacheConnection$calculate_inequality()}}
 \item \href{#method-CacheConnection-reactive}{\code{CacheConnection$reactive()}}
 \item \href{#method-CacheConnection-set_language}{\code{CacheConnection$set_language()}}
 \item \href{#method-CacheConnection-set_cache_path}{\code{CacheConnection$set_cache_path()}}
@@ -228,6 +230,24 @@ Retrieve notes for a given page/object.
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-check_coverage_params"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-check_coverage_params}{}}}
+\subsection{Method \code{check_coverage_params()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$check_coverage_params()}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-calculate_inequality"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-calculate_inequality}{}}}
+\subsection{Method \code{calculate_inequality()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$calculate_inequality(admin_level)}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheConnection-reactive"></a>}}

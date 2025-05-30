@@ -20,23 +20,23 @@ mortalityUI <- function(id, i18n) {
         ),
 
         tabPanel(
-          title = i18n$t("opt_ratio_md_sb"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('ratio_md_sb'))),
-            column(12, tagList(
-              column(4, downloadButtonUI(ns('ratio_md_sb_plot'))),
-              column(4, downloadButtonUI(ns('ratio_md_sb_data')))
-            ))
-          )
-        ),
-
-        tabPanel(
           title = i18n$t("opt_sbr_inst"),
           fluidRow(
             column(12, plotCustomOutput(ns('sbr_inst'))),
             column(12, tagList(
               column(4, downloadButtonUI(ns('sbr_inst_plot'))),
               column(4, downloadButtonUI(ns('sbr_inst_data')))
+            ))
+          )
+        ),
+
+        tabPanel(
+          title = i18n$t("opt_ratio_md_sb"),
+          fluidRow(
+            column(12, plotCustomOutput(ns('ratio_md_sb'))),
+            column(12, tagList(
+              column(4, downloadButtonUI(ns('ratio_md_sb_plot'))),
+              column(4, downloadButtonUI(ns('ratio_md_sb_data')))
             ))
           )
         ),
@@ -158,12 +158,12 @@ mortalityServer <- function(id, cache, i18n) {
 
       output$mmr_ratio <- renderCustomPlot({
         req(mortality_ratio(), lbr_mean())
-        plot(ratio_calc, 'mmr', lbr_mean())
+        plot(mortality_ratio(), 'mmr', lbr_mean())
       })
 
       output$sbr_ratio <- renderCustomPlot({
         req(mortality_ratio(), lbr_mean())
-        plot(ratio_calc, 'sbr', lbr_mean())
+        plot(mortality_ratio(), 'sbr', lbr_mean())
       })
     }
   )

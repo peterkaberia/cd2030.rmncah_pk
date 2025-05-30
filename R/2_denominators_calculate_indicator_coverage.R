@@ -44,6 +44,7 @@
 calculate_indicator_coverage <- function(.data,
                                          admin_level = c("national", "adminlevel_1", "district"),
                                          un_estimates = NULL,
+                                         region = NULL,
                                          sbr = 0.02,
                                          nmr = 0.025,
                                          pnmr = 0.024,
@@ -55,12 +56,14 @@ calculate_indicator_coverage <- function(.data,
   check_cd_data(.data)
   check_scalar_integerish(survey_year)
   admin_level <- arg_match(admin_level)
-  admin_level_cols <- get_admin_columns(admin_level)
-  country_iso <- attr(.data, "iso3")
+  admin_level_cols <- get_admin_columns(admin_level, region)
+  admin_level_cols <- c(admin_level_cols, 'year')
+  country_iso <- attr_or_abort(.data, 'iso3')
 
   population <- calculate_populations(.data,
     admin_level = admin_level,
     un_estimates = un_estimates,
+    region = region,
     sbr = sbr, nmr = nmr, pnmr = pnmr,
     anc1survey = anc1survey, dpt1survey = dpt1survey,
     twin = twin, preg_loss = preg_loss
@@ -69,33 +72,35 @@ calculate_indicator_coverage <- function(.data,
 
   derived_data <- get_indicator_without_opd_ipd() %>%
     map(~ {
-      dt <- calculate_derived_coverage(population, .x, survey_year)
+      dt <- calculate_derived_coverage(population, .x, survey_year, region)
 
       if (!is.null(dt)) {
         dt %>%
-          select(year, any_of(admin_level_cols), ends_with("penta1derived"))
+          select(any_of(admin_level_cols), ends_with("penta1derived"))
       } else {
         dt
       }
     }) %>%
     compact() %>%
     unique() %>%
-    reduce(coalesce_join, by = c("year", admin_level_cols))
+    reduce(coalesce_join, by = admin_level_cols)
 
   output_data <- population %>%
-    left_join(derived_data, by = c("year", admin_level_cols))
+    left_join(derived_data, by = admin_level_cols)
 
   new_tibble(
     output_data,
     class = c("cd_indicator_coverage", "cd_population"),
     admin_level = admin_level,
-    iso3 = country_iso
+    iso3 = country_iso,
+    region = region
   )
 }
 
 calculate_populations <- function(.data,
                                   admin_level = c("national", "adminlevel_1", "district"),
                                   un_estimates = NULL,
+                                  region = NULL,
                                   sbr = 0.02,
                                   nmr = 0.025,
                                   pnmr = 0.024,
@@ -121,10 +126,12 @@ calculate_populations <- function(.data,
     totinftmeasles_anc1 <- totmeasles2_anc1 <- totpreg_penta1 <-
     otinftmeasles_penta1 <- totmeasles2_penta1 <- NULL
 
-  national_population <- prepare_population_metrics(.data, admin_level = admin_level, un_estimates = un_estimates)
-  indicator_numerator <- compute_indicator_numerator(.data, admin_level = admin_level)
+  admin_level <- arg_match(admin_level)
 
-  group_vars <- get_admin_columns(admin_level)
+  national_population <- prepare_population_metrics(.data, admin_level = admin_level, un_estimates = un_estimates, region = region)
+  indicator_numerator <- compute_indicator_numerator(.data, admin_level = admin_level, region = region)
+
+  group_vars <- get_admin_columns(admin_level, region)
 
   output_data <- national_population %>%
     inner_join(indicator_numerator, by = c(group_vars, "year")) %>%

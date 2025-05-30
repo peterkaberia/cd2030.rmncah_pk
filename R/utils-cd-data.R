@@ -71,6 +71,18 @@ get_country_iso3 <- function(.data) {
   attr_or_abort(.data, "iso3")
 }
 
+#' Detemine if an indicator is maternal indicator
+#'
+#' Default grouping of indicators used in CD2030 coverage framework
+#'
+#' @return TRUE if and indicator is maternal
+#'
+#' @export
+is_maternal_indicator <- function(indicator) {
+  groups <- get_indicator_groups()
+  indicator %in% c(groups$anc, groups$idelv)
+}
+
 #' Get Indicator Groups
 #'
 #' Default grouping of indicators used in CD2030 coverage framework

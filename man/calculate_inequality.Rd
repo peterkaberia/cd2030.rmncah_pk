@@ -8,6 +8,7 @@ calculate_inequality(
   .data,
   admin_level = c("adminlevel_1", "district"),
   un_estimates,
+  region = NULL,
   sbr = 0.02,
   nmr = 0.025,
   pnmr = 0.024,

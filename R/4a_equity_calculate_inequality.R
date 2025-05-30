@@ -47,6 +47,7 @@
 calculate_inequality <- function(.data,
                                  admin_level = c("adminlevel_1", "district"),
                                  un_estimates,
+                                 region = NULL,
                                  sbr = 0.02,
                                  nmr = 0.025,
                                  pnmr = 0.024,
@@ -60,28 +61,45 @@ calculate_inequality <- function(.data,
   # Validation
   check_cd_data(.data)
   admin_level <- arg_match(admin_level)
-  admin_level_col <- get_admin_columns(admin_level)
+  admin_level_col <- get_admin_columns(admin_level, region)
+  admin_level_col <- c(admin_level_col, 'year')
+
+  level <- if (admin_level == 'adminlevel_1' && !is.null(region)) {
+    'adminlevel_1'
+  } else {
+    'national'
+  }
+
+  print(level)
 
   national_data <- calculate_indicator_coverage(.data,
-    admin_level = "national",
+    admin_level = level,
     un_estimates = un_estimates,
     sbr = sbr, nmr = nmr, pnmr = pnmr,
     anc1survey = anc1survey, dpt1survey = dpt1survey,
     survey_year = survey_year, twin = twin, preg_loss = preg_loss
   ) %>%
-    select(year, matches("^cov_|^tot"), -ends_with("_un")) %>%
+    filter(if (is.null(region)) TRUE else adminlevel_1 == region) %>%
+    select(any_of(admin_level_col), matches("^cov_|^tot"), -ends_with("_un")) %>%
     rename_with(~ paste0("nat_", .x), matches("^cov_|^tot"))
 
   subnational_data <- calculate_indicator_coverage(.data,
     admin_level = admin_level,
+    region = region,
     sbr = sbr, nmr = nmr, pnmr = pnmr,
     anc1survey = anc1survey, dpt1survey = dpt1survey,
     survey_year = survey_year, twin = twin, preg_loss = preg_loss
   ) %>%
-    select(year, any_of(admin_level_col), matches("^cov_|^tot"))
+    select(any_of(admin_level_col), matches("^cov_|^tot"))
+
+  join_keys <- switch (
+    level,
+    national = 'year',
+    adminlevel_1 = c('adminlevel_1', 'year')
+  )
 
   combined_data <- subnational_data %>%
-    left_join(national_data, join_by(year)) %>%
+    left_join(national_data, by = join_keys) %>%
     mutate(
       across(starts_with("cov_"), ~ abs(.x - get(paste0("nat_", cur_column()))), .names = "diff_{.col}"),
       across(starts_with("tot"), ~ .x / get(paste0("nat_", cur_column())), .names = "popshare_{.col}")
@@ -131,7 +149,8 @@ calculate_inequality <- function(.data,
   new_tibble(
     combined_data,
     class = "cd_inequality",
-    admin_level = admin_level
+    admin_level = admin_level,
+    region = region
   )
 }
 
@@ -159,17 +178,19 @@ calculate_inequality <- function(.data,
 #' @export
 filter_inequality <- function(.data,
                               indicator,
-                              denominator = c("dhis2", "anc1", "penta1", "penta1derived"),
-                              ...) {
-  # check_cd_inequality(.data)
+                              denominator = c("dhis2", "anc1", "penta1", "penta1derived")) {
+
+  admin_level <- attr_or_abort(.data, "admin_level")
+
   indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator)
 
   pop_col <- get_population_column(indicator, denominator)
   dhis_col <- paste("cov", indicator, denominator, sep = "_")
+  admin_col <- get_admin_columns(admin_level)
 
   .data %>%
-    select(year, any_of(pop_col), ends_with(dhis_col), ends_with(pop_col)) %>%
+    select(year, any_of(c(pop_col, admin_col)), ends_with(dhis_col), ends_with(pop_col)) %>%
     rename_with(~ str_remove(.x, paste0("_", dhis_col)), ends_with(dhis_col)) %>%
     select(-any_of(paste0("nat_", pop_col))) %>%
     rename_with(~ str_remove(.x, paste0("_", pop_col)), ends_with(pop_col))

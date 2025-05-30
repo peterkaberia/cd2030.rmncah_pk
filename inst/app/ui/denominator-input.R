@@ -12,7 +12,7 @@ denominatorInputUI <- function(id, i18n, label = 'title_denominator') {
   )
 }
 
-denominatorInputServer <- function(id, cache, allowInput = FALSE) {
+denominatorInputServer <- function(id, cache, allowInput = FALSE, maternal = FALSE) {
   stopifnot(is.reactive(cache))
 
   moduleServer(
@@ -22,7 +22,7 @@ denominatorInputServer <- function(id, cache, allowInput = FALSE) {
 
       denominator <- reactive({
         req(cache())
-        cache()$denominator
+        if (maternal) cache()$maternal_denominator else cache()$denominator
       })
 
       observe({
@@ -36,7 +36,11 @@ denominatorInputServer <- function(id, cache, allowInput = FALSE) {
 
       observeEvent(input$denominator, {
         req(cache(), input$denominator, allowInput)
-        cache()$set_denominator(input$denominator)
+        if (maternal) {
+          cache()$set_maternal_denominator(input$denominator)
+        } else {
+          cache()$set_denominator(input$denominator)
+        }
       })
 
       return(denominator)

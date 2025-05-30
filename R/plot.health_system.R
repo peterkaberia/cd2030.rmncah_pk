@@ -157,6 +157,7 @@ plot.cd_health_system_metric <- function(x,
                                            'score_workforce',
                                            'score_utilization',
                                            'ratio_fac_pop',
+                                           'ratio_hos_pop',
                                            'ratio_hstaff_pop',
                                            'ratio_bed_pop',
                                            'ratio_opd_pop',
@@ -244,7 +245,7 @@ plot.cd_health_system_metric <- function(x,
   lab_options <- labels[[indicator]]
 
   nat_density <- paste0('National level density: ', round(national_score, 1))
-  target_label <- paste0('Target: ', round(as.numeric(target, 1)))
+  target_label <- paste0('Benchmark: ', round(as.numeric(target, 1)))
 
   p <- x %>%
     ggplot(aes(x = reorder(adminlevel_1, !!sym(indicator)), y = !!sym(indicator))) +
@@ -304,10 +305,13 @@ plot_national_health_metric <- function(.data, metric = c('performance', 'densit
       )
     ),
     density = list(
-      columns = c('ratio_fac_pop', 'ratio_hstaff_pop', 'ratio_bed_pop', 'ratio_opd_pop', 'ratio_ipd_pop'),
-      labels = c("Density of Facilities *", "Density of core health workforce *", "Density of beds *", "Ratio OPD/Population **", "Ratio IPD/Population ***"),
+      # columns = c('ratio_fac_pop', 'ratio_hstaff_pop', 'ratio_bed_pop', 'ratio_opd_pop', 'ratio_ipd_pop'),
+      # labels = c("Density of Facilities *", "Density of core health workforce *", "Density of beds *", "Ratio OPD/Population **", "Ratio IPD/Population ***"),
+      columns = c('ratio_fac_pop', 'ratio_hstaff_pop', 'ratio_bed_pop'),
+      labels = c("Density of Facilities *", "Density of core health workforce *", "Density of beds *"),
       title = 'Health system density at national level',
-      caption = '* per 10,000 population\n** per person per year\n*** per 100 population per year'
+      # caption = '* per 10,000 population\n** per person per year\n*** per 100 population per year'
+      caption = '* per 10,000 population'
     )
   )
 

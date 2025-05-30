@@ -78,18 +78,20 @@ source('modules/2_denominator_selection.R')
 source('modules/2_derived_coverage.R')
 
 source('modules/3_national_coverage.R')
-source('modules/3_subnational_inequality.R')
+source('modules/3_national_inequality.R')
 source('modules/3_subnational_mapping.R')
 source('modules/3_low_reporting.R')
 source('modules/3_equity.R')
 
 source('modules/4_subnational_coverage.R')
+source('modules/4_subnational_inequality.R')
 
 source('modules/5_mortality.R')
 source('modules/6_service_utilization.R')
 source('modules/7_health_system_national.R')
 source('modules/7_health_system_subnational.R')
 source('modules/7_health_system_comparison.R')
+source('modules/family_planning.R')
 
 i18n <- init_i18n(translation_json_path = 'translation/translation.json')
 i18n$set_translation_language('fr')
@@ -163,8 +165,8 @@ ui <- dashboardPage(
                menuSubItem(i18n$t('title_national_coverage'),
                            tabName = 'national_coverage',
                            icon = icon('flag')),
-               menuSubItem(i18n$t('title_subnational_inequality'),
-                           tabName = 'subnational_inequality',
+               menuSubItem(i18n$t('title_national_inequality'),
+                           tabName = 'national_inequality',
                            icon = icon('balance-scale-right')),
                menuSubItem(i18n$t('title_global_coverage'),
                            tabName = 'low_reporting',
@@ -181,10 +183,10 @@ ui <- dashboardPage(
                icon = icon('globe-africa'),
                menuSubItem(i18n$t('title_subnational_coverage'),
                            tabName = 'subnational_coverage',
-                           icon = icon('map-marked'))#,
-               # menuSubItem(i18n$t('title_subnational_inequality'),
-               #             tabName = 'subnational_inequality',
-               #             icon = icon('balance-scale-right')),
+                           icon = icon('map-marked')),
+               menuSubItem(i18n$t('title_subnational_inequality'),
+                           tabName = 'subnational_inequality',
+                           icon = icon('balance-scale-right'))#,
                # menuSubItem(i18n$t('title_global_coverage'),
                #             tabName = 'low_reporting',
                #             icon = icon('user-slash')),
@@ -206,7 +208,13 @@ ui <- dashboardPage(
                menuSubItem(i18n$t('title_health_system_comparison'),
                            tabName = 'health_system_comparison',
                            icon = icon('user-slash'))
-      )
+      ),
+      menuItem(i18n$t('title_family_planning'),
+               tabName = 'family_planning',
+               icon = icon('globe-africa'),
+               menuSubItem(i18n$t('title_fpet'),
+                           tabName = 'fpet_projection',
+                           icon = icon('user-slash')))
     )
   ),
   body = dashboardBody(
@@ -287,6 +295,7 @@ ui <- dashboardPage(
       tabItem(tabName = 'denominator_selection', denominatorSelectionUI('denominator_selection', i18n = i18n)),
       tabItem(tabName = 'national_coverage', nationalCoverageUI('national_coverage', i18n = i18n)),
       tabItem(tabName = 'subnational_coverage', subnationalCoverageUI('subnational_coverage', i18n = i18n)),
+      tabItem(tabName = 'national_inequality', nationalInequalityUI('national_inequality', i18n = i18n)),
       tabItem(tabName = 'subnational_inequality', subnationalInequalityUI('subnational_inequality', i18n = i18n)),
       tabItem(tabName = 'low_reporting', lowReportingUI('low_reporting', i18n = i18n)),
       tabItem(tabName = 'subnational_mapping', subnationalMappingUI('subnational_mapping', i18n = i18n)),
@@ -295,7 +304,8 @@ ui <- dashboardPage(
       tabItem(tabName = 'service_utilization', serviceUtilizationUI('service_utilization', i18n = i18n)),
       tabItem(tabName = 'health_system_national', healthSystemNationalUI('health_system_national', i18n = i18n)),
       tabItem(tabName = 'health_system_subnational', healthSystemSubnationalUI('health_system_subnational', i18n = i18n)),
-      tabItem(tabName = 'health_system_comparison', healthSystemComparisonUI('health_system_comparison', i18n = i18n))
+      tabItem(tabName = 'health_system_comparison', healthSystemComparisonUI('health_system_comparison', i18n = i18n)),
+      tabItem(tabName = 'fpet_projection', familyPlanningUI('fpet_projection', i18n = i18n))
     ),
     tags$script(src = 'script.js')
   )
@@ -342,6 +352,7 @@ server <- function(input, output, session) {
   denominatorSelectionServer('denominator_selection', cache, i18n)
   nationalCoverageServer('national_coverage', cache, i18n)
   subnationalCoverageServer('subnational_coverage', cache, i18n)
+  nationalInequalityServer('national_inequality', cache, i18n)
   subnationalInequalityServer('subnational_inequality', cache, i18n)
   lowReportingServer('low_reporting', cache, i18n)
   subnationalMappingServer('subnational_mapping', cache, i18n)
@@ -351,6 +362,7 @@ server <- function(input, output, session) {
   healthSystemNationalServer('health_system_national', cache, i18n)
   healthSystemSubnationalServer('health_system_subnational', cache, i18n)
   healthSystemComparisonServer('health_system_comparison', cache, i18n)
+  familyPlanningServer('fpet_projection', cache, i18n)
   downloadReportServer('download_report', cache, i18n)
   saveCacheServe('save_cache', cache, i18n)
 

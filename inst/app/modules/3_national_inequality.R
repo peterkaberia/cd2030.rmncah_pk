@@ -1,8 +1,8 @@
-subnationalInequalityUI <- function(id, i18n) {
+nationalInequalityUI <- function(id, i18n) {
   ns <- NS(id)
 
   tagList(
-    contentHeader(ns('subnational_inequality'), i18n$t("title_subnational_inequality"), i18n = i18n),
+    contentHeader(ns('national_inequality'), i18n$t("title_national_inequality"), i18n = i18n),
     contentBody(
       box(
         title = i18n$t("title_analysis_options"),
@@ -16,7 +16,7 @@ subnationalInequalityUI <- function(id, i18n) {
       ),
 
       tabBox(
-        title = i18n$t("title_subnational_inequality"),
+        title = i18n$t("title_national_inequality"),
         width = 12,
 
         tabPanel(
@@ -75,15 +75,25 @@ subnationalInequalityUI <- function(id, i18n) {
   )
 }
 
-subnationalInequalityServer <- function(id, cache, i18n) {
+nationalInequalityServer <- function(id, cache, i18n) {
   stopifnot(is.reactive(cache))
 
   moduleServer(
     id = id,
     module = function(input, output, session) {
 
-      denominator <- denominatorInputServer('denominator', cache)
+      denominatorInputServer('denominator', cache)
       admin_level <- adminLevelInputServer('admin_level')
+
+      vacc_denom <- reactive({
+        req(cache())
+        cache()$denominator
+      })
+
+      mat_denom <- reactive({
+        req(cache())
+        cache()$maternal_denominator
+      })
 
       inequalities <- reactive({
         req(cache(), cache()$adjusted_data, cache()$survey_year, cache()$un_estimates,
@@ -107,41 +117,46 @@ subnationalInequalityServer <- function(id, cache, i18n) {
       })
 
       output$anc4 <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'anc4', denominator = denominator())
+        req(inequalities(), mat_denom())
+        plot(inequalities(), indicator = 'anc4', denominator = mat_denom())
       })
 
       output$ideliv <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'instdeliveries', denominator = denominator())
+        req(inequalities(), mat_denom())
+        plot(inequalities(), indicator = 'instdeliveries', denominator = mat_denom())
       })
 
       output$lbw <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'low_bweight', denominator = denominator())
+        req(inequalities(), mat_denom())
+        plot(inequalities(), indicator = 'low_bweight', denominator = mat_denom())
       })
 
       output$penta1 <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'penta1', denominator = denominator())
+        req(inequalities(), vacc_denom())
+        plot(inequalities(), indicator = 'penta1', denominator = vacc_denom())
       })
 
       output$measles1 <- renderCustomPlot({
-        req(inequalities(), denominator())
-        plot(inequalities(), indicator = 'measles1', denominator = denominator())
+        req(inequalities(), vacc_denom())
+        plot(inequalities(), indicator = 'measles1', denominator = vacc_denom())
       })
 
       output$custom_check <- renderCustomPlot({
-        req(inequalities(), denominator(), input$indicator)
-        plot(inequalities(), indicator = input$indicator, denominator = denominator())
+        req(inequalities(), input$indicator)
+        denom <- if (is_maternal_indicator(input$indicator)) {
+          mat_denom
+        } else {
+          vacc_denom
+        }
+        plot(inequalities(), indicator = input$indicator, denominator = denom())
       })
 
       downloadCoverageServer(
         id = 'anc4_download',
         data = inequalities,
-        filename = reactive(paste0('anc4_', admin_level(), '_inequality_', denominator())),
+        filename = reactive(paste0('anc4_', admin_level(), '_inequality_', mat_denom())),
         indicator = reactive('anc4'),
-        denominator =denominator,
+        denominator =mat_denom,
         data_fn = filter_inequality,
         i18n = i18n,
         sheet_name = reactive(i18n$t("title_anc4_inequality"))
@@ -150,9 +165,9 @@ subnationalInequalityServer <- function(id, cache, i18n) {
       downloadCoverageServer(
         id = 'ideliv_download',
         data = inequalities,
-        filename = reactive(paste0('ideliv_', admin_level(), '_inequality_', denominator())),
+        filename = reactive(paste0('ideliv_', admin_level(), '_inequality_', mat_denom())),
         indicator = reactive('instdeliveries'),
-        denominator =denominator,
+        denominator =mat_denom,
         data_fn = filter_inequality,
         i18n = i18n,
         sheet_name = reactive(i18n$t("title_ideliv_inequality"))
@@ -161,9 +176,9 @@ subnationalInequalityServer <- function(id, cache, i18n) {
       downloadCoverageServer(
         id = 'lbw_download',
         data = inequalities,
-        filename = reactive(paste0('lbw_', admin_level(), '_inequality_', denominator())),
+        filename = reactive(paste0('lbw_', admin_level(), '_inequality_', mat_denom())),
         indicator = reactive('low_bweight'),
-        denominator =denominator,
+        denominator =mat_denom,
         data_fn = filter_inequality,
         i18n = i18n,
         sheet_name = reactive(i18n$t("title_lbw_inequality"))
@@ -172,30 +187,30 @@ subnationalInequalityServer <- function(id, cache, i18n) {
       downloadCoverageServer(
         id = 'measles1_download',
         data = inequalities,
-        filename = reactive(paste0('measles1_', admin_level(), '_inequality_', denominator())),
+        filename = reactive(paste0('measles1_', admin_level(), '_inequality_', vacc_denom())),
         indicator = reactive('measles1'),
-        denominator = denominator,
+        denominator = vacc_denom,
         data_fn = filter_inequality,
         i18n = i18n,
         sheet_name = reactive(i18n$t("title_mcv1_inequality"))
       )
 
-      downloadCoverageServer(
-        id = 'custom_download',
-        data = inequalities,
-        filename = reactive(paste0(input$indicator, '_', admin_level(), '_inequality_', denominator())),
-        indicator = reactive(input$indicator),
-        denominator = denominator,
-        data_fn = filter_inequality,
-        i18n = i18n,
-        sheet_name = reactive(paste0(input$indicator, ' Inequality'))
-      )
+      # downloadCoverageServer(
+      #   id = 'custom_download',
+      #   data = inequalities,
+      #   filename = reactive(paste0(input$indicator, '_', admin_level(), '_inequality_', denominator())),
+      #   indicator = reactive(input$indicator),
+      #   denominator = denominator,
+      #   data_fn = filter_inequality,
+      #   i18n = i18n,
+      #   sheet_name = reactive(paste0(input$indicator, ' Inequality'))
+      # )
 
       contentHeaderServer(
-        'subnational_inequality',
+        'national_inequality',
         cache = cache,
         objects = pageObjectsConfig(input),
-        md_title = i18n$t("title_subnational_inequality"),
+        md_title = i18n$t("title_national_inequality"),
         md_file = '2_reporting_rate.md',
         i18n = i18n
       )
