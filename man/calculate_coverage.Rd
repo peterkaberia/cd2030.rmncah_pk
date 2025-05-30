@@ -9,6 +9,7 @@ calculate_coverage(
   admin_level = c("national", "adminlevel_1", "district"),
   survey_data,
   wuenic_data,
+  region = NULL,
   un_estimates = NULL,
   sbr = 0.02,
   nmr = 0.025,

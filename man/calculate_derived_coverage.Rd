@@ -4,7 +4,7 @@
 \alias{calculate_derived_coverage}
 \title{Generate Coverage Data with Derived Denominators}
 \usage{
-calculate_derived_coverage(.data, indicator, base_year)
+calculate_derived_coverage(.data, indicator, base_year, region = NULL)
 }
 \arguments{
 \item{.data}{A \code{cd_population_metrics} object containing indicator values and DHIS2 population.}

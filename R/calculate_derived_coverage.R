@@ -19,7 +19,7 @@
 #' calculate_derived_coverage(dhis_data, "penta1", 2019)
 #'
 #' @export
-calculate_derived_coverage <- function(.data, indicator, base_year) {
+calculate_derived_coverage <- function(.data, indicator, base_year, region = NULL) {
   check_cd_population(.data)
 
   # Get admin level attribute (national, adminlevel_1, district)
@@ -46,7 +46,7 @@ calculate_derived_coverage <- function(.data, indicator, base_year) {
   derived_denom_col <- sym(derived_denom)
 
   # Determine grouping columns based on admin level
-  group_cols <- get_admin_columns(admin_level)
+  group_cols <- get_admin_columns(admin_level, region)
 
   if (!indicator %in% colnames(.data)) {
     return(NULL)

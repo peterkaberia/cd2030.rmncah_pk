@@ -17,9 +17,6 @@ filter_coverage(
 \item{indicator}{Coverage indicators to include (e.g., \code{"penta3"}, \code{"measles1"}).}
 
 \item{denominator}{Denominator sources for coverage calculations (e.g., \code{"dhis2"}).}
-
-\item{region}{(Optional) Region for subnational filtering (e.g., \code{"Central Province"}).
-Required for subnational analyses.}
 }
 \value{
 A reshaped data frame with filtered indicators and denominators.

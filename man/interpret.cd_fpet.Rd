@@ -2,7 +2,7 @@
 % Please edit documentation in R/generate_fpet_summary.R
 \name{interpret.cd_fpet}
 \alias{interpret.cd_fpet}
-\title{Interpret FPET Trends}
+\title{Interpret FPET Results with Emphasis on Current Estimates}
 \usage{
 \method{interpret}{cd_fpet}(x, ...)
 }
@@ -12,8 +12,8 @@
 \item{...}{Unused.}
 }
 \value{
-A character string summarizing the trend for each indicator.
+A character string with interpretation summary.
 }
 \description{
-Provides a brief textual summary of FPET trends by indicator over time.
+Summarizes 2020 and 2024 estimates, and briefly mentions FPET projections to 2030.
 }

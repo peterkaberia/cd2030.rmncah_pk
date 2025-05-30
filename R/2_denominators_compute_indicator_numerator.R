@@ -28,7 +28,9 @@
 #' }
 #'
 #' @export
-compute_indicator_numerator <- function(.data, admin_level = c("national", "adminlevel_1", "district")) {
+compute_indicator_numerator <- function(.data,
+                                        admin_level = c("national", "adminlevel_1", "district"),
+                                        region = NULL) {
   year <- NULL
 
   # Validate inputs
@@ -36,7 +38,7 @@ compute_indicator_numerator <- function(.data, admin_level = c("national", "admi
 
   # Define grouping variables based on admin_level
   admin_level <- arg_match(admin_level)
-  group_vars <- get_admin_columns(admin_level)
+  group_vars <- get_admin_columns(admin_level, region)
 
   # Extract indicators from `indicator_groups` attribute
   all_indicators <- get_all_indicators()
@@ -51,6 +53,7 @@ compute_indicator_numerator <- function(.data, admin_level = c("national", "admi
 
   # Summarize data
   .data %>%
+    filter(if (is.null(region)) TRUE else adminlevel_1 == region) %>%
     summarise(across(all_of(all_indicators), sum, na.rm = TRUE), .by = c(group_vars, "year")) %>%
     arrange(year)
 }

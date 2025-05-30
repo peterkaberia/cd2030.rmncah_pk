@@ -180,6 +180,34 @@ CacheConnection <- R6::R6Class(
         filter(if (is.null(!!parameters)) TRUE else map_lgl(parameters, ~ identical(.x, !!parameters)))
     },
 
+    check_coverage_params = function() {
+      if (!is.null(self$adjusted_data) && !is.null(self$survey_year) && !is.null(self$un_estimates) &&
+          all(is.na(self$national_estimates))) {
+        return(TRUE)
+      }
+      return(FALSE)
+    },
+
+    calculate_inequality = function(admin_level) {
+      if (check_coverage_params()) {
+        cd_abort(c('x' = 'One or more paramters is missing for {.fun calculate_indicator_coverage}'))
+      }
+
+      rates <- self$national_estimates
+      calculate_inequality(self$adjusted_data,
+        admin_level = admin_level,
+        un_estimates = self$un_estimates,
+        sbr = rates$sbr,
+        nmr = rates$nmr,
+        pnmr = rates$pnmr,
+        anc1survey = rates$anc1,
+        dpt1survey = rates$penta1,
+        survey_year = self$survey_year,
+        twin = rates$twin_rate,
+        preg_loss = rates$preg_loss
+      )
+    },
+
     #' @description Return a reactive wrapper (for Shiny).
     reactive = function() {
       # Ensure the reactive stuff is initialized.

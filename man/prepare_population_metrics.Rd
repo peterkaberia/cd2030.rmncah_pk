@@ -7,7 +7,8 @@
 prepare_population_metrics(
   .data,
   admin_level = c("national", "adminlevel_1", "district"),
-  un_estimates = NULL
+  un_estimates = NULL,
+  region = NULL
 )
 }
 \arguments{

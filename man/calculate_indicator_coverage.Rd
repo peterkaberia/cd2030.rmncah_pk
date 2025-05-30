@@ -8,6 +8,7 @@ calculate_indicator_coverage(
   .data,
   admin_level = c("national", "adminlevel_1", "district"),
   un_estimates = NULL,
+  region = NULL,
   sbr = 0.02,
   nmr = 0.025,
   pnmr = 0.024,

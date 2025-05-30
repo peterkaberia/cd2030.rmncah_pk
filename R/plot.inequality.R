@@ -29,7 +29,8 @@ plot.cd_inequality <- function(x,
                                ...) {
   year <- nat <- madm <- NULL
 
-  admin_level <- attr(x, "admin_level")
+  admin_level <- attr_or_abort(x, "admin_level")
+  region <- attr_or_null(x, 'region')
   indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator)
   data <- filter_inequality(x, indicator, denominator)
@@ -60,7 +61,7 @@ plot.cd_inequality <- function(x,
 
   subtitle <- switch(admin_level,
     district = "Subnational unit: district level",
-    adminlevel_1 = "Subnational unit: admin 1 level"
+    adminlevel_1 = str_glue("Subnational unit: {if (is.null(region)) 'admin 1 level' else region}")
   )
 
   caption <- switch(denominator,
@@ -75,12 +76,13 @@ plot.cd_inequality <- function(x,
   breaks <- scales::pretty_breaks(n = 11)(limits)
   second_last_break <- sort(breaks, decreasing = TRUE)[2]
   max_break <- robust_max(breaks, 0)
+  color <- if (is.null(region)) "National coverage" else str_glue('{region} Coverage')
 
   ggplot(data) +
     geom_point(aes(x = year, y = !!sym(paste0("cov_", indicator, "_", denominator)), color = "Coverage at subnational unit"),
       size = 3
     ) +
-    geom_point(aes(x = year, y = nat, color = "National coverage"), size = 1.5, shape = 3, stroke = 1.5) +
+    geom_point(aes(x = year, y = nat, color = color), size = 1.5, shape = 3, stroke = 1.5) +
     geom_text(aes(x = year, y = second_last_break, label = round(madm, 2)),
       color = "black", fontface = "bold", vjust = 0.5, size = 4
     ) +
@@ -96,7 +98,7 @@ plot.cd_inequality <- function(x,
       breaks = breaks,
       labels = function(y) ifelse(y == second_last_break, "MADM", ifelse(y == max_break, "", as.character(y))) # Replace max_y - 10 with "MADM"
     ) +
-    scale_color_manual(values = c("Coverage at subnational unit" = "skyblue3", "National coverage" = "red")) +
+    scale_color_manual(values = set_names(c('skyblue3', 'red1'), c('Coverage at subnational unit', color))) +
     cd_plot_theme() +
     theme(
       panel.border = element_blank(),

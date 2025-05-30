@@ -6,7 +6,8 @@
 \usage{
 compute_indicator_numerator(
   .data,
-  admin_level = c("national", "adminlevel_1", "district")
+  admin_level = c("national", "adminlevel_1", "district"),
+  region = NULL
 )
 }
 \arguments{
