@@ -70,8 +70,6 @@ calculate_inequality <- function(.data,
     'national'
   }
 
-  print(level)
-
   national_data <- calculate_indicator_coverage(.data,
     admin_level = level,
     un_estimates = un_estimates,
@@ -181,6 +179,7 @@ filter_inequality <- function(.data,
                               denominator = c("dhis2", "anc1", "penta1", "penta1derived")) {
 
   admin_level <- attr_or_abort(.data, "admin_level")
+  region <- attr_or_null(.data, 'region')
 
   indicator <- arg_match(indicator, get_all_indicators())
   denominator <- arg_match(denominator)
@@ -189,9 +188,18 @@ filter_inequality <- function(.data,
   dhis_col <- paste("cov", indicator, denominator, sep = "_")
   admin_col <- get_admin_columns(admin_level)
 
-  .data %>%
+  data <- .data %>%
     select(year, any_of(c(pop_col, admin_col)), ends_with(dhis_col), ends_with(pop_col)) %>%
     rename_with(~ str_remove(.x, paste0("_", dhis_col)), ends_with(dhis_col)) %>%
     select(-any_of(paste0("nat_", pop_col))) %>%
     rename_with(~ str_remove(.x, paste0("_", pop_col)), ends_with(pop_col))
+
+  new_tibble(
+    data,
+    class = 'cd_inequality_filtered',
+    admin_level = admin_level,
+    region = region,
+    indicator = indicator,
+    denominator = denominator
+  )
 }

@@ -1,79 +1,34 @@
 subnationalMappingUI <- function(id, i18n) {
   ns <- NS(id)
 
-  tagList(
-    contentHeader(ns('subnational_mapping'), i18n$t("title_subnational_mapping"), i18n = i18n),
-    contentBody(
-      box(
-        title = i18n$t("title_analysis_options"),
-        status = 'primary',
-        width = 12,
-        solidHeader = TRUE,
+  contentDashboard(
+    dashboardId = ns('subnational_mapping'),
+    dashboardTitle = i18n$t('title_subnational_mapping'),
+    i18n = i18n,
+
+    optionsHeader = contentOptions(
+      title = i18n$t('title_analysis_options'),
+      column(3, denominatorInputUI(ns('denominator'), i18n)),
+      column(3, selectizeInput(ns('years'), label = i18n$t("title_select_years"), choice = NULL, multiple = TRUE)),
+      column(3, selectizeInput(ns('palette'), label = i18n$t("title_palette"), choices = c('Greens', 'Blues')))
+    ),
+
+    tabBox(
+      title = i18n$t('title_subnational_mapping'),
+      width = 12,
+
+      tabPanel(title = i18n$t("opt_anc4"), downloadCoverageUI(ns('anc4'))),
+      tabPanel(title = i18n$t("opt_ideliv"), downloadCoverageUI(ns('ideliv'))),
+      tabPanel(title = i18n$t("opt_lbw"), downloadCoverageUI(ns('lbw'))),
+      tabPanel(title = i18n$t("opt_penta1"), downloadCoverageUI(ns('penta1'))),
+      tabPanel(title = i18n$t("opt_mcv1"), downloadCoverageUI(ns('measles1'))),
+      tabPanel(
+        title = i18n$t("opt_custom_check"),
         fluidRow(
-          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
-                                               #'District' = 'district'))), # District is not support now
-          column(3, denominatorInputUI(ns('denominator'), i18n)),
-          column(3, selectizeInput(ns('years'), label = i18n$t("title_select_years"), choice = NULL, multiple = TRUE)),
-          column(3, selectizeInput(ns('palette'), label = i18n$t("title_palette"), choices = NULL))
-        )
-      ),
-
-      tabBox(
-        id = ns('coverage'),
-        title = i18n$t("title_coverage_level"),
-        width = 12,
-
-        tabPanel(
-          title = i18n$t("opt_anc4"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('anc4'))),
-            downloadCoverageUI(ns('anc4_download'))
-          )
+          column(3, selectizeInput(ns('indicator'), label = i18n$t("title_indicator"),
+                                   choices = c('Select' = '', get_indicator_without_opd_ipd())))
         ),
-
-        tabPanel(
-          title = i18n$t("opt_ideliv"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('ideliv'))),
-            downloadCoverageUI(ns('ideliv_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_lbw"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('lbw'))),
-            downloadCoverageUI(ns('lbw_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_penta1"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('penta1'))),
-            downloadCoverageUI(ns('penta1_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_mcv1"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('measles1'))),
-            downloadCoverageUI(ns('measles1_download'))
-          )
-        ),
-
-        tabPanel(
-          i18n$t("opt_custom_check"),
-          fluidRow(
-            column(3, selectizeInput(ns('indicator'), label = i18n$t("title_indicator"),
-                                     choices = c('Select' = '0', get_indicator_without_opd_ipd())))
-          ),
-          fluidRow(
-            column(12, plotCustomOutput(ns('custom'))),
-            column(3, downloadButtonUI(ns('custom_download'))),
-          )
-        )
+        downloadCoverageUI(ns('custom'))
       )
     )
   )
@@ -86,33 +41,11 @@ subnationalMappingServer <- function(id, cache, i18n) {
     id = id,
     module = function(input, output, session) {
 
-      admin_level <- adminLevelInputServer('admin_level')
       denominator <- denominatorInputServer('denominator', cache)
 
-      data <- reactive({
-        req(cache())
-        cache()$adjusted_data
-      })
-
-      country <- reactive({
-        req(cache())
-        cache()$country
-      })
-
-      un_estimates <- reactive({
-        req(cache())
-        cache()$un_estimates
-      })
-
-      dt <- reactive({
-        req(data(), cache()$survey_year, un_estimates(), all(!is.na(cache()$national_estimates)))
-
-
-        data() %>%
-          get_mapping_data(un_estimates = un_estimates(),
-                           rates = cache()$national_estimates,
-                           survey_year = cache()$survey_year,
-                           subnational_map = cache()$map_mapping)
+      mapping_dt <- reactive({
+        req(cache(), cache()$check_inequality_params)
+        cache()$get_mapping_data('adminlevel_1')
       })
 
       years <- reactive({
@@ -120,10 +53,52 @@ subnationalMappingServer <- function(id, cache, i18n) {
         cache()$mapping_years
       })
 
-      observe({
-        req(data())
+      anc4_mapping <- reactive({
+        req(mapping_dt(), input$palette)
+        mapping_dt() %>%
+          filter_mapping_data('anc4', denominator = cache()$get_denominator('anc4'),
+                              palette = input$palette, plot_year = years())
+      })
 
-        survey_years <- data() %>%
+      ideliv_mapping <- reactive({
+        req(mapping_dt(), input$palette)
+        mapping_dt() %>%
+          filter_mapping_data('instdeliveries', denominator = cache()$get_denominator('instdeliveries'),
+                              palette = input$palette, plot_year = years())
+      })
+
+      lbw_mapping <- reactive({
+        req(mapping_dt(), input$palette)
+        mapping_dt() %>%
+          filter_mapping_data('low_bweight', denominator = cache()$get_denominator('low_bweight'),
+                              palette = input$palette, plot_year = years())
+      })
+
+      penta1_mapping <- reactive({
+        req(mapping_dt(), input$palette)
+        mapping_dt() %>%
+          filter_mapping_data('penta1', denominator = cache()$get_denominator('penta1'),
+                              palette = input$palette, plot_year = years())
+      })
+
+      measles1_mapping <- reactive({
+        req(mapping_dt(), input$palette)
+        mapping_dt() %>%
+          filter_mapping_data('measles1', denominator = cache()$get_denominator('measles1'),
+                              palette = input$palette, plot_year = years())
+      })
+
+      custom_mapping <- reactive({
+        req(mapping_dt(), input$palette, input$indicator)
+        mapping_dt() %>%
+          filter_mapping_data(input$indicator, denominator = cache()$get_denominator(input$indicator),
+                              palette = input$palette, plot_year = years())
+      })
+
+      observe({
+        req(cache())
+
+        survey_years <- cache()$adjusted_data %>%
           distinct(year) %>%
           arrange(year) %>%
           pull(year)
@@ -137,173 +112,52 @@ subnationalMappingServer <- function(id, cache, i18n) {
         cache()$set_mapping_years(as.integer(input$years))
       })
 
-      observe({
-        req(input$coverage, input$indicator)
-
-        palette <- if (grepl('drop', input$coverage)) {
-          c("Reds", "Purples")
-        } else if (grepl('Coverage', input$coverage)) {
-          c("Greens", "Blues")
-        } else {
-          if (grepl('drop|under|zero', input$indicator)) {
-            c("Reds", "Purples")
-          } else {
-            c("Greens", "Blues")
-          }
-        }
-
-        updateSelectizeInput(session, 'palette', choices = palette)
-      })
-
-      output$anc4 <- renderCustomPlot({
-        req(dt())
-
-        title <- str_glue(i18n$t("title_distribution_of_anc4"))
-        plot(dt(), indicator = 'anc4',
-             denominator = denominator(),
-             palette = input$palette,
-             title = title,
-             plot_year = years())
-      })
-
-      output$ideliv <- renderCustomPlot({
-        req(dt())
-
-        title <- str_glue(i18n$t("title_distribution_of_ideliv"))
-        plot(dt(), indicator = 'instdeliveries',
-             denominator = denominator(),
-             palette = input$palette,
-             title = title,
-             plot_year = years())
-      })
-
-      output$lbw <- renderCustomPlot({
-        req(dt())
-
-        title <- str_glue(i18n$t("title_distribution_of_lbw"))
-        plot(dt(), indicator = 'low_bweight',
-             denominator = denominator(),
-             palette = input$palette,
-             title = title,
-             plot_year = years())
-      })
-
-
-      output$penta1 <- renderCustomPlot({
-        req(dt())
-
-        title <- str_glue(i18n$t("title_distribution_of_penta1"))
-        plot(dt(), indicator = 'penta1',
-             denominator = denominator(),
-             palette = input$palette,
-             title = title,
-             plot_year = years())
-      })
-
-      output$measles1 <- renderCustomPlot({
-        req(dt())
-
-        title <- str_glue(i18n$t("title_distribution_of_measles1"))
-        plot(dt(), indicator = 'measles1',
-             denominator = denominator(),
-             palette = input$palette,
-             title = title,
-             plot_year = years())
-      })
-
-      output$custom <- renderCustomPlot({
-        req(dt(), input$indicator != '0')
-
-        title <- str_glue(i18n$t("title_distribution_of_indicator"))
-        plot(dt(), indicator = input$indicator,
-             denominator = denominator(),
-             palette = input$palette,
-             title = title,
-             plot_year = years())
-      })
-
-      downloadPlot(
-        id = 'anc4_download',
-        filename = reactive(paste0('anc4_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = 'anc4',
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_anc4")),
-               plot_year = years())
-        }
+      downloadCoverageServer(
+        id = 'anc4',
+        filename = reactive(paste0('anc4_adminlevel_1_map_', cache()$get_denominator('anc4'))),
+        data_fn = anc4_mapping,
+        sheet_name = reactive(i18n$t("title_anc4")),
+        i18n = i18n
       )
 
-      downloadPlot(
-        id = 'ideliv_download',
-        filename = reactive(paste0('ideliv_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = 'instdeliveries',
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_ideliv")),
-               plot_year = years())
-        }
+      downloadCoverageServer(
+        id = 'ideliv',
+        filename = reactive(paste0('ideliv_adminlevel_1_map_', cache()$get_denominator('instdeliveries'))),
+        data_fn = ideliv_mapping,
+        sheet_name = reactive(i18n$t("title_ideliv")),
+        i18n = i18n
       )
 
-      downloadPlot(
-        id = 'lbw_download',
-        filename = reactive(paste0('lbw_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = 'lbw',
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_lbw")),
-               plot_year = years())
-        }
+      downloadCoverageServer(
+        id = 'lbw',
+        filename = reactive(paste0('lbw_adminlevel_1_map_', cache()$get_denominator('low_bweight'))),
+        data_fn = lbw_mapping,
+        sheet_name = reactive(i18n$t("title_lbw")),
+        i18n = i18n
       )
 
-      downloadPlot(
-        id = 'penta3_download',
-        filename = reactive(paste0('penta3_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = 'penta3',
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_penta3")),
-               plot_year = years())
-        }
+      downloadCoverageServer(
+        id = 'penta1',
+        filename = reactive(paste0('penta1_adminlevel_1_map_', cache()$get_denominator('penta1'))),
+        data_fn = penta1_mapping,
+        sheet_name = reactive(i18n$t("title_penta1")),
+        i18n = i18n
       )
 
-      downloadPlot(
-        id = 'mcv1_download',
-        filename = reactive(paste0('mcv1_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = 'measles1',
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_measles1")),
-               plot_year = years())
-        }
+      downloadCoverageServer(
+        id = 'measles1',
+        filename = reactive(paste0('measles1_adminlevel_1_map_', cache()$get_denominator('measles1'))),
+        data_fn = measles1_mapping,
+        sheet_name = reactive(i18n$t("title_measles1")),
+        i18n = i18n
       )
 
-      downloadPlot(
-        id = 'custom_download',
-        filename = reactive(paste0(input$indicator, '_', admin_level(), '_map_', denominator())),
-        data = dt,
-        i18n = i18n,
-        plot_function = function() {
-          plot(dt(), indicator = input$indicator,
-               denominator = denominator(),
-               palette = input$palette,
-               title = str_glue(i18n$t("title_distribution_of_indicator")),
-               plot_year = years())
-        }
+      downloadCoverageServer(
+        id = 'custom',
+        filename = reactive(paste0(input$indicator, '_adminlevel_1_map_', cache()$get_denominator(input$indicator))),
+        data_fn = custom_mapping,
+        sheet_name = reactive(paste(input$indicator, i18n$t("title_coverage"))),
+        i18n = i18n
       )
 
       contentHeaderServer(

@@ -54,6 +54,7 @@
 #' @importFrom sf st_make_valid
 #' @importFrom sf st_read
 #' @importFrom sf st_set_crs
+#' @importFrom sf st_set_geometry
 #' @importFrom sf st_transform
 #' @importFrom stringr str_detect
 #' @importFrom stringr str_ends

@@ -39,7 +39,7 @@ downloadButtonServer <- function(id, filename, extension, content, data, i18n, l
             type = 'starting_download',
             list(id = ns('download_button'), message = i18n$t(message))
           )
-          content(file)
+          content(file, check_data())
           session$sendCustomMessage(
             type = 'end_download',
             list(id = ns('download_button'), label = i18n$t(label))

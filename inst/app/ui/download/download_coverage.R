@@ -1,55 +1,48 @@
 downloadCoverageUI <- function(id) {
   ns <- NS(id)
-  tagList(
+  fluidRow(
+    column(12, plotCustomOutput(ns('display'))),
     column(3, downloadButtonUI(ns('plot'))),
     column(3, downloadButtonUI(ns('data')))
   )
 }
 
-downloadCoverageServer <- function(id, data, filename, indicator, denominator,
-                                   data_fn, i18n, region = reactive(NULL), sheet_name = 'Coverage') {
-  stopifnot(is.reactive(data))
+downloadCoverageServer <- function(id, filename, data_fn, sheet_name, i18n) {
+  stopifnot(is.reactive(data_fn))
   stopifnot(is.reactive(filename))
-  stopifnot(is.reactive(indicator))
-  stopifnot(is.reactive(denominator))
-  stopifnot(is.function(data_fn))
-  stopifnot(is.reactive(region))
   stopifnot(is.reactive(sheet_name))
 
   moduleServer(
     id = id,
     module = function(input, output, session) {
 
-      download_data <- reactive({
-        req(data(), indicator(), denominator())
-
-        data() %>%
-          data_fn(indicator = indicator(), denominator = denominator(), region = region())
+      output$display <- renderCustomPlot({
+        req(data_fn())
+        plot(data_fn())
       })
 
       downloadPlot(
         id = 'plot',
         filename = filename,
-        data = download_data,
+        data = data_fn,
         i18n = i18n,
-        plot_function = function() {
-          plot(data(), indicator = indicator(), denominator = denominator(), region = region())
+        plot_function = function(data) {
+          plot(data)
         }
       )
 
       downloadExcel(
         id = 'data',
         filename = filename,
-        data = download_data,
+        data = data_fn,
         i18n = i18n,
-        excel_write_function = function(wb) {
-          coverage <- download_data()
-
+        excel_write_function = function(wb, data) {
+          dt <- data %>%
+            select(-any_of('geometry'))
           addWorksheet(wb, sheet_name())
-          writeData(wb, sheet = sheet_name(), x = coverage, startCol = 1, startRow = 1)
+          writeData(wb, sheet = sheet_name(), x = dt, startCol = 1, startRow = 1)
         }
       )
-
     }
   )
 

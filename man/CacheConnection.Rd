@@ -81,7 +81,11 @@ from \code{.rds} files.
 
 \item{\code{survey_mapping}}{Gets survey mapping.}
 
-\item{\code{map_mapping}}{Gets map mapping.
+\item{\code{map_mapping}}{Gets map mapping.}
+
+\item{\code{check_inequality_params}}{checks if inputs for inequality calculations are available}
+
+\item{\code{check_coverage_params}}{checks if inputs for coverage calculations are available
 Update a field (with change tracking)}
 }
 \if{html}{\out{</div>}}
@@ -94,8 +98,11 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-save_to_disk}{\code{CacheConnection$save_to_disk()}}
 \item \href{#method-CacheConnection-append_page_note}{\code{CacheConnection$append_page_note()}}
 \item \href{#method-CacheConnection-get_notes}{\code{CacheConnection$get_notes()}}
-\item \href{#method-CacheConnection-check_coverage_params}{\code{CacheConnection$check_coverage_params()}}
+\item \href{#method-CacheConnection-calculate_indicator_coverage}{\code{CacheConnection$calculate_indicator_coverage()}}
 \item \href{#method-CacheConnection-calculate_inequality}{\code{CacheConnection$calculate_inequality()}}
+\item \href{#method-CacheConnection-calculate_coverage}{\code{CacheConnection$calculate_coverage()}}
+\item \href{#method-CacheConnection-get_mapping_data}{\code{CacheConnection$get_mapping_data()}}
+\item \href{#method-CacheConnection-get_denominator}{\code{CacheConnection$get_denominator()}}
 \item \href{#method-CacheConnection-reactive}{\code{CacheConnection$reactive()}}
 \item \href{#method-CacheConnection-set_language}{\code{CacheConnection$set_language()}}
 \item \href{#method-CacheConnection-set_cache_path}{\code{CacheConnection$set_cache_path()}}
@@ -232,22 +239,96 @@ Retrieve notes for a given page/object.
 }
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-CacheConnection-check_coverage_params"></a>}}
-\if{latex}{\out{\hypertarget{method-CacheConnection-check_coverage_params}{}}}
-\subsection{Method \code{check_coverage_params()}}{
+\if{html}{\out{<a id="method-CacheConnection-calculate_indicator_coverage"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-calculate_indicator_coverage}{}}}
+\subsection{Method \code{calculate_indicator_coverage()}}{
+Run coverage calculation using stored model parameters.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$check_coverage_params()}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$calculate_indicator_coverage(admin_level, region = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{admin_level}}{Administrative level ("adminlevel_1" or "district").}
+
+\item{\code{region}}{Optional region filter.}
+}
+\if{html}{\out{</div>}}
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheConnection-calculate_inequality"></a>}}
 \if{latex}{\out{\hypertarget{method-CacheConnection-calculate_inequality}{}}}
 \subsection{Method \code{calculate_inequality()}}{
+Run inequality calculation using stored model parameters.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$calculate_inequality(admin_level)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$calculate_inequality(admin_level, region = NULL)}\if{html}{\out{</div>}}
 }
 
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{admin_level}}{Administrative level ("adminlevel_1" or "district").}
+
+\item{\code{region}}{Optional region filter.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-calculate_coverage"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-calculate_coverage}{}}}
+\subsection{Method \code{calculate_coverage()}}{
+Run coverage calculation using stored model parameters.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$calculate_coverage(admin_level)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{admin_level}}{Administrative level ("adminlevel_1" or "district").}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-get_mapping_data"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-get_mapping_data}{}}}
+\subsection{Method \code{get_mapping_data()}}{
+Run coverage calculation using stored model parameters.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$get_mapping_data(admin_level)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{admin_level}}{Administrative level ("adminlevel_1" or "district").}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-get_denominator"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-get_denominator}{}}}
+\subsection{Method \code{get_denominator()}}{
+Return the appropriate denominator based on the indicator type.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$get_denominator(indicator)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{indicator}}{Character. Indicator name.}
+}
+\if{html}{\out{</div>}}
+}
+\subsection{Returns}{
+Character. Either the maternal or vaccination denominator.
+}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheConnection-reactive"></a>}}

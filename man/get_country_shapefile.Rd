@@ -2,25 +2,25 @@
 % Please edit documentation in R/5_mapping_get_mapping_data.R
 \name{get_country_shapefile}
 \alias{get_country_shapefile}
-\title{Retrieve Country Shapefile}
+\title{Load Country Shapefile for Mapping}
 \usage{
 get_country_shapefile(country_iso, level = c("admin_level_1", "district"))
 }
 \arguments{
-\item{country_iso}{A string specifying the ISO3 code of the country (e.g., 'KEN' for Kenya).}
+\item{country_iso}{A string with the ISO3 code of the country (e.g., \code{"KEN"}).}
 
-\item{level}{A string specifying the level of analysis. Options are:
+\item{level}{A character string specifying the admin level. One of:
 \itemize{
-\item \code{'adminlevel_1'}: First administrative level.
-\item \code{'district'}: District level.
+\item \code{"admin_level_1"} (default): First-level admin areas
+\item \code{"district"}: District-level admin areas
 }}
 }
 \value{
-A \code{sf} object containing the shapefile for the specified country and level.
+An \code{sf} object containing valid geometries for the specified country and level.
 }
 \description{
-\code{get_country_shapefile} retrieves the shapefile for a specified country and
-administrative level.
+Loads the shapefile of administrative boundaries for a given country and level.
+Ensures geometries are valid and standardized to WGS84 (EPSG:4326).
 }
 \examples{
 shapefile <- get_country_shapefile("KEN", level = "admin_level_1")
