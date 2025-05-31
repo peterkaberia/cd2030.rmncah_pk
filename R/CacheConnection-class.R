@@ -180,23 +180,23 @@ CacheConnection <- R6::R6Class(
         filter(if (is.null(!!parameters)) TRUE else map_lgl(parameters, ~ identical(.x, !!parameters)))
     },
 
-    check_coverage_params = function() {
-      if (!is.null(self$adjusted_data) && !is.null(self$survey_year) && !is.null(self$un_estimates) &&
-          all(is.na(self$national_estimates))) {
-        return(TRUE)
-      }
-      return(FALSE)
-    },
+    #' @description Run coverage calculation using stored model parameters.
+    #' @param admin_level Administrative level ("adminlevel_1" or "district").
+    #' @param region Optional region filter.
+    calculate_indicator_coverage = function(admin_level, region = NULL) {
+      check_required(admin_level)
 
-    calculate_inequality = function(admin_level) {
-      if (check_coverage_params()) {
-        cd_abort(c('x' = 'One or more paramters is missing for {.fun calculate_indicator_coverage}'))
+      if (!self$check_inequality_params) {
+        cd_abort(c('x' = 'One or more parameters is missing for {.fun calculate_indicator_coverage}'))
       }
 
       rates <- self$national_estimates
-      calculate_inequality(self$adjusted_data,
+
+      calculate_indicator_coverage(
+        .data = self$adjusted_data,
         admin_level = admin_level,
         un_estimates = self$un_estimates,
+        region = region,
         sbr = rates$sbr,
         nmr = rates$nmr,
         pnmr = rates$pnmr,
@@ -206,6 +206,102 @@ CacheConnection <- R6::R6Class(
         twin = rates$twin_rate,
         preg_loss = rates$preg_loss
       )
+    },
+
+    #' @description Run inequality calculation using stored model parameters.
+    #' @param admin_level Administrative level ("adminlevel_1" or "district").
+    #' @param region Optional region filter.
+    calculate_inequality = function(admin_level, region = NULL) {
+      check_required(admin_level)
+
+      if (!self$check_inequality_params) {
+        cd_abort(c('x' = 'One or more parameters is missing for {.fun calculate_inequality}'))
+      }
+
+      rates <- self$national_estimates
+
+      calculate_inequality(
+        .data = self$adjusted_data,
+        admin_level = admin_level,
+        un_estimates = self$un_estimates,
+        region = region,
+        sbr = rates$sbr,
+        nmr = rates$nmr,
+        pnmr = rates$pnmr,
+        anc1survey = rates$anc1,
+        dpt1survey = rates$penta1,
+        survey_year = self$survey_year,
+        twin = rates$twin_rate,
+        preg_loss = rates$preg_loss
+      )
+    },
+
+    #' @description Run coverage calculation using stored model parameters.
+    #' @param admin_level Administrative level ("adminlevel_1" or "district").
+    calculate_coverage = function(admin_level) {
+      check_required(admin_level)
+
+      if (!self$check_coverage_params) {
+        cd_abort(c('x' = 'One or more parameters is missing for {.fun calculate_coverage}'))
+      }
+
+      rates <- self$national_estimates
+      survey_data <- if (admin_level == 'national') self$national_survey else self$regional_survey
+
+      calculate_coverage(
+        .data = self$adjusted_data,
+        admin_level = admin_level,
+        survey_data = survey_data,
+        wuenic_data = self$wuenic_estimates,
+        un_estimates = self$un_estimates,
+        sbr = rates$sbr,
+        nmr = rates$nmr,
+        pnmr = rates$pnmr,
+        twin = rates$twin_rate,
+        preg_loss = rates$preg_loss,
+        anc1survey = rates$anc1,
+        dpt1survey = rates$penta1,
+        survey_year = self$survey_year,
+        subnational_map = self$survey_mapping
+      )
+    },
+
+    #' @description Run coverage calculation using stored model parameters.
+    #' @param admin_level Administrative level ("adminlevel_1" or "district").
+    get_mapping_data = function(admin_level) {
+      check_required(admin_level)
+
+      if (!self$check_inequality_params) {
+        cd_abort(c('x' = 'One or more parameters is missing for {.fun calculate_inequality}'))
+      }
+
+      rates <- self$national_estimates
+
+      get_mapping_data(
+        .data = self$adjusted_data,
+        admin_level = admin_level,
+        un_estimates = self$un_estimates,
+        sbr = rates$sbr,
+        nmr = rates$nmr,
+        pnmr = rates$pnmr,
+        twin = rates$twin_rate,
+        preg_loss = rates$preg_loss,
+        anc1survey = rates$anc1,
+        dpt1survey = rates$penta1,
+        survey_year = self$survey_year,
+        subnational_map = self$map_mapping
+      )
+    },
+
+    #' @description Return the appropriate denominator based on the indicator type.
+    #' @param indicator Character. Indicator name.
+    #' @return Character. Either the maternal or vaccination denominator.
+    get_denominator = function(indicator) {
+      if (is_maternal_indicator(indicator)) {
+        self$maternal_denominator
+      } else {
+        self$denominator
+      }
     },
 
     #' @description Return a reactive wrapper (for Shiny).
@@ -559,7 +655,23 @@ CacheConnection <- R6::R6Class(
     survey_mapping = function(value) private$getter('survey_mapping', value),
 
     #' @field map_mapping Gets map mapping.
-    map_mapping = function(value) private$getter('map_mapping', value)
+    map_mapping = function(value) private$getter('map_mapping', value),
+
+    #' @field check_inequality_params checks if inputs for inequality calculations are available
+    check_inequality_params = function() {
+      !is.null(self$adjusted_data) &&
+        !is.null(self$survey_year) &&
+        !is.null(self$un_estimates) &&
+        all(!is.na(self$national_estimates))
+    },
+
+    #' @field check_coverage_params checks if inputs for coverage calculations are available
+    check_coverage_params = function() {
+      self$check_inequality_params &&
+        !is.null(self$wuenic_estimates) &&
+        !is.null(self$national_survey) &&
+        !is.null(self$regional_survey)
+    }
   ),
   private = list(
     .data_template = list(

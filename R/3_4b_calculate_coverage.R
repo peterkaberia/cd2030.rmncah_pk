@@ -128,10 +128,12 @@ filter_coverage <- function(.data,
                             region = NULL) {
   . <- value <- estimates <- NULL
 
+  check_cd_coverage(.data)
+
   admin_level <- attr_or_abort(.data, 'admin_level')
   region_from_calc <- attr_or_null(.data, 'region')
 
-  indicator <- arg_match(indicator, get_all_indicators())
+  indicator <- arg_match(indicator, get_indicator_without_opd_ipd())
   denominator <- arg_match(denominator)
 
   if ((admin_level == 'national' || (admin_level == 'adminlevel_1' && !is.null(region_from_calc))) && !is.null(region)) {
@@ -165,7 +167,7 @@ filter_coverage <- function(.data,
     data
   }
 
-  data %>%
+  data <- data %>%
     # select(any_of(c(admin_col, dhis2_col, survey_estimate_col, lower_ci_col, upper_ci_col, wuenic_col))) %>%
     # filter(if (admin_level == "national") TRUE else !!sym(admin_level) == region) %>% # Filter for region if applicable
     # Transform data
@@ -190,6 +192,15 @@ filter_coverage <- function(.data,
       )
     ) %>%
     select(-any_of(c("adminlevel_1", "district")))
+
+  new_tibble(
+    data,
+    class = 'cd_coverage_filtered',
+    admin_level = admin_level,
+    indicator = indicator,
+    denominator = denominator,
+    region = region
+  )
 }
 
 

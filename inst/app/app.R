@@ -42,6 +42,7 @@ source('modules/page_objects_config.R')
 
 source('ui/admin-level-input.R')
 source('ui/content_body.R')
+source('ui/content_dashboard.R')
 source('ui/content_header.R')
 source('ui/denominator-input.R')
 source('ui/documentation_button.R')
@@ -80,11 +81,12 @@ source('modules/2_derived_coverage.R')
 source('modules/3_national_coverage.R')
 source('modules/3_national_inequality.R')
 source('modules/3_subnational_mapping.R')
-source('modules/3_low_reporting.R')
+source('modules/3_national_target.R')
 source('modules/3_equity.R')
 
 source('modules/4_subnational_coverage.R')
 source('modules/4_subnational_inequality.R')
+source('modules/4_subnational_target.R')
 
 source('modules/5_mortality.R')
 source('modules/6_service_utilization.R')
@@ -169,7 +171,7 @@ ui <- dashboardPage(
                            tabName = 'national_inequality',
                            icon = icon('balance-scale-right')),
                menuSubItem(i18n$t('title_global_coverage'),
-                           tabName = 'low_reporting',
+                           tabName = 'national_target',
                            icon = icon('user-slash')),
                menuSubItem(i18n$t('title_subnational_mapping'),
                            tabName = 'subnational_mapping',
@@ -186,13 +188,10 @@ ui <- dashboardPage(
                            icon = icon('map-marked')),
                menuSubItem(i18n$t('title_subnational_inequality'),
                            tabName = 'subnational_inequality',
-                           icon = icon('balance-scale-right'))#,
-               # menuSubItem(i18n$t('title_global_coverage'),
-               #             tabName = 'low_reporting',
-               #             icon = icon('user-slash')),
-               # menuSubItem(i18n$t('title_subnational_mapping'),
-               #             tabName = 'subnational_mapping',
-               #             icon = icon('map'))
+                           icon = icon('balance-scale-right')),
+               menuSubItem(i18n$t('title_global_coverage'),
+                           tabName = 'subnational_target',
+                           icon = icon('user-slash'))
                ),
       menuItem(i18n$t('title_mortality'), tabName = 'mortality', icon = icon('balance-scale')),
       menuItem(i18n$t('title_service_utilization'), tabName = 'service_utilization', icon = icon('balance-scale')),
@@ -297,7 +296,8 @@ ui <- dashboardPage(
       tabItem(tabName = 'subnational_coverage', subnationalCoverageUI('subnational_coverage', i18n = i18n)),
       tabItem(tabName = 'national_inequality', nationalInequalityUI('national_inequality', i18n = i18n)),
       tabItem(tabName = 'subnational_inequality', subnationalInequalityUI('subnational_inequality', i18n = i18n)),
-      tabItem(tabName = 'low_reporting', lowReportingUI('low_reporting', i18n = i18n)),
+      tabItem(tabName = 'national_target', nationalTargetUI('national_target', i18n = i18n)),
+      tabItem(tabName = 'subnational_target', subnationalTargetUI('subnational_target', i18n = i18n)),
       tabItem(tabName = 'subnational_mapping', subnationalMappingUI('subnational_mapping', i18n = i18n)),
       tabItem(tabName = 'equity_assessment', equityUI('equity_assessment', i18n = i18n)),
       tabItem(tabName = 'mortality', mortalityUI('mortality', i18n = i18n)),
@@ -354,7 +354,8 @@ server <- function(input, output, session) {
   subnationalCoverageServer('subnational_coverage', cache, i18n)
   nationalInequalityServer('national_inequality', cache, i18n)
   subnationalInequalityServer('subnational_inequality', cache, i18n)
-  lowReportingServer('low_reporting', cache, i18n)
+  nationalTargetServer('national_target', cache, i18n)
+  subnationalTargetServer('subnational_target', cache, i18n)
   subnationalMappingServer('subnational_mapping', cache, i18n)
   equityServer('equity_assessment', cache, i18n)
   mortalityServer('mortality', cache, i18n)

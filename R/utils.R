@@ -52,6 +52,14 @@ check_cd_fpet <- function(.data, arg = caller_arg(.data), call = caller_env()) {
   check_cd_class(.data, "cd_fpet", arg = arg, call = call)
 }
 
+check_cd_mapping <- function(.data, arg = caller_arg(.data), call = caller_env()) {
+  check_cd_class(.data, "cd_mapping", arg = arg, call = call)
+}
+
+check_cd_coverage <- function(.data, arg = caller_arg(.data), call = caller_env()) {
+  check_cd_class(.data, "cd_coverage", arg = arg, call = call)
+}
+
 #' Validate UN Estimates Data for Population Metrics
 #'
 #' Ensures the provided UN estimates data is valid and appropriate for the selected

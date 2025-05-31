@@ -94,8 +94,8 @@ reference:
     - compute_indicator_numerator
     - prepare_population_metrics
     - calculate_indicator_coverage
-    - calculate_indicator_threshold_coverage
     - calculate_threshold
+    - filter_high_performers
     - calculate_derived_coverage
     - plot_line_graph
     - plot_absolute_differences
@@ -111,13 +111,14 @@ reference:
     contents:
     - calculate_coverage
     - filter_coverage
-    - plot.cd_coverage
+    - plot.cd_coverage_filtered
     - calculate_inequality
     - filter_inequality
-    - plot.cd_inequality
+    - plot.cd_inequality_filtered
     - get_mapping_data
+    - filter_mapping_data
     - get_country_shapefile
-    - plot.cd_mapping
+    - plot.cd_mapping_filtered
     - equiplot
     - equiplot_area
     - equiplot_education
@@ -148,6 +149,13 @@ reference:
     - plot.cd_health_system_comparison
     - plot_national_health_metric
 
+  - title: "Family Planning"
+    contents:
+    - generate_fpet_summary
+    - interpret
+    - plot.cd_fpet
+    - interpret.cd_fpet
+
   - title: "Reporting"
     desc: >
       To document findings, generate summaries, and create exportable formats for sharing and presentation
@@ -169,6 +177,8 @@ reference:
     - get_population_column
     - get_indicator_without_opd_ipd
     - get_admin_columns
+    - get_plot_admin_column
+    - is_maternal_indicator
     - robust_max
     - new_countdown
     - print.cd_data

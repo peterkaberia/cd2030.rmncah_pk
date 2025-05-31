@@ -4,11 +4,8 @@
 #' data across years, allowing comparison between different estimates (e.g., DHIS2
 #' estimates, WUENIC estimates, and Survey estimates).
 #'
-#' @param x A data frame of type `cd_coverage`, containing year-wise
+#' @param x A data frame of type `cd_coverage_filtered`, containing year-wise
 #'   national coverage data for the specified country and indicator.
-#' @param indicator Character. Indicator to plot.
-#' @param denominator Character. The denominator to use.
-#' @param region Character. The region to plot. Used for subnational level.
 #' @param ... Additional arguments passed to or from other methods (currently
 #'   unused).
 #'
@@ -24,7 +21,7 @@
 #' - **Line color**: Represents different estimates (e.g., DHIS2, Survey).
 #' - **Caption**: Indicates the denominator used in the coverage calculation.
 #'
-#' This function is meant to be used with the `cd_coverage` class, which
+#' This function is meant to be used with the `cd_coverage_filtered` class, which
 #' contains coverage values for different indicators and estimates.
 #'
 #' @return A ggplot object displaying a line plot of the national coverage data
@@ -32,30 +29,24 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot(calculate_coverage(dt_adj, indicator = "bcg", denominator = "anc1"))
+#'   plot(filter_coverage(dt_adj, indicator = "bcg", denominator = "anc1"))
 #' }
 #'
 #' @export
-plot.cd_coverage <- function(x,
-                             indicator,
-                             denominator = c("dhis2", "anc1", "penta1", "penta1derived"),
-                             region = NULL,
-                             ...) {
-  estimates <- year <- value <- `Survey estimates` <- `DHIS2 estimate` <- `WUENIC estimates` <-
-    `95% CI LL` <- `95% CI UL` <- NULL
+plot.cd_coverage_filtered <- function(x, ...) {
+  estimates = year = value = `Survey estimates` = `DHIS2 estimate` = `WUENIC estimates` =
+    `95% CI LL` = `95% CI UL` = NULL
 
   admin_level <- attr_or_abort(x, "admin_level")
+  indicator <- attr_or_abort(x, 'indicator')
+  region <- attr_or_null(x, 'region')
+  denominator <- attr_or_abort(x, 'denominator')
 
-  indicator <- arg_match(indicator, get_indicator_without_opd_ipd())
-
-  data_long <- x %>%
-    filter_coverage(indicator, denominator, region)
-
-  if (ncol(data_long) <= 1) {
+  if (ncol(x) <= 1) {
     cd_abort(c("x" = "The columns data is empty."))
   }
 
-  data_long <- data_long %>%
+  data_long <- x %>%
     pivot_longer(cols = -estimates, names_to = "year") %>%
     mutate(year = as.integer(year))
 

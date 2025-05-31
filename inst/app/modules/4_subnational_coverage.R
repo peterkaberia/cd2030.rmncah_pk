@@ -1,74 +1,34 @@
 subnationalCoverageUI <- function(id, i18n) {
   ns <- NS(id)
 
-  tagList(
-    contentHeader(ns('subnational_coverage'), i18n$t('title_subnational_coverage'), i18n = i18n),
-    contentBody(
-      box(
-        title = i18n$t('title_analysis_options'),
-        status = 'primary',
-        width = 12,
-        solidHeader = TRUE,
+  contentDashboard(
+    dashboardId = ns('subnational_coverage'),
+    dashboardTitle = i18n$t('title_subnational_coverage'),
+    i18n = i18n,
+
+    optionsHeader = contentOptions(
+      title = i18n$t('title_analysis_options'),
+      column(3, adminLevelInputUI(ns('admin_level'), i18n)),
+      column(3, regionInputUI(ns('region'), i18n)),
+      column(3, denominatorInputUI(ns('denominator'), i18n))
+    ),
+
+    tabBox(
+      title = i18n$t('title_subnational_coverage'),
+      width = 12,
+
+      tabPanel(title = i18n$t("opt_anc4"), downloadCoverageUI(ns('anc4'))),
+      tabPanel(title = i18n$t("opt_ideliv"), downloadCoverageUI(ns('ideliv'))),
+      tabPanel(title = i18n$t("opt_lbw"), downloadCoverageUI(ns('lbw'))),
+      tabPanel(title = i18n$t("opt_penta1"), downloadCoverageUI(ns('penta1'))),
+      tabPanel(title = i18n$t("opt_mcv1"), downloadCoverageUI(ns('measles1'))),
+      tabPanel(
+        title = i18n$t("opt_custom_check"),
         fluidRow(
-          column(3, adminLevelInputUI(ns('admin_level'), i18n)),
-          column(3, regionInputUI(ns('region'), i18n)),
-          column(3, denominatorInputUI(ns('denominator'), i18n))
-        )
-      ),
-
-      tabBox(
-        title = i18n$t('title_subnational_coverage_trend'),
-        id = 'national_trend',
-        width = 12,
-
-        tabPanel(
-          title = i18n$t("opt_anc4"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('anc4'))),
-            downloadCoverageUI(ns('anc4_download'))
-          )
+          column(3, selectizeInput(ns('indicator'), label = i18n$t("title_indicator"),
+                                   choices = c('Select' = '', get_indicator_without_opd_ipd())))
         ),
-
-        tabPanel(
-          title = i18n$t("opt_ideliv"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('ideliv'))),
-            downloadCoverageUI(ns('ideliv_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_lbw"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('lbw'))),
-            downloadCoverageUI(ns('lbw_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_penta1"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('penta1'))),
-            downloadCoverageUI(ns('penta1_download'))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_mcv1"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('measles1'))),
-            downloadCoverageUI(ns('measles1_download'))
-          )
-        ),
-
-        tabPanel(
-          i18n$t('opt_custom_check'),
-          fluidRow(
-            column(3, selectizeInput(ns('indicator'),
-                                     label = i18n$t('title_indicator'),
-                                     choices = c('Select' = '', get_indicator_without_opd_ipd())))),
-          fluidRow(column(12, plotCustomOutput(ns('custom_check'))), downloadCoverageUI(ns('custom_download')))
-        )
+        downloadCoverageUI(ns('custom'))
       )
     )
   )
@@ -86,160 +46,94 @@ subnationalCoverageServer <- function(id, cache, i18n) {
       denominator <- denominatorInputServer('denominator', cache)
       region <- regionInputServer('region', cache, admin_level, i18n)
 
-      survey_data <- reactive({
-        req(cache())
-        cache()$regional_survey
-      })
-
-      vacc_denom <- reactive({
-        req(cache())
-        cache()$denominator
-      })
-
-      mat_denom <- reactive({
-        req(cache())
-        cache()$maternal_denominator
-      })
-
       coverage <- reactive({
-        req(cache(), cache()$survey_year, cache()$un_estimates, cache()$wuenic_estimates,
-            survey_data(), all(!is.na(cache()$national_estimates)))
-
-        rates <- cache()$national_estimates
-
-        cache()$adjusted_data %>%
-          calculate_coverage(
-            admin_level = admin_level(),
-            survey_data = survey_data(),
-            wuenic_data = cache()$wuenic_estimates,
-            sbr = rates$sbr,
-            nmr = rates$nmr,
-            pnmr = rates$pnmr,
-            twin = rates$twin_rate,
-            preg_loss = rates$preg_loss,
-            anc1survey = rates$anc1,
-            dpt1survey = rates$penta1,
-            survey_year = cache()$survey_year,
-            subnational_map = cache()$survey_mapping
-          )
+        req(cache(), cache()$check_coverage_params, admin_level())
+        cache()$calculate_coverage(admin_level())
       })
 
-      observeEvent(region(), {
-        req(cache())
-        if (admin_level() == 'adminlevel_1') {
-          cache()$set_selected_admin_level_1(region())
-        } else {
-          cache()$set_selected_district(region())
-        }
+      anc4_coverage <- reactive({
+        req(coverage())
+        coverage() %>%
+          filter_coverage('anc4', denominator = cache()$get_denominator('anc4'), region = region())
       })
 
-      output$anc4 <- renderCustomPlot({
-        req(coverage(), mat_denom())
-        plot(coverage(), indicator = 'anc4', denominator = mat_denom(), region = region())
+      ideliv_coverage <- reactive({
+        req(coverage())
+        coverage() %>%
+          filter_coverage('instdeliveries', denominator = cache()$get_denominator('instdeliveries'), region = region())
       })
 
-      output$ideliv <- renderCustomPlot({
-        req(coverage(), mat_denom())
-        plot(coverage(), indicator = 'instdeliveries', denominator = mat_denom(), region = region())
+      lbw_coverage <- reactive({
+        req(coverage())
+        coverage() %>%
+          filter_coverage('low_bweight', denominator = cache()$get_denominator('low_bweight'), region = region())
       })
 
-      output$lbw <- renderCustomPlot({
-        req(coverage(), mat_denom())
-        plot(coverage(), indicator = 'low_bweight', denominator = mat_denom(), region = region())
+      penta1_coverage <- reactive({
+        req(coverage())
+        coverage() %>%
+          filter_coverage('penta1', denominator = cache()$get_denominator('penta1'), region = region())
       })
 
-      output$penta1 <- renderCustomPlot({
-        req(coverage(), denominator())
-        plot(coverage(), indicator = 'penta1', denominator = vacc_denom(), region = region())
+      measles1_coverage <- reactive({
+        req(coverage())
+        coverage() %>%
+          filter_coverage('measles1', denominator = cache()$get_denominator('measles1'), region = region())
       })
 
-      output$measles1 <- renderCustomPlot({
-        req(coverage(), vacc_denom())
-        plot(coverage(), indicator = 'measles1', denominator = vacc_denom(), region = region())
-      })
-
-      output$custom_check <- renderCustomPlot({
-        req(coverage(), region(), input$indicator)
-
-        denom <- if (is_maternal_indicator(input$indicator)) {
-          mat_denom()
-        } else {
-          vacc_denom()
-        }
-        plot(coverage(), indicator = input$indicator, denominator = denom(), region = region())
+      custom_coverage <- reactive({
+        req(coverage())
+        coverage() %>%
+          filter_coverage(input$indicator, denominator = cache()$get_denominator(input$indicator), region = region())
       })
 
       downloadCoverageServer(
-        id = 'anc4_download',
-        data = coverage,
-        filename = reactive(paste0('anc4_', region(), '_survey_', mat_denom())),
-        indicator = reactive('anc4'),
-        denominator = mat_denom,
-        data_fn = filter_coverage,
-        region = region,
-        sheet_name = reactive(i18n$t('title_anc4_coverage')),
+        id = 'anc4',
+        filename = reactive(paste0('anc4_', region(), '_survey_', cache()$get_denominator('anc4'))),
+        data_fn = anc4_coverage,
+        sheet_name = reactive(i18n$t("title_anc4")),
         i18n = i18n
       )
 
       downloadCoverageServer(
-        id = 'ideliv_download',
-        data = coverage,
-        filename = reactive(paste0('ideliv_', region(), '_survey_', mat_denom())),
-        indicator = reactive('instdeliveries'),
-        denominator = mat_denom,
-        data_fn = filter_coverage,
-        region = region,
-        i18n = i18n,
-        sheet_name = reactive(i18n$t('title_ideliv_coverage'))
+        id = 'ideliv',
+        filename = reactive(paste0('ideliv_', region(), '_survey_', cache()$get_denominator('instdeliveries'))),
+        data_fn = ideliv_coverage,
+        sheet_name = reactive(i18n$t("title_ideliv_coverage")),
+        i18n = i18n
       )
 
       downloadCoverageServer(
-        id = 'lbw_download',
-        data = coverage,
-        filename = reactive(paste0('lbw_', region(), '_survey_', mat_denom())),
-        indicator = reactive('low_bweight'),
-        denominator = mat_denom,
-        data_fn = filter_coverage,
-        region = region,
-        i18n = i18n,
-        sheet_name = reactive(i18n$t('title_lbw_dropout'))
+        id = 'lbw',
+        filename = reactive(paste0('lbw_', region(), '_survey_', cache()$get_denominator('low_bweight'))),
+        data_fn = lbw_coverage,
+        sheet_name = reactive(i18n$t("title_lbw_coverage")),
+        i18n = i18n
       )
 
       downloadCoverageServer(
-        id = 'penta1_download',
-        data = coverage,
-        filename = reactive(paste0('penta1_', region(), '_survey_', vacc_denom())),
-        indicator = reactive('penta1'),
-        denominator = vacc_denom,
-        data_fn = filter_coverage,
-        region = region,
-        i18n = i18n,
-        sheet_name = reactive(i18n$t('title_penta1'))
+        id = 'penta1',
+        filename = reactive(paste0('penta1_', region(), '_survey_', cache()$get_denominator('penta1'))),
+        data_fn = penta1_coverage,
+        sheet_name = reactive(i18n$t("title_penta1_coverage")),
+        i18n = i18n
       )
 
       downloadCoverageServer(
-        id = 'measles1_download',
-        data = coverage,
-        filename = reactive(paste0('measles1_survey_', vacc_denom())),
-        indicator = reactive('measles1'),
-        denominator = vacc_denom,
-        data_fn = filter_coverage,
+        id = 'measles1',
+        filename = reactive(paste0('measles1_', region(), '_survey_', cache()$get_denominator('measles1'))),
+        data_fn = measles1_coverage,
         sheet_name = reactive(i18n$t("title_mcv1_coverage")),
-        region = region,
         i18n = i18n
       )
 
-      # downloadCoverageServer(
-      #   id = 'custom_download',
-      #   data = coverage,
-      #   filename = reactive(paste0(input$indicator, '_', region(), '_survey_', if (is_maternal_indicator(input$indicator)) mat_denom() else vacc_denom())),
-      #   indicator = reactive(input$indicator),
-      #   denominator = if (is_maternal_indicator(input$indicator)) mat_denom else vacc_denom,
-      #   data_fn = filter_coverage,
-      #   region = region,
-      #   i18n = i18n,
-      #   sheet_name = reactive(paste(input$indicator, i18n$t('title_coverage')))
-      # )
+      downloadCoverageServer(
+        id = 'custom',
+        filename = reactive(paste0(input$indicator, '_', region(), '_survey_', cache()$get_denominator(input$indicator))),
+        data_fn = custom_coverage,
+        sheet_name = reactive(paste(input$indicator, i18n$t("title_coverage"))),
+        i18n = i18n
+      )
 
       contentHeaderServer(
         'subnational_coverage',

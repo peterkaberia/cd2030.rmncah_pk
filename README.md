@@ -4,6 +4,7 @@
 # cd2030.rmncah
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 ## Introduction
@@ -20,12 +21,13 @@ directly.
 
 ## Installation
 
-You can install a stable version of cd2030 from
-[GitHub](https://github.com/) with:
-
+<!--
+You can install a stable version of cd2030 from [GitHub](https://github.com/) with:
+&#10;
 ``` r
 devtools::install_github("aphrcwaro/cd2030.rmncah@v1.0.0")
 ```
+-->
 
 ## Development version
 
@@ -50,7 +52,7 @@ dashboard()
 Analyze vaccine data programmatically:
 
 ``` r
-data <- load_excel_data('/path/to/hfd/data.xlsx')
+data <- load_excel_data("/path/to/hfd/data.xlsx")
 calculate_average_reporting_rate(data)
 ```
 
@@ -71,5 +73,6 @@ reproducible example on
 
 ## Contributing
 
-Contributions to improve the **cd2030.rmncah** package are welcome! Please
-fork the repository, make your changes, and submit a pull request.
+Contributions to improve the **cd2030.rmncah** package are welcome!
+Please fork the repository, make your changes, and submit a pull
+request.

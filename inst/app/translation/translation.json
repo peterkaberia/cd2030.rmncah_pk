@@ -617,8 +617,8 @@
     },
     {
       "key": "title_districts_coverage_rate",
-      "en": "Sub-National with coverage >90% or Droput <10%",
-      "fr": "Zones infranationales avec une couverture > 90 % ou un taux d’abandon < 10 %"
+      "en": "Sub-National with coverage >90%",
+      "fr": "Zones infranationales avec une couverture > 90"
     },
     {
       "key": "opt_anc",
@@ -1142,8 +1142,8 @@
     },
     {
       "key": "title_district_low_reporting",
-      "en": "Sub-National with Reporting Rate >90%",
-      "fr": "Zones infranationales avec un taux de notification >90%"
+      "en": "Sub-National Units Meeting Targets",
+      "fr": "Zones infranationales atteignant les cibles"
     },
     {
       "key": "title_upload_wuenic",
