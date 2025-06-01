@@ -90,7 +90,7 @@ serviceUtilizationServer <- function(id, cache, i18n) {
 
       utilization_data <- reactive({
         req(cache(), cache()$adjusted_data, admin_level())
-        compute_service_utilization(data(), admin_level())
+        compute_service_utilization(cache()$adjusted_data, admin_level())
       })
 
       output$region_ui <- renderUI({

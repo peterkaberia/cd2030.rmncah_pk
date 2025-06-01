@@ -86,8 +86,8 @@ denominatorSelectionServer <- function(id, cache, i18n) {
       })
 
       indicator_coverage <- reactive({
-        req(cache(), cache()$check_inequality_params, admin_level())
-        cache()$calculate_indicator_coverage(admin_level())
+        req(cache(), cache()$check_inequality_params)
+        cache()$calculate_indicator_coverage('national')
       })
 
       output$anc4 <- renderCustomPlot({

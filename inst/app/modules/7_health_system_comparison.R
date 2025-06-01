@@ -26,13 +26,8 @@ healthSystemComparisonServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       comparison <- reactive({
-        req(cache(), cache()$adjusted_data)
-        calculate_health_system_comparison(cache()$adjusted_data)
-      })
-
-      denominator <- reactive({
-        req(cache())
-        cache()$denominator
+        req(cache(), cache()$check_inequality_params)
+        cache()$calculate_health_system_comparison()
       })
 
       downloadCoverageServer(
