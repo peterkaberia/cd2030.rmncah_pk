@@ -1,86 +1,27 @@
 mortalityUI <- function(id, i18n) {
   ns <- NS(id)
-  tagList(
-    contentHeader(ns('mortality'), i18n$t("title_mortality"), i18n = i18n),
-    contentBody(
 
-      tabBox(
-        title = i18n$t("title_mortality"),
-        width = 12,
+  contentDashboard(
+    dashboardId = ns('mortality'),
+    dashboardTitle = i18n$t('title_mortality'),
+    i18n = i18n,
 
-        tabPanel(
-          title = i18n$t("opt_mmr_inst"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('mmr_inst'))),
-            column(12, tagList(
-              column(4, downloadButtonUI(ns('mmr_inst_plot'))),
-              column(4, downloadButtonUI(ns('mmr_inst_data')))
-            ))
-          )
-        ),
+    tabBox(
+      title = i18n$t('title_mortality'),
+      width = 12,
 
-        tabPanel(
-          title = i18n$t("opt_sbr_inst"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('sbr_inst'))),
-            column(12, tagList(
-              column(4, downloadButtonUI(ns('sbr_inst_plot'))),
-              column(4, downloadButtonUI(ns('sbr_inst_data')))
-            ))
-          )
-        ),
+      tabPanel(title = i18n$t("opt_mmr_inst"), downloadCoverageUI(ns('mmr_inst'))),
+      tabPanel(title = i18n$t("opt_sbr_inst"), downloadCoverageUI(ns('sbr_inst'))),
+      tabPanel(title = i18n$t("opt_ratio_md_sb"), downloadCoverageUI(ns('ratio_md_sb'))),
+      tabPanel(title = i18n$t("opt_nn_inst"), downloadCoverageUI(ns('nn_inst')))
+    ),
 
-        tabPanel(
-          title = i18n$t("opt_ratio_md_sb"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('ratio_md_sb'))),
-            column(12, tagList(
-              column(4, downloadButtonUI(ns('ratio_md_sb_plot'))),
-              column(4, downloadButtonUI(ns('ratio_md_sb_data')))
-            ))
-          )
-        ),
+    tabBox(
+      title = i18n$t('title_mortality_completeness'),
+      width = 12,
 
-        tabPanel(
-          title = i18n$t("opt_nn_inst"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('nn_inst'))),
-            column(12, tagList(
-              column(4, downloadButtonUI(ns('nn_inst_plot'))),
-              column(4, downloadButtonUI(ns('nn_inst_data')))
-            ))
-          )
-        )
-
-      ),
-
-      tabBox(
-        title = i18n$t("title_mortality_completeness"),
-        width = 12,
-
-        tabPanel(
-          title = i18n$t("opt_mmr_ratio"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('mmr_ratio'))),
-            column(12, tagList(
-              column(4, downloadButtonUI(ns('mmr_ratio_plot'))),
-              column(4, downloadButtonUI(ns('mmr_ratio_data')))
-            ))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_sbr_ratio"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('sbr_ratio'))),
-            column(12, tagList(
-              column(4, downloadButtonUI(ns('sbr_ratio_plot'))),
-              column(4, downloadButtonUI(ns('sbr_ratio_data')))
-            ))
-          )
-        )
-
-      )
+      tabPanel(title = i18n$t("opt_mmr_ratio"), downloadCoverageUI(ns('mmr_ratio'))),
+      tabPanel(title = i18n$t("opt_sbr_ratio"), downloadCoverageUI(ns('sbr_ratio')))
     )
   )
 }
@@ -96,11 +37,6 @@ mortalityServer <- function(id, cache, i18n) {
       data <- reactive({
         req(cache())
         cache()$adjusted_data
-      })
-
-      un_estimates <- reactive({
-        req(cache)
-        cache()$un_estimates
       })
 
       mortality_data <- reactive({
@@ -119,13 +55,8 @@ mortalityServer <- function(id, cache, i18n) {
       })
 
       coverage <- reactive({
-        req(data(), un_estimates(), cache()$survey_year, all(!is.na(cache()$national_estimates)))
-        nat_est <- cache()$national_estimates
-        calculate_indicator_coverage(data(), un_estimates = un_estimates(), admin_level = 'national',
-                                     sbr = nat_est$sbr, nmr = nat_est$nmr, pnmr = nat_est$pnmr,
-                                     twin = nat_est$twin_rate, preg_loss = nat_est$preg_loss,
-                                     anc1survey = nat_est$anc1, dpt1survey = nat_est$penta1,
-                                     survey_year = cache()$survey_year)
+        req(cache(), cache()$check_inequality_params)
+        cache()$calculate_indicator_coverage('national')
       })
 
       lbr_mean <- reactive({
@@ -136,35 +67,69 @@ mortalityServer <- function(id, cache, i18n) {
           pull(lbr_mean)
       })
 
-      output$mmr_inst <- renderCustomPlot({
-        req(mortality_summary())
-        plot(mortality_summary(), 'mmr_inst')
-      })
-
-      output$ratio_md_sb <- renderCustomPlot({
-        req(mortality_summary())
-        plot(mortality_summary(), 'ratio_md_sb')
-      })
-
-      output$sbr_inst <- renderCustomPlot({
-        req(mortality_summary())
-        plot(mortality_summary(), 'sbr_inst')
-      })
-
-      output$nn_inst <- renderCustomPlot({
-        req(mortality_summary())
-        plot(mortality_summary(), 'nn_inst')
-      })
-
-      output$mmr_ratio <- renderCustomPlot({
+      mmr_ratio <- reactive({
         req(mortality_ratio(), lbr_mean())
-        plot(mortality_ratio(), 'mmr', lbr_mean())
+        mortality_ratio() %>%
+          summarise_completeness_ratio('mmr', lbr_mean())
       })
 
-      output$sbr_ratio <- renderCustomPlot({
+      sbr_ratio <- reactive({
         req(mortality_ratio(), lbr_mean())
-        plot(mortality_ratio(), 'sbr', lbr_mean())
+        mortality_ratio() %>%
+          summarise_completeness_ratio('sbr', lbr_mean())
       })
+
+      downloadCoverageServer(
+        id = 'mmr_inst',
+        filename = reactive(paste0('mmr_inst_')),
+        data_fn = mortality_summary,
+        indicator = 'mmr_inst',
+        i18n = i18n,
+        sheet_name = reactive(i18n$t('opt_mmr_inst'))
+      )
+
+      downloadCoverageServer(
+        id = 'ratio_md_sb',
+        filename = reactive(paste0('ratio_md_sb')),
+        data_fn = mortality_summary,
+        indicator = 'ratio_md_sb',
+        i18n = i18n,
+        sheet_name = reactive(i18n$t('opt_ratio_md_sb'))
+      )
+
+      downloadCoverageServer(
+        id = 'sbr_inst',
+        filename = reactive(paste0('sbr_inst')),
+        data_fn = mortality_summary,
+        indicator = 'sbr_inst',
+        i18n = i18n,
+        sheet_name = reactive(i18n$t('opt_sbr_inst'))
+      )
+
+      downloadCoverageServer(
+        id = 'nn_inst',
+        filename = reactive(paste0('nn_inst')),
+        data_fn = mortality_summary,
+        indicator = 'nn_inst',
+        i18n = i18n,
+        sheet_name = reactive(i18n$t('opt_nn_inst'))
+      )
+
+      downloadCoverageServer(
+        id = 'mmr_ratio',
+        filename = reactive(paste0('mmr_ratio')),
+        data_fn = mmr_ratio,
+        i18n = i18n,
+        sheet_name = reactive(i18n$t('opt_mmr_ratio'))
+      )
+
+      downloadCoverageServer(
+        id = 'sbr_ratio',
+        filename = reactive(paste0('sbr_ratio')),
+        data_fn = sbr_ratio,
+        i18n = i18n,
+        sheet_name = reactive(i18n$t('opt_sbr_ratio'))
+      )
     }
   )
 }

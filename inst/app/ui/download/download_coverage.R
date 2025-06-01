@@ -7,7 +7,7 @@ downloadCoverageUI <- function(id) {
   )
 }
 
-downloadCoverageServer <- function(id, filename, data_fn, sheet_name, i18n) {
+downloadCoverageServer <- function(id, filename, data_fn, ..., sheet_name, i18n) {
   stopifnot(is.reactive(data_fn))
   stopifnot(is.reactive(filename))
   stopifnot(is.reactive(sheet_name))
@@ -18,7 +18,7 @@ downloadCoverageServer <- function(id, filename, data_fn, sheet_name, i18n) {
 
       output$display <- renderCustomPlot({
         req(data_fn())
-        plot(data_fn())
+        plot(data_fn(), ...)
       })
 
       downloadPlot(
@@ -27,7 +27,7 @@ downloadCoverageServer <- function(id, filename, data_fn, sheet_name, i18n) {
         data = data_fn,
         i18n = i18n,
         plot_function = function(data) {
-          plot(data)
+          plot(data, ...)
         }
       )
 

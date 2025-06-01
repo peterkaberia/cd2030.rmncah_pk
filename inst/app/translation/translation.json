@@ -1812,8 +1812,8 @@
 },
 {
   "key": "opt_health_system_density",
-  "en": "Health System Density",
-  "fr": "Densité du système de santé"
+  "en": "Health system Indicators",
+  "fr": "Indicateurs du système de santé"
 },
 {
   "key": "opt_score_total",
@@ -1871,24 +1871,24 @@
   "fr": "Consultations externes des moins de 5 ans"
 },
 {
-  "key": "opt_ratio_ipd_u5_pop",
-  "en": "Under 5 IPD Admissions",
-  "fr": "Admissions en hospitalisation des moins de 5 ans"
+  "key": "opt_ratio_ipd_u5_bed",
+  "en": "Under 5 IPD/Bed",
+  "fr": "Hospitalisations des <5 ans/Lit"
 },
 {
-  "key": "opt_cov_instdeliveries_hstaff",
-  "en": "Deliveries/Staff",
-  "fr": "Accouchements / Personnel"
+  "key": "opt_ratio_opd_u5_hos",
+  "en": "OPD Under 5/Hospitals",
+  "fr": "Consultations externes <5 ans/Hôpitaux"
 },
 {
   "key": "opt_cov_instdeliveries_bed",
   "en": "Deliveries/Beds",
-  "fr": "Accouchements / Lits"
+  "fr": "Accouchements/Lits"
 },
 {
-  "key": "opt_cov_instdeliveries_fac",
-  "en": "Deliveries/Facilities",
-  "fr": "Accouchements / Établissements"
+  "key": "opt_ratio_opd_u5_hstaff",
+  "en": "OPD Under 5/Workforce",
+  "fr": "Consultations externes <5 ans/Personnel"
 },
 {
   "key": "title_service_utilization",

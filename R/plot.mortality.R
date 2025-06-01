@@ -30,22 +30,24 @@ plot.cd_mortality_rate <- function(x, indicator = c('mmr_inst', 'ratio_md_sb', '
 
   national <- x %>% filter(adminlevel_1 == 'National')
   regional <- x %>% filter(adminlevel_1 != 'National')
+  max_y <- robust_max(x[[indicator]])
+  max_y <- if (max_y < 100) 100 else max_y * 1.05
 
   ggplot() +
     geom_point(data = regional, aes(x = year, y = !!sym(indicator), color = 'Regions'), size = 2, alpha = 0.7) +
     geom_line(data = national, aes(x = year, y = !!sym(indicator), color = label), linewidth = 1.2) +
-    geom_point(data = national, aes(x = year, y = !!sym(indicator), color = label), size = 4) +
+    geom_point(data = national, aes(x = year, y = !!sym(indicator), color = label), size = 2) +
     geom_text(
       data = national,
       aes(x = year, y = !!sym(indicator), label = round(!!sym(indicator), 1)),
-      color = "white", vjust = -0.5, size = 3
+      color = 'black', vjust = -0.5, hjust = -0.1, size = 3
     ) +
     labs(
       title = title,
       x = NULL,
       y = NULL
     ) +
-    scale_y_continuous(expand = expansion(mult = c(0.05, 0.1))) +
+    scale_y_continuous(limits = c(0, max_y), breaks = scales::pretty_breaks(n = 11), expand = expansion(mult = c(0, 0.05))) +
     scale_color_manual(values = set_names(c('forestgreen', 'orangered'), c('Regions', label))) +
     cd_plot_theme()
 }
@@ -57,43 +59,19 @@ plot.cd_mortality_rate <- function(x, indicator = c('mmr_inst', 'ratio_md_sb', '
 #' for maternal deaths or stillbirths based on UN estimates and assumed
 #' community-to-institution ratios.
 #'
-#' @param x A `cd_mortality_ratio` object from completeness estimation.
-#' @param plot_type Either `'mmr'` or `'sbr'` indicating which metric to visualize.
-#' @param lbr_mean National average live birth completeness percentage (e.g., 80).
+#' @param x A `cd_mortality_ratio_summarised ` object from completeness estimation.
 #' @param ... Additional arguments (not used).
 #'
 #' @return A ggplot object with ratio lines, labels, and reference points.
 #'
 #' @export
-plot.cd_mortality_ratio <- function(x, plot_type = c('mmr', 'sbr'), lbr_mean = 0, ...) {
-  plot_type <- arg_match(plot_type)
+plot.cd_mortality_ratio_summarised <- function(x, ...) {
 
-  mean_col <- paste0('mean_', plot_type)
+  plot_type <- attr_or_abort(x, 'plot_type')
+
   lower_bound <- paste0('UN ', str_to_upper(plot_type),' lower bound')
   upper_bound <- paste0('UN ', str_to_upper(plot_type),' upper bound')
   best_estimates <- paste0('UN ', str_to_upper(plot_type),' best estimate')
-
-  ratios <- x %>%
-    filter(str_detect(indicator, plot_type)) %>%
-    pivot_wider(names_from = indicator, values_from = values) %>%
-    select(year, contains(plot_type)) %>%
-    crossing(
-      ciratio = c(0.5, 1, 1.5, 2)
-    ) %>%
-    pivot_longer(col = starts_with(plot_type)) %>%
-    mutate(
-      rat = ((!!sym(mean_col) * 100) / (value / (ciratio - (ciratio - 1) * (lbr_mean / 100))))
-    ) %>%
-    select(ciratio, name, rat) %>%
-    mutate(
-      name = case_when(
-        str_detect(name, '_lb') ~ lower_bound,
-        str_detect(name, '_ub') ~ upper_bound,
-        .default = best_estimates,
-        .ptype = factor(levels = c(lower_bound, best_estimates, upper_bound))
-      ),
-      rat = round(rat, 1)
-    )
 
   labels <- list(
     sbr = list(
@@ -110,12 +88,19 @@ plot.cd_mortality_ratio <- function(x, plot_type = c('mmr', 'sbr'), lbr_mean = 0
 
   label_values <- labels[[plot_type]]
 
-  ratios %>%
+  data <- x %>%
+    pivot_longer(cols = -ciratio, values_to = 'rat', names_to = 'name') %>%
+    mutate(name = factor(name, levels = c(lower_bound, best_estimates, upper_bound)))
+
+  max_y <- robust_max(data$rat)
+  max_y <- if (max_y < 100) 100 else max_y * 1.05
+
+  data %>%
     ggplot(aes(x = ciratio, y = rat, colour = name)) +
     geom_line(size = 2) +
     geom_point(size = 13) +
     geom_text(aes(label = rat), color = "black", size = 4) +
-    scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25), expand = expansion(mult = c(0, 0.1))) +
+    scale_y_continuous(limits = c(0, max_y), breaks = scales::pretty_breaks(n = 10), expand = expansion(mult = c(0,0.05))) +
     labs(
       title = label_values$title,
       x = label_values$x,

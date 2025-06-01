@@ -11,16 +11,10 @@
 #' @export
 plot.cd_health_system_comparison <- function(x,
                                               indicator = c(
-                                                'ratio_fac_pop',
-                                                'ratio_hstaff_pop',
-                                                'ratio_bed_pop',
-                                                'ratio_opd_pop',
-                                                'ratio_ipd_pop',
-                                                'ratio_opd_u5_pop',
-                                                'ratio_ipd_u5_pop',
                                                 'cov_instdeliveries_hstaff',
-                                                'cov_instdeliveries_bed',
-                                                'cov_instdeliveries_fac'),
+                                                'ratio_opd_u5_hstaff',
+                                                'ratio_opd_u5_hos',
+                                                'ratio_ipd_u5_bed'),
                                               denominator = NULL
 ) {
 
@@ -30,78 +24,37 @@ plot.cd_health_system_comparison <- function(x,
     denominator <- arg_match(denominator, c('dhis2', 'anc1', 'penta1'))
   }
   labels <- list(
-    ratio_fac_pop = list(
-      x = paste0('dis_', indicator),
-      y = paste0('ad1_', indicator),
-      x_label = "District density",
-      y_label = "Admin1 density",
-      title = "igure 7c1 - Comparison of district and admin 1 level facility density"
-    ),
-    ratio_hstaff_pop = list(
-      x = paste0('dis_', indicator),
-      y = paste0('ad1_', indicator),
-      x_label = "District density",
-      y_label = "Admin1 density",
-      title = "Figure 7c2 - Comparison of district and admin 1 level core health workforce density"
-    ),
-    ratio_bed_pop = list(
-      x = paste0('dis_', indicator),
-      y = paste0('ad1_', indicator),
-      x_label = "District density",
-      y_label = "Admin1 density",
-      title = "Figure 7c3 - Comparison of district and admin 1 level hospital bed density"
-    ),
-    ratio_opd_pop = list(
-      x = paste0('dis_', indicator),
-      y = paste0('ad1_', indicator),
-      x_label = "District density",
-      y_label = "Admin1 density",
-      title = "Figure 7c4 - Comparison of district and admin 1 level of total OPD visits per person per year"
-    ),
-    ratio_ipd_pop = list(
-      x = paste0('dis_', indicator),
-      y = paste0('ad1_', indicator),
-      x_label = "District density",
-      y_label = "Admin1 density",
-      title = "Figure 7c5 - Comparison of district and admin 1 level of total IPD admissions per 100 population"
-    ),
-    ratio_opd_u5_pop = list(
-      x = paste0('dis_', indicator),
-      y = paste0('ad1_', indicator),
-      x_label = "District density",
-      y_label = "Admin1 density",
-      title = "Figure 7c6 - Comparison of district and admin 1 level of Under-5 OPD visits per child per year"
-    ),
-    ratio_ipd_u5_pop = list(
-      x = paste0('dis_', indicator),
-      y = paste0('ad1_', indicator),
-      x_label = "District density",
-      y_label = "Admin1 density",
-      title = "Figure 7c7 - Comparison of district and admin 1 level of Under-5 IPD visits per 100 children per year"
-    ),
     cov_instdeliveries_hstaff = list(
       x = paste0('ad1_cov_instdeliveries_', denominator),
       y = 'ad1_ratio_hstaff_pop',
-      x_label = "Number of core health workforce per 10,000 population",
-      y_label = "Institutional delivery coverage rate (%)",
+      x_label = 'Institutional delivery coverage rate (%)',
+      y_label = "Number of core health workforce per 10,000 population",
       title = 'Figure 7e1 - Institutional delivery coverage rate (%) by health workforce density by admin level 1',
       caption = paste0('Denominator derived from', denominator, 'data')
     ),
-    cov_instdeliveries_bed = list(
-      x = paste0('ad1_cov_instdeliveries_', denominator),
-      y = 'ad1_ratio_bed_pop',
-      x_label = "Number of hospital beds per 10,000 population",
-      y_label = "Institutional delivery coverage rate (%)",
-      title = 'Figure 7e2 - Institutional delivery coverage rate (%) by hospital beds density by admin level 1',
-      caption = paste0('Denominator derived from', denominator, 'data')
+    ratio_opd_u5_hstaff = list(
+      x = 'ad1_ratio_opd_u5_pop',
+      y = 'ad1_ratio_hstaff_pop',
+      x_label = 'Number of under-5 OPD visits per child per year',
+      y_label = "Number of core health workforce per 10,000 population",
+      title = 'Figure 7e2 - Under-5 OPD Visits by health workforce density by admin level 1',
+      caption = NULL
     ),
-    cov_instdeliveries_fac = list(
-      x = paste0('ad1_cov_instdeliveries_', denominator),
-      y = 'ad1_ratio_fac_pop',
-      x_label = "Number of health facilities per 10,000 population",
-      y_label = "Institutional delivery coverage rate (%)",
-      title = 'Figure 7e3 - Institutional delivery coverage rate (%) by health facility density by admin level 1',
-      caption = paste0('Denominator derived from ', str_to_upper(denominator), ' data')
+    ratio_opd_u5_hos = list(
+      x = 'ad1_ratio_opd_u5_pop',
+      y = 'ad1_ratio_hos_pop',
+      x_label = 'Number of under-5 OPD visits per child per year',
+      y_label = "Number of Hospitals per 100,000 population",
+      title = 'Figure 7e2 - Under-5 OPD Visits by hospital density by admin level 1',
+      caption = NULL
+    ),
+    ratio_ipd_u5_bed = list(
+      x = 'ad1_ratio_ipd_u5_pop',
+      y = 'ad1_ratio_bed_pop',
+      x_label = 'Number of Under-5 IPD Admission per 100 children per year',
+      y_label = "Number of hospital beds per 10,000 population",
+      title = 'Figure 7e2 - Under-5 IPD Admissiong by hospital beds density by admin level 1',
+      caption = NULL
     )
   )
 
@@ -113,11 +66,12 @@ plot.cd_health_system_comparison <- function(x,
     ggplot(aes(x = !!sym(labels_prop$x), y = !!sym(labels_prop$y))) +
       geom_point(aes(colour = 'District'), size = 2) +
       geom_smooth(aes(colour = 'Linear fit'), method = "lm", se = FALSE, formula = y ~ x) +
-      geom_abline(aes(slope = 1, intercept = 0, colour = 'Diagonale'), linetype = "dashed", show.legend = TRUE) +
+      # geom_abline(aes(slope = 1, intercept = 0, colour = 'Diagonale'), linetype = "dashed", show.legend = TRUE) +
       # geom_text(aes(label = !!sym(label), size = 1, color = "#045a8d", hjust = -0.1, vjust = -0.1)) +
       scale_x_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.1))) +
       scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.1))) +
-      scale_colour_manual(values = c('District' = '#045a8d', 'Linear fit' = 'black', 'Diagonale' = 'red')) +
+      # scale_colour_manual(values = c('District' = '#045a8d', 'Linear fit' = 'black', 'Diagonale' = 'red')) +
+      scale_colour_manual(values = c('District' = '#045a8d', 'Linear fit' = 'black')) +
       labs(
         title = labels_prop$title,
         x = labels_prop$x_label,
@@ -152,18 +106,10 @@ plot.cd_health_system_comparison <- function(x,
 #' @export
 plot.cd_health_system_metric <- function(x,
                                          indicator = c(
-                                           'score_total',
-                                           'score_infrastructure',
-                                           'score_workforce',
-                                           'score_utilization',
                                            'ratio_fac_pop',
                                            'ratio_hos_pop',
                                            'ratio_hstaff_pop',
-                                           'ratio_bed_pop',
-                                           'ratio_opd_pop',
-                                           'ratio_ipd_pop',
-                                           'ratio_opd_u5_pop',
-                                           'ratio_ipd_u5_pop'
+                                           'ratio_bed_pop'
                                          ),
                                          national_score = NULL,
                                          target = NULL) {
@@ -171,38 +117,20 @@ plot.cd_health_system_metric <- function(x,
   indicator <- arg_match(indicator)
 
   labels <- list(
-    score_total = list(
-      title = "Score overall health system performance by admin 1 level (%)",
-      ylab = NULL,
-      ylim = c(0, 100),
-      breaks = seq(0, 100, 25)
-    ),
-    score_infrastructure = list(
-      title = "Score health infrastructure by admin 1 level (%)",
-      ylab = NULL,
-      ylim = c(0, 100),
-      breaks = seq(0, 100, 25)
-    ),
-    score_workforce = list(
-      title = "Score health workforce by admin 1 level (%)",
-      ylab = NULL,
-      ylim = c(0, 100),
-      breaks = seq(0, 100, 25)
-    ),
-    score_utilization = list(
-      title = "Score health service utilization by admin 1 level (%)",
-      ylab = NULL,
-      ylim = c(0, 100),
-      breaks = seq(0, 100, 25)
-    ),
     ratio_fac_pop = list(
-      title = "Density of health facilities by admin 1 level",
+      title = "Health facility density per 10,000 population (all facilities) by admin 1 level",
+      ylab = NULL,
+      ylim = c(0, 10),
+      breaks = seq(0, 10, 2)
+    ),
+    ratio_hos_pop = list(
+      title = "Hospital density per 100,000 population by admin 1 level",
       ylab = NULL,
       ylim = c(0, 10),
       breaks = seq(0, 10, 2)
     ),
     ratio_hstaff_pop = list(
-      title = "Density of core health workforce* by admin 1 level",
+      title = "Health workforce* density per 10,000 population by admin 1 level",
       caption = paste0(
         "* physicians, non-clinique physicians, nurses & midwives\n"
       ),
@@ -211,34 +139,10 @@ plot.cd_health_system_metric <- function(x,
       breaks = seq(0, 30, 5)
     ),
     ratio_bed_pop = list(
-      title = 'Density of hospital beds by admin 1 level',
+      title = 'Hospital beds density by admin 1 level',
       ylab = NULL,
       ylim = c(0, 30),
       breaks = seq(0, 30, 5)
-    ),
-    ratio_opd_pop = list(
-      title = 'Number of total OPD visits per person per year by admin 1 level',
-      ylab = NULL,
-      ylim = c(0, 10),
-      breaks = seq(0, 10, 2)
-    ),
-    ratio_ipd_pop = list(
-      title = 'Number of total IPD admissions per 100 population per year by admin 1 level',
-      ylab = NULL,
-      ylim = c(0, 15),
-      breaks = seq(0, 15, 3)
-    ),
-    ratio_opd_u5_pop = list(
-      title = 'Number of Under-5 OPD visits per child per year by admin 1 level',
-      ylab = NULL,
-      ylim = c(0, 10),
-      breaks = seq(0, 10, 2)
-    ),
-    ratio_ipd_u5_pop = list(
-      title = 'Number of Under-5 IPD visits per 100 children per year by admin 1 level',
-      ylab = NULL,
-      ylim = c(0, 15),
-      breaks = seq(0, 15, 3)
     )
   )
 
@@ -308,7 +212,7 @@ plot_national_health_metric <- function(.data, metric = c('performance', 'densit
       # columns = c('ratio_fac_pop', 'ratio_hstaff_pop', 'ratio_bed_pop', 'ratio_opd_pop', 'ratio_ipd_pop'),
       # labels = c("Density of Facilities *", "Density of core health workforce *", "Density of beds *", "Ratio OPD/Population **", "Ratio IPD/Population ***"),
       columns = c('ratio_fac_pop', 'ratio_hstaff_pop', 'ratio_bed_pop'),
-      labels = c("Density of Facilities *", "Density of core health workforce *", "Density of beds *"),
+      labels = c("Health Facility Density *", "Health workforce density (Core health professionals) *", "Hospital Beds Density *"),
       title = 'Health system density at national level',
       # caption = '* per 10,000 population\n** per person per year\n*** per 100 population per year'
       caption = '* per 10,000 population'
