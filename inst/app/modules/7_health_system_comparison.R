@@ -26,7 +26,7 @@ healthSystemComparisonServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       comparison <- reactive({
-        req(cache())
+        req(cache(), cache()$adjusted_data)
         calculate_health_system_comparison(cache()$adjusted_data)
       })
 

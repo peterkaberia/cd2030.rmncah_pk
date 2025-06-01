@@ -80,40 +80,14 @@ denominatorSelectionServer <- function(id, cache, i18n) {
       denominatorInputServer('denominator', cache, allowInput = TRUE)
       denominatorInputServer('maternal_denominator', cache, allowInput = TRUE, maternal = TRUE)
 
-      data <- reactive({
-        req(cache())
-        cache()$adjusted_data
-      })
-
-      un_estimates <- reactive({
-        req(cache())
-        cache()$un_estimates
-      })
-
-      national_estimates <- reactive({
-        req(cache())
-        cache()$national_estimates
-      })
-
       survey_estimates <- reactive({
         req(cache())
         cache()$survey_estimates
       })
 
       indicator_coverage <- reactive({
-        req(data(), cache()$survey_year, un_estimates(), all(!is.na(national_estimates())))
-
-        rates <- national_estimates()
-        data() %>%
-          calculate_indicator_coverage(un_estimates = un_estimates(),
-                                       sbr = rates$sbr,
-                                       nmr = rates$nmr,
-                                       pnmr = rates$pnmr,
-                                       twin = rates$twin_rate,
-                                       preg_loss = rates$preg_loss,
-                                       anc1survey = rates$anc1,
-                                       dpt1survey = rates$penta1,
-                                       survey_year = cache()$survey_year)
+        req(cache(), cache()$check_inequality_params, admin_level())
+        cache()$calculate_indicator_coverage(admin_level())
       })
 
       output$anc4 <- renderCustomPlot({

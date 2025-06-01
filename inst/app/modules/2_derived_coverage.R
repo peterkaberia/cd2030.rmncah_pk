@@ -79,34 +79,14 @@ derivedCoverageServer <- function(id, cache, i18n) {
       admin_level <- adminLevelInputServer('admin_level')
       region <- regionInputServer('region', cache, admin_level, i18n)
 
-      data <- reactive({
-        req(cache())
-        cache()$adjusted_data
-      })
-
-      un_estimates <- reactive({
-        req(cache())
-        cache()$un_estimates
-      })
-
       survey_year <- reactive({
         req(cache())
         cache()$survey_year
       })
 
-      national_estimates <- reactive({
-        req(cache())
-        cache()$national_estimates
-      })
-
       populations <- reactive({
-        req(data(), un_estimates(), admin_level(), survey_year(), all(!is.na(national_estimates())))
-        nat_est <- national_estimates()
-        calculate_indicator_coverage(data(), un_estimates = un_estimates(), admin_level = admin_level(),
-                                     sbr = nat_est$sbr, nmr = nat_est$nmr, pnmr = nat_est$pnmr,
-                                     twin = nat_est$twin_rate, preg_loss = nat_est$preg_loss,
-                                     anc1survey = nat_est$anc1, dpt1survey = nat_est$penta1,
-                                     survey_year = survey_year())
+        req(cache(), cache()$check_inequality_params, admin_level())
+        cache()$calculate_indicator_coverage(admin_level())
       })
 
       penta1_data <- reactive({

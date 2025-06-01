@@ -26,12 +26,12 @@ healthSystemSubnationalServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       nat_metrics <- reactive({
-        req(cache())
+        req(cache(), cache()$adjusted_data)
         calculate_health_system_metrics(cache()$adjusted_data, 'national')
       })
 
       metric <- reactive({
-        req(cache())
+        req(cache(), cache()$adjusted_data)
         calculate_health_system_metrics(cache()$adjusted_data, 'adminlevel_1') %>%
           select(adminlevel_1, year, total_pop, ratio_fac_pop, ratio_hos_pop, ratio_hstaff_pop, ratio_bed_pop, ratio_opd_pop, ratio_ipd_pop)
       })

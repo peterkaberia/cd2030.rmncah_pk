@@ -26,7 +26,7 @@ healthSystemNationalServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       national_metrics <- reactive({
-        req(cache())
+        req(cache(), cache()$adjusted_data)
         calculate_health_system_metrics(cache()$adjusted_data, 'national')
       })
 

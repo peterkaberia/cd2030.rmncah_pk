@@ -20,14 +20,9 @@ downloadReportServer <- function(id, cache, i18n) {
       ns <- session$ns
       rv <- reactiveValues(generating = FALSE, future = NULL, file_path = NULL)
 
-      data <- reactive({
-        req(cache())
-        cache()$adjusted_data
-      })
-
       adminlevel_1 <- reactive({
-        req(data())
-        data() %>%
+        req(cache(), cache()$adjusted_data)
+        cache()$adjusted_data %>%
           distinct(adminlevel_1) %>%
           arrange(adminlevel_1) %>%
           pull(adminlevel_1)

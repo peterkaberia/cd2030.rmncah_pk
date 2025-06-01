@@ -502,7 +502,7 @@ CacheConnection <- R6::R6Class(
         if (self$adjusted_flag && !is.null(private$.adjusted_data)) {
           return(private$.adjusted_data)
         }
-        return(self$data_with_excluded_years)
+        return(NULL)
       }
       check_cd_data(value)
       private$.adjusted_data <- value
