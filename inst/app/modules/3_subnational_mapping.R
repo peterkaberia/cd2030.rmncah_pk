@@ -96,7 +96,7 @@ subnationalMappingServer <- function(id, cache, i18n) {
       })
 
       observe({
-        req(cache())
+        req(cache(), cache()$adjusted_data)
 
         survey_years <- cache()$adjusted_data %>%
           distinct(year) %>%

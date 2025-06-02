@@ -32,14 +32,18 @@ create_mortality_summary <- function(.data) {
 #' @return A tibble of class `cd_mortality_ratio` with latest available values and UN means.
 #'
 #' @export
-create_mortality_ratios <- function(.data, mortality_data) {
+create_mortality_ratios <- function(.data, mortality_data, admin_level = c('national', 'adminlevel_1', 'district')) {
   check_un_mortality(mortality_data)
 
-  un_national <- summarised_data(.data) %>%
-    summarise(across(c('sbr_inst', 'mmr_inst'), mean, na.rm = TRUE), .by = year) %>%
+  admin_level <- arg_match(admin_level)
+  admin_col <- get_admin_columns(admin_level)
+
+  un_national <- summarised_data(.data, admin_level = admin_level) %>%
+    summarise(across(c('sbr_inst', 'mmr_inst'), mean, na.rm = TRUE), .by = all_of(c(admin_col, 'year'))) %>%
     mutate(
       mean_mmr = mean(mmr_inst, na.rm = TRUE),
-      mean_sbr = mean(sbr_inst, na.rm = TRUE)
+      mean_sbr = mean(sbr_inst, na.rm = TRUE),
+      .by =
     ) %>%
     left_join(mortality_data, join_by(year)) %>%
     select(-contains('inst'), -contains('nmr'))
@@ -85,6 +89,73 @@ summarised_data <- function(.data, admin_level = c('national', 'adminlevel_1', '
       sbr_low = if_else(sbr_inst < 6, 1, 0)
     ) %>%
     relocate(all_of(c(admin_level_col, 'year')))
+}
+
+#' Summarize Completeness-Adjusted Mortality Ratio
+#'
+#' Computes and summarizes adjusted mortality ratio estimates based on completeness
+#' correction factors for different completeness-to-incompleteness ratios (CI ratios).
+#'
+#' @param .data A data frame of class `cd_mortality_ratio`, containing UN estimates
+#'   and observed ratios.
+#' @param plot_type Character. The type of mortality ratio to summarize. Must be one of:
+#'   - `"mmr"`: Maternal mortality ratio
+#'   - `"sbr"`: Stillbirth rate
+#' @param lbr_mean Numeric. Mean live birth registration completeness, used for
+#'   scaling completeness ratios. Default is `0`.
+#'
+#' @return A tibble of class `cd_mortality_ratio_summarised` with columns:
+#'   - `ciratio`: The completeness-to-incompleteness ratio used.
+#'   - `name`: Label for the UN estimate type (`lower bound`, `best estimate`, `upper bound`).
+#'   - `rat`: The adjusted mortality ratio value.
+#'
+#' @examples
+#' \dontrun{
+#' summarise_completeness_ratio(mortality_data, plot_type = "mmr", lbr_mean = 65)
+#' }
+#'
+#' @export
+summarise_completeness_ratio <- function(.data, plot_type = c('mmr', 'sbr'), lbr_mean = 0) {
+
+  check_cd_class(.data, expected_class = 'cd_mortality_ratio')
+
+  plot_type <- arg_match(plot_type)
+
+  mean_col <- paste0('mean_', plot_type)
+  lower_bound <- paste0('UN ', str_to_upper(plot_type),' lower bound')
+  upper_bound <- paste0('UN ', str_to_upper(plot_type),' upper bound')
+  best_estimates <- paste0('UN ', str_to_upper(plot_type),' best estimate')
+
+  data <- .data %>%
+    filter(str_detect(indicator, plot_type)) %>%
+    pivot_wider(names_from = indicator, values_from = values) %>%
+    select(year, contains(plot_type)) %>%
+    crossing(
+      ciratio = c(0.5, 1, 1.5, 2)
+    ) %>%
+    pivot_longer(col = starts_with(plot_type)) %>%
+    mutate(
+      rat = ((!!sym(mean_col) * 100) / (value / (ciratio - (ciratio - 1) * (lbr_mean / 100))))
+    ) %>%
+    select(ciratio, name, rat) %>%
+    mutate(
+      name = case_match(
+        name,
+        paste0(name, '_lb') ~ lower_bound,
+        paste0(name, '_ub') ~ upper_bound,
+        name ~ best_estimates,
+        .ptype = factor(levels = c(lower_bound, best_estimates, upper_bound))
+      ),
+      rat = round(rat, 1)
+    ) %>%
+    arrange(name) %>%
+    pivot_wider(names_from = name, values_from = rat)
+
+  new_tibble(
+    data,
+    class = 'cd_mortality_ratio_summarised',
+    plot_type = plot_type
+  )
 }
 
 # Extract summary statistics from UN data using tidy logic

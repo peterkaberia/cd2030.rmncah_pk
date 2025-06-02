@@ -88,14 +88,9 @@ serviceUtilizationServer <- function(id, cache, i18n) {
       admin_level <- adminLevelInputServer('admin_level')
       region <- regionInputServer('region', cache, admin_level, i18n)
 
-      data <- reactive({
-        req(cache())
-        cache()$adjusted_data
-      })
-
       utilization_data <- reactive({
-        req(data(), admin_level())
-        compute_service_utilization(data(), admin_level())
+        req(cache(), cache()$adjusted_data, admin_level())
+        compute_service_utilization(cache()$adjusted_data, admin_level())
       })
 
       output$region_ui <- renderUI({

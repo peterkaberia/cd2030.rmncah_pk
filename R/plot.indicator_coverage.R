@@ -229,3 +229,50 @@ plot.cd_indicator_coverage <- function(x,
     )
   }
 }
+
+#' Plot Coverage by Denominator Source with Survey Reference
+#'
+#' Generates a bar plot comparing DHIS2-based coverage using various denominator sources
+#' against national survey coverage.
+#'
+#' @param x A data frame of class `'cd_indicator_coverage_filtered'` as returned by [filter_indicator_coverage()].
+#' @param ... Additional arguments (not used).
+#'
+#' @return A `ggplot2` object showing coverage by denominator type and national survey line.
+#'
+#' @details
+#' The function visualizes discrepancies in coverage estimates derived from different denominators:
+#' DHIS2 population, ANC1, Penta1, UN projections, and optionally others. The horizontal line indicates
+#' national survey coverage for the selected year, aiding in identifying possible under- or over-estimation.
+#'
+#' @seealso [filter_indicator_coverage()]
+#'
+#' @export
+plot.cd_indicator_coverage_filtered <- function(x, ...) {
+  country <- year <- category <- name <- indicator_name <- value <- NULL
+
+  # Match the selected indicator to ensure it is valid
+  indicator <- attr_or_abort(x, 'indicator')
+  coverage <- attr_or_abort(x, 'coverage')
+
+  # Auto-generate title based on the selected indicator
+  title_text <- paste("Fig 2c:", indicator, "coverage, DHIS2-based with different denominators, and survey coverage")
+
+  # Plot
+  ggplot(x, aes(x = category, y = value)) +
+    geom_col(aes(color = "Facility-based coverage (%)"), fill = "darkgoldenrod3", width = 0.6) +
+
+    # Add horizontal line for survey coverage, mapped to color aesthetic
+    geom_hline(aes(yintercept = coverage, color = "Coverage survey, national"), size = 1) +
+    labs(
+      title = title_text,
+      x = NULL, y = "Coverage (%)"
+    ) +
+    # scale_y_continuous(labels = scales::number_format()) +
+    scale_color_manual(
+      values = c("Facility-based coverage (%)" = "darkgoldenrod3", "Coverage survey, national" = "darkgreen"),
+      name = "Coverage Type"
+    ) +
+    cd_plot_theme()
+}
+

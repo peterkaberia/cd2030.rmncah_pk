@@ -4,11 +4,37 @@
 \alias{calculate_health_system_comparison}
 \title{Compare Health System Metrics Across Levels}
 \usage{
-calculate_health_system_comparison(.data)
+calculate_health_system_comparison(
+  .data,
+  sbr = 0.02,
+  nmr = 0.025,
+  pnmr = 0.024,
+  anc1survey = 0.98,
+  dpt1survey = 0.97,
+  survey_year = 2019,
+  twin = 0.015,
+  preg_loss = 0.03
+)
 }
 \arguments{
 \item{.data}{A data frame containing raw health system inputs including year,
 population, coverage, and facility indicators.}
+
+\item{sbr}{Numeric. The stillbirth rate (default: 0.02).}
+
+\item{nmr}{Numeric. The neonatal mortality rate (default: 0.025).}
+
+\item{pnmr}{Numeric. The post-neonatal mortality rate (default: 0.024).}
+
+\item{anc1survey}{Numeric. Survey-based ANC-1 coverage rate (default: 0.98).}
+
+\item{dpt1survey}{Numeric. Survey-based Penta-1 coverage rate (default: 0.97).}
+
+\item{survey_year}{Integer. The year of Penta-1 survey provided}
+
+\item{twin}{Numeric. The twin birth rate (default: 0.015).}
+
+\item{preg_loss}{Numeric. The pregnancy loss rate (default: 0.03).}
 }
 \value{
 A data frame with admin 1 and district metrics joined side by side for

@@ -293,6 +293,27 @@ CacheConnection <- R6::R6Class(
       )
     },
 
+    #' @description Run coverage calculation using stored model parameters.
+    calculate_health_system_comparison = function() {
+      if (!self$check_inequality_params) {
+        cd_abort(c('x' = 'One or more parameters is missing for {.fun calculate_indicator_coverage}'))
+      }
+
+      rates <- self$national_estimates
+
+      calculate_health_system_comparison(
+        .data = self$adjusted_data,
+        sbr = rates$sbr,
+        nmr = rates$nmr,
+        pnmr = rates$pnmr,
+        anc1survey = rates$anc1,
+        dpt1survey = rates$penta1,
+        survey_year = self$survey_year,
+        twin = rates$twin_rate,
+        preg_loss = rates$preg_loss
+      )
+    },
+
     #' @description Return the appropriate denominator based on the indicator type.
     #' @param indicator Character. Indicator name.
     #' @return Character. Either the maternal or vaccination denominator.
@@ -502,7 +523,7 @@ CacheConnection <- R6::R6Class(
         if (self$adjusted_flag && !is.null(private$.adjusted_data)) {
           return(private$.adjusted_data)
         }
-        return(self$data_with_excluded_years)
+        return(NULL)
       }
       check_cd_data(value)
       private$.adjusted_data <- value

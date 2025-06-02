@@ -97,6 +97,64 @@ calculate_indicator_coverage <- function(.data,
   )
 }
 
+#' Filter Indicator Coverage for Plotting
+#'
+#' Prepares a long-form data frame of coverage values across denominator sources for a specific indicator
+#' and year, including a user-defined national survey coverage value.
+#'
+#' @param .data A `cd_indicator_coverage` object.
+#' @param indicator A string. The target health indicator (e.g., `"penta3"`, `"bcg"`).
+#' @param survey_coverage A scalar numeric. The national survey coverage to include as a reference. Default is `88`.
+#'
+#' @return A `tibble` of class `'cd_indicator_coverage_filtered'`, enriched with attributes for plotting.
+#'
+#' @details
+#' The function reshapes wide coverage data into long format, classifies each column by denominator type,
+#' and extracts the indicator name. It selects only data for the most recent available year.
+#'
+#' @examples
+#' \dontrun{
+#' filtered <- filter_indicator_coverage(df, indicator = "penta3", survey_coverage = 90)
+#' plot(filtered)
+#' }
+#'
+#' @seealso [plot.cd_indicator_coverage_filtered()]
+#'
+#' @export
+filter_indicator_coverage <- function(.data, indicator, survey_coverage = 88) {
+  check_cd_indicator_coverage(.data)
+  indicator <- arg_match(indicator, get_indicator_without_opd_ipd())
+
+  if (!is_scalar_double(survey_coverage)) {
+    cd_abort(c("x" = "A scalar numeric is required."))
+  }
+
+  max_year <- robust_max(.data$year, 2024)
+
+  # Prepare the data for plotting
+  data <- .data %>%
+    pivot_longer(-any_of(c("country", "year", "iso3"))) %>%
+    mutate(
+      category = case_when(
+        grepl("_dhis2$", name) ~ "DHIS2 projection",
+        grepl("_anc1$", name) ~ "ANC1-derived",
+        grepl("_penta1$", name) ~ "Penta1-derived",
+        grepl("_un$", name) ~ "UN projection",
+        grepl("_penta1derived$", name) ~ "Penta 1 population Growth"
+      ),
+      category = factor(category, levels = c("DHIS2 projection", "ANC1-derived", "Penta1-derived", "UN projection", "Penta 1 population Growth")),
+      indicator_name = str_extract(name, "(?<=cov_).*?(?=_)")
+    ) %>%
+    filter(year == max_year, indicator_name == indicator)
+
+  new_tibble(
+    data,
+    class = 'cd_indicator_coverage_filtered',
+    indicator = indicator,
+    coverage = survey_coverage
+  )
+}
+
 calculate_populations <- function(.data,
                                   admin_level = c("national", "adminlevel_1", "district"),
                                   un_estimates = NULL,

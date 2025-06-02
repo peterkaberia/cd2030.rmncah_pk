@@ -102,6 +102,7 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-calculate_inequality}{\code{CacheConnection$calculate_inequality()}}
 \item \href{#method-CacheConnection-calculate_coverage}{\code{CacheConnection$calculate_coverage()}}
 \item \href{#method-CacheConnection-get_mapping_data}{\code{CacheConnection$get_mapping_data()}}
+\item \href{#method-CacheConnection-calculate_health_system_comparison}{\code{CacheConnection$calculate_health_system_comparison()}}
 \item \href{#method-CacheConnection-get_denominator}{\code{CacheConnection$get_denominator()}}
 \item \href{#method-CacheConnection-reactive}{\code{CacheConnection$reactive()}}
 \item \href{#method-CacheConnection-set_language}{\code{CacheConnection$set_language()}}
@@ -309,6 +310,16 @@ Run coverage calculation using stored model parameters.
 }
 \if{html}{\out{</div>}}
 }
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-calculate_health_system_comparison"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-calculate_health_system_comparison}{}}}
+\subsection{Method \code{calculate_health_system_comparison()}}{
+Run coverage calculation using stored model parameters.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$calculate_health_system_comparison()}\if{html}{\out{</div>}}
+}
+
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheConnection-get_denominator"></a>}}

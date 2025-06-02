@@ -79,12 +79,28 @@ calculate_health_system_metrics <- function(.data, admin_level = c('national', '
 #'
 #' @param .data A data frame containing raw health system inputs including year,
 #'   population, coverage, and facility indicators.
+#' @param sbr Numeric. The stillbirth rate (default: 0.02).
+#' @param nmr Numeric. The neonatal mortality rate (default: 0.025).
+#' @param pnmr Numeric. The post-neonatal mortality rate (default: 0.024).
+#' @param anc1survey Numeric. Survey-based ANC-1 coverage rate (default: 0.98).
+#' @param dpt1survey Numeric. Survey-based Penta-1 coverage rate (default: 0.97).
+#' @param survey_year Integer. The year of Penta-1 survey provided
+#' @param twin Numeric. The twin birth rate (default: 0.015).
+#' @param preg_loss Numeric. The pregnancy loss rate (default: 0.03).
 #'
 #' @return A data frame with admin 1 and district metrics joined side by side for
 #'   comparison.
 #'
 #' @export
-calculate_health_system_comparison <- function(.data) {
+calculate_health_system_comparison <- function(.data,
+                                               sbr = 0.02,
+                                               nmr = 0.025,
+                                               pnmr = 0.024,
+                                               anc1survey = 0.98,
+                                               dpt1survey = 0.97,
+                                               survey_year = 2019,
+                                               twin = 0.015,
+                                               preg_loss = 0.03) {
 
   check_cd_data(.data)
 
@@ -94,11 +110,20 @@ calculate_health_system_comparison <- function(.data) {
   #   select(year, matches('^cov_(anc1|sba|instdeliveries|csection|pnc48|penta3)_(anc1|dhis2|penta1)$')) %>%
   #   rename_with(~ paste0('nat_', .x), .cols = starts_with('cov_'))
 
-  ad1_cov <- calculate_indicator_coverage(.data, admin_level = 'adminlevel_1') %>%
+  ad1_cov <- calculate_indicator_coverage(
+    .data, admin_level = 'adminlevel_1', sbr = sbr, nmr = nmr, pnmr = pnmr,
+    anc1survey = anc1survey, dpt1survey = dpt1survey,
+    survey_year = survey_year, twin = twin, preg_loss = preg_loss
+  ) %>%
     select(year, adminlevel_1, matches('^cov_(anc1|sba|instdeliveries|csection|pnc48|penta3)_(anc1|dhis2|penta1)$')) %>%
     rename_with(~ paste0('ad1_', .x), .cols = starts_with('cov_'))
 
-  dis_cov <- calculate_indicator_coverage(.data, admin_level = 'district') %>%
+  dis_cov <- calculate_indicator_coverage(
+    .data, admin_level = 'district',
+    sbr = sbr, nmr = nmr, pnmr = pnmr,
+    anc1survey = anc1survey, dpt1survey = dpt1survey,
+    survey_year = survey_year, twin = twin, preg_loss = preg_loss
+  ) %>%
     select(year, adminlevel_1, district, matches('^cov_(anc1|sba|instdeliveries|csection|pnc48|penta3)_(anc1|dhis2|penta1)$')) %>%
     rename_with(~ paste0('dis_', .x), .cols = starts_with('cov_'))
 

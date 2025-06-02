@@ -39,8 +39,8 @@ compute_service_utilization <- function(.data, admin_level = c('national', 'admi
       .by = c(adminlevel_1, district, year),
     ) %>%
     summarise(
-      across(all_of(c(vars, pop_vars)), if(admin_level == 'national') sum else mean, na.rm = TRUE),
-      across(ends_with('_rr'), ~ if (admin_level == 'national') robust_max(.x) else mean(.x, na.rm = TRUE)),
+      across(all_of(c(vars, pop_vars)), sum, na.rm = TRUE),
+      across(ends_with('_rr'), robust_max),
       .by = all_of(admin_level_cols)
     ) %>%
     mutate(

@@ -94,12 +94,13 @@ reference:
     - compute_indicator_numerator
     - prepare_population_metrics
     - calculate_indicator_coverage
+    - filter_indicator_coverage
     - calculate_threshold
     - filter_high_performers
     - calculate_derived_coverage
     - plot_line_graph
-    - plot_absolute_differences
     - plot.cd_indicator_coverage
+    - plot.cd_indicator_coverage_filtered
     - plot.cd_population_metrics
     - plot.cd_derived_coverage
     - tbl_sum.cd_indicator_coverage
@@ -130,8 +131,9 @@ reference:
     contents:
     - create_mortality_summary
     - create_mortality_ratios
+    - summarise_completeness_ratio
     - plot.cd_mortality_rate
-    - plot.cd_mortality_ratio
+    - plot.cd_mortality_ratio_summarised
 
   - title: "Calculate Health Utilization Metrics"
     desc: >
