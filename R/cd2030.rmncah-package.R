@@ -47,6 +47,7 @@
 #' @importFrom purrr reduce
 #' @importFrom purrr set_names
 #' @importFrom purrr walk
+#' @importFrom readr read_csv
 #' @importFrom readxl excel_sheets
 #' @importFrom readxl read_excel
 #' @importFrom rmarkdown render
