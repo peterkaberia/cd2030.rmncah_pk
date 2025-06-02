@@ -4,7 +4,11 @@
 \alias{create_mortality_ratios}
 \title{Extract Latest Mortality Ratios for UN Comparison}
 \usage{
-create_mortality_ratios(.data, mortality_data)
+create_mortality_ratios(
+  .data,
+  mortality_data,
+  admin_level = c("national", "adminlevel_1", "district")
+)
 }
 \arguments{
 \item{.data}{The main mortality dataset.}

@@ -6,9 +6,8 @@
 \usage{
 \method{plot}{cd_health_system_comparison}(
   x,
-  indicator = c("ratio_fac_pop", "ratio_hstaff_pop", "ratio_bed_pop", "ratio_opd_pop",
-    "ratio_ipd_pop", "ratio_opd_u5_pop", "ratio_ipd_u5_pop", "cov_instdeliveries_hstaff",
-    "cov_instdeliveries_bed", "cov_instdeliveries_fac"),
+  indicator = c("cov_instdeliveries_hstaff", "ratio_opd_u5_hstaff", "ratio_opd_u5_hos",
+    "ratio_ipd_u5_bed"),
   denominator = NULL
 )
 }
