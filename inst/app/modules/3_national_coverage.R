@@ -39,7 +39,7 @@ nationalCoverageServer <- function(id, cache, i18n) {
     id = id,
     module = function(input, output, session) {
 
-      denominator <- denominatorInputServer('denominator', cache)
+      denominatorInputServer('denominator', cache, i18n)
 
       coverage <- reactive({
         req(cache(), cache()$check_coverage_params)

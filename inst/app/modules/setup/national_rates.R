@@ -72,7 +72,7 @@ nationalRatesServer <- function(id, cache) {
         updateNumericInput(session, "pregnancy_loss", value = national_estimates$preg_loss)
         updateNumericInput(session, "stillbirth_rate", value = national_estimates$sbr)
 
-        if (!is.null(cache()$survey_source) && cache()$survey_source == 'ratios') {
+        if (is.null(cache()$survey_source) || cache()$survey_source == 'ratios') {
           updateNumericInput(session, "anc1_prop", value = national_estimates$anc1 * 100)
           updateNumericInput(session, "penta1_prop", value = national_estimates$penta1 * 100)
         }
