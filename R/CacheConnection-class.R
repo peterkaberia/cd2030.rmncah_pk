@@ -96,6 +96,7 @@ CacheConnection <- R6::R6Class(
       private$.in_memory_data <- private$.data_template
       private$.in_memory_data$countdown_data <- countdown_data
       private$.in_memory_data$rds_path <- rds_path
+      private$.in_memory_data$survey_source <- NULL
 
       if (!is.null(rds_path)) {
         self$load_from_disk()

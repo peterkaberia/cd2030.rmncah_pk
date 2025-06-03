@@ -42,7 +42,7 @@ subnationalTargetServer <- function(id, cache, i18n) {
     id = id,
     module = function(input, output, session) {
 
-      denominatorInputServer('denominator', cache)
+      denominatorInputServer('denominator', cache, i18n)
       region <- regionInputServer('region', cache, reactive('adminlevel_1'), i18n)
 
       indicator_coverage <- reactive({

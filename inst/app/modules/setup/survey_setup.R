@@ -43,17 +43,6 @@ surveySetupServer <- function(id, cache, i18n) {
         req(cache())
         estimates <- cache()$survey_estimates
 
-        # if (any(is.na(estimates))) {
-        #   default_estimates <- cache()$default_national_estimates
-        #
-        #   cache()$set_survey_estimates(
-        #     c(anc1 = default_estimates$anc1 * 100,
-        #       penta1 = default_estimates$penta1 * 100,
-        #       penta3 = 89
-        #     )
-        #   )
-        # }
-
         if (is.null(cache()$survey_source) || cache()$survey_source == 'ratios') {
           updateNumericInput(session, 'penta3_prop', value = unname(estimates['penta3']))
         }
@@ -69,9 +58,9 @@ surveySetupServer <- function(id, cache, i18n) {
                      input$ideliv_prop, input$lbw_prop, input$csection_prop), {
         req(cache())
 
-        # if (!is.null(cache()$survey_source) && cache()$survey_source == 'ratios') {
-        #   return()
-        # }
+        if (!is.null(cache()$survey_source) && cache()$survey_source == 'ratios') {
+          return()
+        }
 
         estimates <- cache()$survey_estimates
         new_estimates <- c(

@@ -43,7 +43,7 @@ subnationalCoverageServer <- function(id, cache, i18n) {
       ns <- session$ns
 
       admin_level <- adminLevelInputServer('admin_level')
-      denominator <- denominatorInputServer('denominator', cache)
+      denominatorInputServer('denominator', cache, i18n)
       region <- regionInputServer('region', cache, admin_level, i18n)
 
       coverage <- reactive({

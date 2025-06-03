@@ -33,8 +33,8 @@ denominatorSelectionServer <- function(id, cache, i18n) {
     id = id,
     module = function(input, output, session) {
 
-      denominatorInputServer('denominator', cache, allowInput = TRUE)
-      denominatorInputServer('maternal_denominator', cache, allowInput = TRUE, maternal = TRUE)
+      denominatorInputServer('denominator', cache, i18n, allowInput = TRUE)
+      denominatorInputServer('maternal_denominator', cache, i18n, allowInput = TRUE, maternal = TRUE)
 
       survey_estimates <- reactive({
         req(cache())

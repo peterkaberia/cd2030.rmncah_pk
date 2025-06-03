@@ -41,7 +41,7 @@ subnationalMappingServer <- function(id, cache, i18n) {
     id = id,
     module = function(input, output, session) {
 
-      denominator <- denominatorInputServer('denominator', cache)
+      denominatorInputServer('denominator', cache, i18n)
 
       mapping_dt <- reactive({
         req(cache(), cache()$check_inequality_params)

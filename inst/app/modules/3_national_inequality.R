@@ -40,7 +40,7 @@ nationalInequalityServer <- function(id, cache, i18n) {
     id = id,
     module = function(input, output, session) {
 
-      denominatorInputServer('denominator', cache)
+      denominatorInputServer('denominator', cache, i18n)
       admin_level <- adminLevelInputServer('admin_level')
 
       inequalities <- reactive({
