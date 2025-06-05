@@ -96,7 +96,7 @@ source('modules/7_health_system_comparison.R')
 source('modules/family_planning.R')
 
 i18n <- init_i18n(translation_json_path = 'translation/translation.json')
-i18n$set_translation_language('fr')
+i18n$set_translation_language ('en')
 
 ui <- dashboardPage(
   skin = 'blue',
@@ -106,7 +106,7 @@ ui <- dashboardPage(
     selectInput(
       inputId = 'selected_language',
       label = i18n$t('change_language'),
-      choices = c('English' = 'en', 'French' = 'fr'),
+      choices = c('English' = 'en', 'French' = 'fr', 'Portuguese'= 'pt'),
       selected = i18n$get_key_translation()
     ),
     sidebarMenu(
