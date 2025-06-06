@@ -12,6 +12,8 @@ denominatorSelectionUI <- function(id, i18n) {
       column(3, denominatorInputUI(ns('maternal_denominator'), i18n))
     ),
 
+    include_report = TRUE,
+
     tabBox(
       title = i18n$t('title_national_coverage'),
       width = 12,
