@@ -9,7 +9,7 @@ denominatorSelectionUI <- function(id, i18n) {
     optionsHeader = contentOptions(
       title = i18n$t('title_analysis_options'),
       column(3, denominatorInputUI(ns('denominator'), i18n)),
-      column(3, denominatorInputUI(ns('maternal_denominator'), i18n, label = 'title_maternal_denominator'))
+      column(3, denominatorInputUI(ns('maternal_denominator'), i18n))
     ),
 
     tabBox(
@@ -34,7 +34,7 @@ denominatorSelectionServer <- function(id, cache, i18n) {
     module = function(input, output, session) {
 
       denominatorInputServer('denominator', cache, i18n, allowInput = TRUE)
-      denominatorInputServer('maternal_denominator', cache, i18n, allowInput = TRUE, maternal = TRUE)
+      denominatorInputServer('maternal_denominator', cache, i18n, allowInput = TRUE, maternal = TRUE, label = 'title_maternal_denominator')
 
       survey_estimates <- reactive({
         req(cache())
