@@ -188,13 +188,6 @@ new_countdown <- function(.data, class = NULL, call = caller_env()) {
     .data,
     country = country$alternate,
     iso3 = as.character(country$iso3),
-    national_rates = list(
-      sbr = country$sbr,
-      nmr = country$nmr,
-      pnmr = country$pnmr,
-      penta1 = country$penta1,
-      anc1 = country$anc1
-    ),
     class = c(class, "cd_data")
   )
 }
@@ -610,7 +603,7 @@ match_country <- function(country_name, call = caller_call()) {
 
   # Check if the closest match is within acceptable thresholds
   if (min_country_dist < 0.25) {
-    return(closest_match %>% select(alternate, iso3, sbr, nmr, pnmr, penta1, anc1))
+    return(closest_match %>% select(alternate, iso3))
   } else {
     suggestion <- closest_match$alternate[1]
     cd_abort(

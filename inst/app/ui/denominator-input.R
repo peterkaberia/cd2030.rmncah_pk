@@ -1,4 +1,4 @@
-denominatorInputUI <- function(id, i18n, label = 'title_denominator') {
+denominatorInputUI <- function(id, i18n) {
   ns <- NS(id)
   uiOutput(ns('denominator_ui'))
 }

@@ -6,7 +6,7 @@ setupUI <- function(id, i18n) {
   ns <- NS(id)
 
   tagList(
-    contentHeader(ns('analysis_setup'), i18n$t("title_setup"), include_buttons = FALSE),
+    contentHeader(ns('analysis_setup'), i18n$t("title_setup"), i18n = i18n),
     contentBody(
       nationalRatesUI(ns('national_rates'), i18n),
       surveySetupUI(ns('survey_setup'), i18n),

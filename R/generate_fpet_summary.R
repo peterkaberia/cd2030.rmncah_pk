@@ -4,20 +4,19 @@
 #' for visualization and interpretation of modern contraceptive prevalence and
 #' demand satisfied.
 #'
-#' @param path A Character for the path of the FPET input file
+#' @param .data An object of class `cd_fpet_data`.
 #'
 #' @return A `cd_fpet` object.
 #'
 #' @export
-generate_fpet_summary <- function(path) {
-  check_file_path(path)
+generate_fpet_summary <- function(.data) {
+  check_cd_class(.data, 'cd_fpet_data')
 
-  data <- read_csv(path, show_col_types = FALSE)
-  country <- data %>%
-    rename(country = 'Country/Population') %>%
+  country <- .data %>%
     distinct(country) %>%
     pull(country)
-  data %>%
+
+  .data %>%
     filter(`Marital status` == "married") %>%
     select(
       Year, Percentile,

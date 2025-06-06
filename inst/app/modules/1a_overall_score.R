@@ -2,7 +2,7 @@ overallScoreUI <- function(id, i18n) {
   ns <- NS(id)
 
   tagList(
-    contentHeader(ns('overall_scoring'), i18n$t("title_overall"), include_buttons = FALSE),
+    contentHeader(ns('data_quality'), i18n$t("title_overall"), i18n = i18n, include_report = TRUE),
     contentBody(
       box(
         title = i18n$t("title_overall_score_options"),
@@ -96,10 +96,11 @@ overallScoreServer <- function(id, cache, i18n) {
       })
 
       contentHeaderServer(
-        'overall_scoring',
+        'data_quality',
         cache = cache,
         md_title = i18n$t("title_overall"),
-        md_file = '2_reporting_rate.md'
+        md_file = '2_reporting_rate.md',
+        i18n = i18n
       )
 
     }

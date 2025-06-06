@@ -2,7 +2,7 @@ removeYearsUI <- function(id, i18n) {
   ns <- NS(id)
 
   tagList(
-    contentHeader(ns('remove_years'), i18n$t("btn_remove_years"), include_buttons = FALSE),
+    contentHeader(ns('remove_years'), i18n$t("btn_remove_years"), i18n = i18n),
     contentBody(
       fluidRow(
         column(

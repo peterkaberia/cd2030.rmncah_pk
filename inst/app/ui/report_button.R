@@ -143,11 +143,11 @@ reportButtonServer <- function(id, cache, report_name, i18n, adminlevel_1) {
         filename = report_file_name,
         extension = extension,
         i18n = i18n,
-        content = function(file) {
-          req(rv$file_path)
-          file.copy(rv$file_path, file)
+        content = function(file, path) {
+          req(path)
+          file.copy(path, file)
         },
-        data = cache,
+        data = reactive(rv$file_path),
         label = "btn_download_report",
         message = "msg_generating_report"
       )

@@ -45,7 +45,7 @@ compute_service_utilization <- function(.data, admin_level = c('national', 'admi
     ) %>%
     mutate(
       mean_opd_total = opd_total / total_pop,
-      mean_ipd_total = ipd_total / total_pop,
+      mean_ipd_total = 100 * ipd_total / total_pop,
       mean_opd_under5 = opd_under5 / under5_pop,
       mean_ipd_under5 = ipd_under5 / under5_pop,
       perc_opd_under5 = 100 * opd_under5 / opd_total,

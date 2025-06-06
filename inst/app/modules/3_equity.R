@@ -1,56 +1,54 @@
 equityUI <- function(id, i18n) {
   ns <- NS(id)
 
-  tagList(
-    contentHeader(ns('equity_assessment'), i18n$t("title_equity_assessment"), i18n = i18n),
-    contentBody(
-      box(
-        title = i18n$t("title_analysis_options"),
-        status = 'primary',
-        width = 12,
-        solidHeader = TRUE,
+  contentDashboard(
+    dashboardId = ns('national_inequality'),
+    dashboardTitle = i18n$t("title_equity_assessment"),
+    i18n = i18n,
+
+    optionsHeader = contentOptions(
+      title = i18n$t("title_analysis_options"),
+      column(3, selectizeInput(ns('type'), label = i18n$t("title_equity_type"),
+                               choices = c('Area' = 'area',
+                                           'Maternal Education' = 'meduc',
+                                           'Wealth Quintile' = 'wiq')))
+    ),
+
+    include_report = TRUE,
+
+    tabBox(
+      title = i18n$t("title_equity_analysis"),
+      width = 12,
+
+      tabPanel(
+        title = i18n$t("opt_penta3"),
         fluidRow(
-          column(3, selectizeInput(ns('type'), label = i18n$t("title_equity_type"),
-                                   choices = c('Area' = 'area',
-                                               'Maternal Education' = 'meduc',
-                                               'Wealth Quintile' = 'wiq')))
+          column(12, plotCustomOutput(ns('penta3'))),
+          column(3, downloadButtonUI(ns('penta3_download')))
         )
       ),
 
-      tabBox(
-        title = i18n$t("title_equity_analysis"),
-        width = 12,
-
-        tabPanel(
-          title = i18n$t("opt_penta3"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('penta3'))),
-            column(3, downloadButtonUI(ns('penta3_download')))
-          )
-        ),
-
-        tabPanel(
-          title = i18n$t("opt_mcv1"),
-          fluidRow(
-            column(12, plotCustomOutput(ns('measles1'))),
-            column(3, downloadButtonUI(ns('measles1_download')))
-          )
-        ),
-
-        tabPanel(
-          i18n$t("opt_custom_check"),
-          fluidRow(
-            column(3, selectizeInput(ns('indicator'),
-                                     label = i18n$t("title_indicator"),
-                                     choices =  c('Select' = '', get_all_indicators())))
-          ),
-          fluidRow(
-            column(12, plotCustomOutput(ns('custom_check'))),
-            column(3, downloadButtonUI(ns('custom_download')))
-          )
+      tabPanel(
+        title = i18n$t("opt_mcv1"),
+        fluidRow(
+          column(12, plotCustomOutput(ns('measles1'))),
+          column(3, downloadButtonUI(ns('measles1_download')))
         )
+      ),
 
+      tabPanel(
+        i18n$t("opt_custom_check"),
+        fluidRow(
+          column(3, selectizeInput(ns('indicator'),
+                                   label = i18n$t("title_indicator"),
+                                   choices =  c('Select' = '', get_all_indicators())))
+        ),
+        fluidRow(
+          column(12, plotCustomOutput(ns('custom_check'))),
+          column(3, downloadButtonUI(ns('custom_download')))
+        )
       )
+
     )
   )
 }
@@ -124,12 +122,7 @@ equityServer <- function(id, cache, i18n) {
         filename = reactive(paste0('penta3_', input$type, '_equity')),
         data = penta3_equiplot,
         i18n = i18n,
-        plot_function = function() {
-          tryCatch(
-            plot(penta3_equiplot()),
-            error = function(e) NULL
-          )
-        }
+        plot_function = function(plot) plot
       )
 
       downloadPlot(
@@ -137,12 +130,7 @@ equityServer <- function(id, cache, i18n) {
         filename = reactive(paste0('measles1_', input$type, '_equity')),
         data = measles1_equiplot,
         i18n = i18n,
-        plot_function = function() {
-          tryCatch(
-            plot(measles1_equiplot()),
-            error = function(e) NULL
-          )
-        }
+        plot_function = function(plot) plot
       )
 
       downloadPlot(
@@ -150,16 +138,11 @@ equityServer <- function(id, cache, i18n) {
         filename = reactive(paste0(input$indicator, '_', input$type, '_equity')),
         data = custom_equiplot,
         i18n = i18n,
-        plot_function = function() {
-          tryCatch(
-            plot(custom_equiplot()),
-            error = function(e) NULL
-          )
-        }
+        plot_function = function(plot) plot
       )
 
       contentHeaderServer(
-        'equity_assessment',
+        'national_inequality',
         cache = cache,
         objects = pageObjectsConfig(input),
         md_title = i18n$t("title_equity_assessment"),

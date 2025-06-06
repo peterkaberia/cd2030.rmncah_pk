@@ -4,10 +4,10 @@
 \alias{generate_fpet_summary}
 \title{Load and Generate FPET Output}
 \usage{
-generate_fpet_summary(path)
+generate_fpet_summary(.data)
 }
 \arguments{
-\item{path}{A Character for the path of the FPET input file}
+\item{.data}{An object of class \code{cd_fpet_data}.}
 }
 \value{
 A \code{cd_fpet} object.

@@ -429,6 +429,10 @@ CacheConnection <- R6::R6Class(
     #' @param value Integer vector.
     set_mapping_years = function(value) private$setter('selected_mapping_years', value, is_integerish),
 
+    #' @description Set FPET data.
+    #' @param value Data frame.
+    set_fpet_data = function(value) private$setter('fpet_data', value, check_fpet_data),
+
     #' @description Set UN estimates.
     #' @param value Data frame.
     set_un_estimates = function(value) private$setter('un_estimates', value, check_un_estimates_data),
@@ -614,6 +618,9 @@ CacheConnection <- R6::R6Class(
     #' @field mapping_years Gets mapping years.
     mapping_years = function(value) private$getter('selected_mapping_years', value),
 
+    #' @field fpet_data Gets UN estimates.
+    fpet_data = function(value) private$getter('fpet_data', value),
+
     #' @field un_estimates Gets UN estimates.
     un_estimates = function(value) private$getter('un_estimates', value),
 
@@ -725,6 +732,7 @@ CacheConnection <- R6::R6Class(
       education_survey = NULL,
       survey_mapping = NULL,
       map_mapping = NULL,
+      fpet_data = NULL,
       page_notes = tibble::tibble(
         page_id = character(),
         object_id = character(),
