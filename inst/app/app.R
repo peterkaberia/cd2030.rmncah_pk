@@ -167,12 +167,15 @@ ui <- dashboardPage(
                menuSubItem(i18n$t('title_national_coverage'),
                            tabName = 'national_coverage',
                            icon = icon('flag')),
-               menuSubItem(i18n$t('title_national_inequality'),
-                           tabName = 'national_inequality',
-                           icon = icon('balance-scale-right')),
                menuSubItem(i18n$t('title_global_coverage'),
                            tabName = 'national_target',
                            icon = icon('user-slash')),
+               menuSubItem(i18n$t('title_fpet'),
+                           tabName = 'fpet_projection',
+                           icon = icon('user-slash')),
+               menuSubItem(i18n$t('title_national_inequality'),
+                           tabName = 'national_inequality',
+                           icon = icon('balance-scale-right')),
                menuSubItem(i18n$t('title_subnational_mapping'),
                            tabName = 'subnational_mapping',
                            icon = icon('map')),
@@ -207,13 +210,7 @@ ui <- dashboardPage(
                menuSubItem(i18n$t('title_health_system_comparison'),
                            tabName = 'health_system_comparison',
                            icon = icon('user-slash'))
-      ),
-      menuItem(i18n$t('title_family_planning'),
-               tabName = 'family_planning',
-               icon = icon('globe-africa'),
-               menuSubItem(i18n$t('title_fpet'),
-                           tabName = 'fpet_projection',
-                           icon = icon('user-slash')))
+      )
     )
   ),
   body = dashboardBody(

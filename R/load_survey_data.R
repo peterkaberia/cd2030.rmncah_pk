@@ -195,3 +195,25 @@ load_data_or_file <- function(path = NULL, .data = NULL, country_iso = NULL) {
   .data %>%
     filter(if (is.null(country_iso)) TRUE else iso3 == country_iso)
 }
+
+load_fpet_data <- function(path = NULL, .data = NULL, country_iso = NULL) {
+
+  if (!is.null(path)) {
+    check_file_path(path)
+    ext <- tools::file_ext(path)
+    if (tolower(ext) != "csv") {
+      cd_abort(c("x" = "Only {.val .csv} files are supported."))
+    }
+    .data <- read_csv(path)
+    if (!is.null(country_iso)) {
+      .data <- .data %>% mutate(iso3 = country_iso)
+    }
+  }
+
+  check_required(.data)
+
+  .data %>%
+    rename(country = 'Country/Population') %>%
+    filter(if (is.null(country_iso)) TRUE else iso3 == country_iso) %>%
+    new_tibble(class = "cd_fpet_data")
+}

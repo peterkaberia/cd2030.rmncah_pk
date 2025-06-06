@@ -1,16 +1,14 @@
-contentHeader <- function(id, title, i18n, include_buttons = TRUE) {
+contentHeader <- function(id, title, i18n, include_report = FALSE, include_notes = FALSE, include_help = TRUE) {
   ns <- NS(id)
   div(
     class = 'content-header',
     h1(title),
-    if (include_buttons) {
-      div(
-        reportButtonUI(ns('report'), label = i18n$t("btn_generate_report")),
-        documentationButtonUI(ns('add_notes'), i18n),
-        helpButtonUI(ns('get_help'), name = i18n$t('btn_help')),
-        class = 'right-buttons'
-      )
-    }
+    div(
+      class = 'right-buttons',
+      if (include_report) reportButtonUI(ns('report'), label = i18n$t("btn_generate_report")),
+      if (include_notes) documentationButtonUI(ns('add_notes'), i18n),
+      if (include_help) helpButtonUI(ns('get_help'), name = i18n$t('btn_help'))
+    )
   )
 }
 

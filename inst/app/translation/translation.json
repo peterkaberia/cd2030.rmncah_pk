@@ -146,9 +146,9 @@
     },
     {
       "key": "title_global_coverage",
-      "en": "Global Coverage",
-      "fr": "Couverture mondiale",
-      "pt": "Cobertura global"
+      "en": "Coverage Target",
+      "fr": "Objectif de couverture",
+      "pt": "Meta de cobertura"
     },
     {
       "key": "title_subnational_mapping",

@@ -63,6 +63,8 @@ from \code{.rds} files.
 
 \item{\code{mapping_years}}{Gets mapping years.}
 
+\item{\code{fpet_data}}{Gets UN estimates.}
+
 \item{\code{un_estimates}}{Gets UN estimates.}
 
 \item{\code{un_mortality_estimates}}{Gets UN mortality estimates.}
@@ -123,6 +125,7 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-set_selected_admin_level_1}{\code{CacheConnection$set_selected_admin_level_1()}}
 \item \href{#method-CacheConnection-set_selected_district}{\code{CacheConnection$set_selected_district()}}
 \item \href{#method-CacheConnection-set_mapping_years}{\code{CacheConnection$set_mapping_years()}}
+\item \href{#method-CacheConnection-set_fpet_data}{\code{CacheConnection$set_fpet_data()}}
 \item \href{#method-CacheConnection-set_un_estimates}{\code{CacheConnection$set_un_estimates()}}
 \item \href{#method-CacheConnection-set_un_mortality_estimates}{\code{CacheConnection$set_un_mortality_estimates()}}
 \item \href{#method-CacheConnection-set_wuenic_estimates}{\code{CacheConnection$set_wuenic_estimates()}}
@@ -653,6 +656,23 @@ Set mapping years.
 \if{html}{\out{<div class="arguments">}}
 \describe{
 \item{\code{value}}{Integer vector.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_fpet_data"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_fpet_data}{}}}
+\subsection{Method \code{set_fpet_data()}}{
+Set FPET data.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_fpet_data(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Data frame.}
 }
 \if{html}{\out{</div>}}
 }

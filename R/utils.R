@@ -91,6 +91,10 @@ check_un_mortality_data <- function(.data, arg = caller_arg(.data), call = calle
   check_cd_class(.data, "cd_un_mortality", arg = arg, call = call)
 }
 
+check_fpet_data <- function(.data, arg = caller_arg(.data), call = caller_env()) {
+  check_cd_class(.data, "cd_fpet_data", arg = arg, call = call)
+}
+
 check_wuenic_data <- function(.data, arg = caller_arg(.data), call = caller_env()) {
   check_cd_class(.data, "cd_wuenic_data", arg = arg, call = call)
 
