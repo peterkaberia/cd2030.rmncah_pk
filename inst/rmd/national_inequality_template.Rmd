@@ -159,7 +159,7 @@ Monitoring the coverage of interventions is a critical and direct output of heal
 systems. It is most useful if the national plan has meaningful targets. Both health 
 facility and survey data need to be used.
 
-### Regional coverage distribution: Institutional deliveries by admin1
+### Regional coverage distribution: Institutional deliveries by District
 
 ```{r}
 district_inequality <- cache$calculate_inequality('district')
@@ -169,6 +169,8 @@ district_inequality %>%
   plot() +
   cd_report_theme()
 ```
+
+### Regional coverage distribution: Penta 3 by District
 
 ```{r}
 district_inequality %>% 
