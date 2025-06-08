@@ -48,7 +48,8 @@ The main challenge with mortality data from health facilities is underreporting 
 
 ```{r, fig.cap='Figure 5a: Maternal mortality per 100,000 live births in health facilities, based on the reported data in DHIS2'}
 mortality_summary <- cache$create_mortality_summary()
-plot(mortality_summary, indicator = 'mmr_inst')
+plot(mortality_summary, indicator = 'mmr_inst') +
+  cd_report_theme()
 ```
 
 ```{r}
@@ -58,26 +59,31 @@ max_year <- max(mortality_summary$year)
 years <- if (is.null(cache$mapping_years)) c(min_year, max_year) else cache$mapping_years
 mmr_plot <- mortality_summary %>% 
   cache$filter_mortality_summary('mmr', years)
-plot(mmr_plot)
+plot(mmr_plot) +
+  cd_report_theme()
 ```
 
 
 ```{r, fig.cap='Figure 5b: Ratio of stillbirths to maternal deaths in health facilities, based on the reported data in DHIS2'}
-plot(mortality_summary, indicator = 'ratio_md_sb')
+plot(mortality_summary, indicator = 'ratio_md_sb') +
+  cd_report_theme()
 ```
 
 ```{r, fig.cap='Figure 5c: Still Birth rates per 1000 births in health facilities, based on the reported data in DHIS2'}
-plot(mortality_summary, indicator = 'sbr_inst')
+plot(mortality_summary, indicator = 'sbr_inst') +
+  cd_report_theme()
 ```
 
 ```{r}
 sbr_plot <- mortality_summary %>% 
   cache$filter_mortality_summary('sbr', years)
-plot(sbr_plot)
+plot(sbr_plot) +
+  cd_report_theme()
 ```
 
 ```{r, fig.cap='Figure 5d: Neonatal mortality before discharge per 1,000 live births in health facilities, based on the reported data in DHIS2'}
-plot(mortality_summary, indicator = 'nn_inst')
+plot(mortality_summary, indicator = 'nn_inst') +
+  cd_report_theme()
 ```
 
 #### 📝 Notes 
@@ -111,11 +117,13 @@ The main challenge with health facility data on stillbirths and neonatal deaths 
 ```{r, fig.cap='Fig 5e: Completeness of facility maternal death reporting (%), based on UN MMR estimates and community to institutional ratio'}
 mortality_ratio <- mortality_summary %>% 
   cache$create_mortality_ratios()
-plot(cache$summarise_completeness_ratio(mortality_ratio, 'mmr'))
+plot(cache$summarise_completeness_ratio(mortality_ratio, 'mmr')) +
+  cd_report_theme()
 ```
 
 ```{r, fig.cap='Fig 5f: Completeness of facility stillbirth reporting (%), based on UN stillbirth estimates and community to institutional ratio'}
-plot(cache$summarise_completeness_ratio(mortality_ratio, 'sbr'))
+plot(cache$summarise_completeness_ratio(mortality_ratio, 'sbr')) +
+  cd_report_theme()
 ```
 
 #### 📝 Notes 

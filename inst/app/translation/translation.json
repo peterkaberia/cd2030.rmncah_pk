@@ -1299,63 +1299,63 @@
 },
 {
   "key": "title_nmr",
-  "en": "Neonatal Mortality (/1k LB, proportion)",
-  "fr": "Mortalité néonatale (/1k NV, proportion)",
-  "pt": "Mortalidade Neonatal (/1k NV, proporção)"
+  "en": "Neonatal Mortality (proportion)",
+  "fr": "Mortalité néonatale (proportion)",
+  "pt": "Mortalidade neonatal (proporção)"
 },
 {
   "key": "title_pnmr",
-  "en": "Post-Neonatal Mortality (/1k LB, proportion)",
-  "fr": "Mortalité post-néonatale (/1k NV, proportion)",
-  "pt": "Mortalidade Pós-Neonatal (/1k NV, proporção)"
+  "en": "Post-Neonatal Mortality (proportion)",
+  "fr": "Mortalité post-néonatale (proportion)",
+  "pt": "Mortalidade pós-neonatal (proporção)"
 },
 {
   "key": "title_twin_rate",
-  "en": "Twin Births (% deliveries, proportion)",
-  "fr": "Naissances gémellaires (% accouchements, proportion)",
-  "pt": "Nascimentos Gemelares (% partos, proporção)"
+  "en": "Twin Births (proportion)",
+  "fr": "Naissances gémellaires (proportion)",
+  "pt": "Nascimentos gemelares (proporção)"
 },
 {
   "key": "title_pregnancy_loss",
-  "en": "Pregnancy Loss (% pregnancies, proportion)",
-  "fr": "Perte de grossesse (% grossesses, proportion)",
-  "pt": "Perda Gestacional (% gestações, proporção)"
+  "en": "Pregnancy Loss (proportion)",
+  "fr": "Perte de grossesse (proportion)",
+  "pt": "Perda gestacional (proporção)"
 },
 {
   "key": "title_still_birth_rate",
-  "en": "Stillbirth Rate (/1k births, proportion)",
-  "fr": "Taux de mortinatalité (/1k naissances, proportion)",
-  "pt": "Taxa de Natimortalidade (/1k nascimentos, proporção)"
+  "en": "Stillbirth Rate (proportion)",
+  "fr": "Taux de mortinatalité (proportion)",
+  "pt": "Taxa de natimortalidade (proporção)"
 },
 {
   "key": "title_anc1_survey",
-  "en": "ANC1 Coverage from Survey (%)",
-  "fr": "Couverture ANC1 selon l’enquête (%)",
-  "pt": "Cobertura ANC1 pela Pesquisa (%)"
+  "en": "ANC1 Survey (%)",
+  "fr": "ANC1 enquête (%)",
+  "pt": "ANC1 pesquisa (%)"
 },
 {
   "key": "title_penta1_survey",
-  "en": "Penta1 Coverage from Survey (%)",
-  "fr": "Couverture Penta1 selon l’enquête (%)",
-  "pt": "Cobertura Penta1 pela Pesquisa (%)"
+  "en": "Penta1 Survey (%)",
+  "fr": "Penta1 enquête (%)",
+  "pt": "Penta1 pesquisa (%)"
 },
 {
   "key": "title_penta3_survey",
-  "en": "Penta3 Survey",
-  "fr": "Enquête Penta3",
-  "pt": "Pesquisa Penta3"
+  "en": "Penta 3",
+  "fr": "Penta 3",
+  "pt": "Penta 3"
 },
 {
   "key": "title_measles1_survey",
-  "en": "Measles1 Survey",
-  "fr": "Enquête Rougeole1",
-  "pt": "Pesquisa Sarampo1"
+  "en": "Measles 1",
+  "fr": "Rougeole 1",
+  "pt": "Sarampo 1"
 },
 {
   "key": "title_bcg_survey",
-  "en": "BCG Survey",
-  "fr": "Enquête BCG",
-  "pt": "Pesquisa BCG"
+  "en": "BCG",
+  "fr": "BCG",
+  "pt": "BCG"
 },
 {
   "key": "title_upload_un_estimates",
@@ -2258,10 +2258,10 @@
   "pt": "OPD <5 anos/Hospitais"
 },
 {
-  "key": "opt_cov_instdeliveries_bed",
-  "en": "Deliveries/Beds",
-  "fr": "Accouchements/Lits",
-  "pt": "Partos/Leitos"
+  "key": "opt_cov_instdeliveries_hstaff",
+  "en": "Deliveries/Workforce",
+  "fr": "Accouchements/Personnel de santé",
+  "pt": "Partos/Profissionais de saúde"
 },
 {
   "key": "opt_ratio_opd_u5_hstaff",
@@ -2403,27 +2403,27 @@
 },
 {
   "key": "title_anc4_survey",
-  "en": "ANC4 Survey",
-  "fr": "Enquête sur les quatre consultations prénatales",
-  "pt": "Pesquisa ANC4"
+  "en": "ANC4",
+  "fr": "4 visites prénatales",
+  "pt": "4 consultas pré-natais"
 },
 {
   "key": "title_ideliv_survey",
-  "en": "Institutional Delivery Survey",
-  "fr": "Enquête sur les accouchements en établissement",
-  "pt": "Pesquisa sobre Parto Institucional"
+  "en": "Institutional Delivery",
+  "fr": "Accouchement en établissement",
+  "pt": "Parto institucional"
 },
 {
   "key": "title_lbw_survey",
-  "en": "Low Birth Weight Survey",
-  "fr": "Enquête sur l’insuffisance pondérale à la naissance",
-  "pt": "Pesquisa sobre Baixo Peso ao Nascer"
+  "en": "Low Birth Weight",
+  "fr": "Faible poids à la naissance",
+  "pt": "Baixo peso ao nascer"
 },
 {
   "key": "title_csection_survey",
-  "en": "Caesarean Section Survey",
-  "fr": "Enquête sur les accouchements par césarienne",
-  "pt": "Pesquisa sobre Parto Cesáreo"
+  "en": "Caesarean Section",
+  "fr": "Césarienne",
+  "pt": "Cesárea"
 },
 {
   "key": "title_family_planning",

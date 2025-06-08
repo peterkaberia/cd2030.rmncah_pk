@@ -51,7 +51,8 @@ Data on inpatient admissions among under-fives are indicators of access to curat
 service_utilization <- cache$compute_service_utilization('national')
 service_utilization %>% 
   filter_service_utilization_map('opd') %>% 
-  plot()
+  plot() +
+  cd_report_theme()
 ```
 
 ```{r, fig.cap='Figure 6b : map with OPD service use by children, by region'}
@@ -62,7 +63,8 @@ max_year <- max(admin1_service_utilization$year)
 years <- if (is.null(cache$mapping_years)) c(min_year, max_year) else cache$mapping_years
 admin1_filtered <- admin1_service_utilization %>% 
   cache$filter_service_utilization(indicator = 'opd', map_years = years)
-plot(admin1_filtered)
+plot(admin1_filtered) +
+  cd_report_theme()
 ```
 
 #### 📝 Notes 
@@ -90,13 +92,15 @@ Data on inpatient admissions among under-fives are indicators of access to curat
 ```{r, fig.cap='Figure 6c: Admissions per 100 children and case fatality rates per 100 admissions under-5, national'}
 service_utilization %>% 
   filter_service_utilization_map('ipd') %>% 
-  plot()
+  plot() +
+  cd_report_theme()
 ```
 
 ```{r, fig.cap='Figure 6d : Admission rates per 100 children under-5, by region'}
 admin1_filtered <- admin1_service_utilization %>% 
   cache$filter_service_utilization(indicator = 'ipd', map_years = years)
-plot(admin1_filtered)
+plot(admin1_filtered) +
+  cd_report_theme()
 ```
 
 #### 📝 Notes 
