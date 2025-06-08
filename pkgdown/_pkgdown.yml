@@ -143,8 +143,11 @@ reference:
       To Calculate National and Sub-national metric of how services are Utilize
     contents:
     - compute_service_utilization
+    - filter_service_utilization
+    - filter_service_utilization_map
     - get_excel_version
-    - plot.cd_service_utilization
+    - plot.cd_service_utilization_map
+    - plot.cd_service_utilization_filtered
 
   - title: "Calculate Health System Metrics"
     contents:

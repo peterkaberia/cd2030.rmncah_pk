@@ -92,7 +92,9 @@ source('modules/5_mortality.R')
 source('modules/5_mortality_completeness.R')
 source('modules/5_mortality_mapping.R')
 
-source('modules/6_service_utilization.R')
+source('modules/6_national_service_utilization.R')
+source('modules/6_subnational_service_utilization.R')
+
 source('modules/7_health_system_national.R')
 source('modules/7_health_system_subnational.R')
 source('modules/7_health_system_comparison.R')
@@ -212,7 +214,16 @@ ui <- dashboardPage(
                            tabName = 'mortality_completeness',
                            icon = icon('user-slash'))
                ),
-      menuItem(i18n$t('title_service_utilization'), tabName = 'service_utilization', icon = icon('balance-scale')),
+      menuItem(i18n$t('title_service_utilization'),
+               tabName = 'service_utilization',
+               icon = icon('balance-scale'),
+               menuSubItem(i18n$t('title_national_utilization'),
+                           tabName = 'national_utilization',
+                           icon = icon('map-marked')),
+               menuSubItem(i18n$t('title_subnational_utilization'),
+                           tabName = 'subnational_utilization',
+                           icon = icon('balance-scale-right'))
+               ),
       menuItem(i18n$t('opt_health_system_performance'),
                tabName = 'system_performance',
                icon = icon('globe-africa'),
@@ -315,7 +326,8 @@ ui <- dashboardPage(
       tabItem(tabName = 'mortality_institutional', mortalityUI('mortality_institutional', i18n = i18n)),
       tabItem(tabName = 'mortality_mapping', mortalityMappingUI('mortality_mapping', i18n = i18n)),
       tabItem(tabName = 'mortality_completeness', mortalityCompletenessUI('mortality_completeness', i18n = i18n)),
-      tabItem(tabName = 'service_utilization', serviceUtilizationUI('service_utilization', i18n = i18n)),
+      tabItem(tabName = 'national_utilization', nationalServiceUtilizationUI('national_utilization', i18n = i18n)),
+      tabItem(tabName = 'subnational_utilization', subnationalServiceUtilizationUI('subnational_utilization', i18n = i18n)),
       tabItem(tabName = 'health_system_national', healthSystemNationalUI('health_system_national', i18n = i18n)),
       tabItem(tabName = 'health_system_subnational', healthSystemSubnationalUI('health_system_subnational', i18n = i18n)),
       tabItem(tabName = 'health_system_comparison', healthSystemComparisonUI('health_system_comparison', i18n = i18n)),
@@ -375,7 +387,8 @@ server <- function(input, output, session) {
   mortalityServer('mortality_institutional', cache, i18n)
   mortalityMappingServer('mortality_mapping', cache, i18n)
   mortalityCompletenessServer('mortality_completeness', cache, i18n)
-  serviceUtilizationServer('service_utilization', cache, i18n)
+  nationalServiceUtilizationServer('national_utilization', cache, i18n)
+  subnationalServiceUtilizationServer('subnational_utilization', cache, i18n)
   healthSystemNationalServer('health_system_national', cache, i18n)
   healthSystemSubnationalServer('health_system_subnational', cache, i18n)
   healthSystemComparisonServer('health_system_comparison', cache, i18n)

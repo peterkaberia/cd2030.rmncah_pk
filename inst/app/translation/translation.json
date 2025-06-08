@@ -2276,6 +2276,30 @@
   "pt": "Utilização dos Serviços"
 },
 {
+  "key": "title_national_utilization",
+  "en": "National Utilization",
+  "fr": "Utilisation des services nationales",
+  "pt": "Utilização Nacional dos Serviços"
+},
+{
+  "key": "title_subnational_utilization",
+  "en": "Sub-National Utilization",
+  "fr": "Utilisation des services infranationales",
+  "pt": "Utilização Subnacional dos Serviços"
+},
+{
+  "key": "opt_opd_map",
+  "en": "OPD Map",
+  "fr": "Carte des consultations externes",
+  "pt": "Mapa de consultas ambulatoriais"
+},
+{
+  "key": "opt_ipd_map",
+  "en": "IPD Map",
+  "fr": "Carte des hospitalisations",
+  "pt": "Mapa de internações hospitalares"
+},
+{
   "key": "opt_opd_visits",
   "en": "OPD Visits",
   "fr": "Consultations externes",

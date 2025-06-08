@@ -112,6 +112,8 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-lbr_mean}{\code{CacheConnection$lbr_mean()}}
 \item \href{#method-CacheConnection-summarise_completeness_ratio}{\code{CacheConnection$summarise_completeness_ratio()}}
 \item \href{#method-CacheConnection-filter_mortality_summary}{\code{CacheConnection$filter_mortality_summary()}}
+\item \href{#method-CacheConnection-compute_service_utilization}{\code{CacheConnection$compute_service_utilization()}}
+\item \href{#method-CacheConnection-filter_service_utilization}{\code{CacheConnection$filter_service_utilization()}}
 \item \href{#method-CacheConnection-get_denominator}{\code{CacheConnection$get_denominator()}}
 \item \href{#method-CacheConnection-reactive}{\code{CacheConnection$reactive()}}
 \item \href{#method-CacheConnection-set_language}{\code{CacheConnection$set_language()}}
@@ -409,6 +411,44 @@ Return the appropriate summary based on the indicator type to plot.
 }
 \subsection{Returns}{
 Character. Either the maternal or vaccination denominator.
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-compute_service_utilization"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-compute_service_utilization}{}}}
+\subsection{Method \code{compute_service_utilization()}}{
+Computed service utilization for various indicators.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$compute_service_utilization(admin_level)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{admin_level}}{The level to aggregate data at.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-filter_service_utilization"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-filter_service_utilization}{}}}
+\subsection{Method \code{filter_service_utilization()}}{
+Return the appropriate summary based on the indicator type to plot.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$filter_service_utilization(.data, indicator, map_years = NULL)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{.data}}{A \code{cd_service_utilization} object.}
+
+\item{\code{indicator}}{Character. Indicator name.}
+
+\item{\code{map_years}}{the years to include in a map}
+}
+\if{html}{\out{</div>}}
 }
 }
 \if{html}{\out{<hr>}}

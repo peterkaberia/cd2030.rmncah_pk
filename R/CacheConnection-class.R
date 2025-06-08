@@ -364,6 +364,29 @@ CacheConnection <- R6::R6Class(
         filter_mortality_summary(self$country_iso, indicator, years, self$map_mapping)
     },
 
+    #' @description Computed service utilization for various indicators.
+    #' @param admin_level The level to aggregate data at.
+    compute_service_utilization = function(admin_level) {
+      if (is.null(self$adjusted_data)) {
+        cd_abort(c('x' = 'Adjusted data is required'))
+      }
+      check_required(admin_level)
+
+      self$adjusted_data %>%
+        compute_service_utilization(admin_level)
+    },
+
+    #' @description Return the appropriate summary based on the indicator type to plot.
+    #' @param .data A `cd_service_utilization` object.
+    #' @param indicator Character. Indicator name.
+    #' @param map_years the years to include in a map
+    filter_service_utilization = function(.data, indicator, map_years = NULL) {
+      check_cd_class(.data, expected_class = 'cd_service_utilization')
+      years <- if (is.null(map_years)) self$mapping_years else map_years
+      .data %>%
+        filter_service_utilization(self$country_iso, indicator, years, self$map_mapping)
+    },
+
     #' @description Return the appropriate denominator based on the indicator type.
     #' @param indicator Character. Indicator name.
     #' @return Character. Either the maternal or vaccination denominator.
