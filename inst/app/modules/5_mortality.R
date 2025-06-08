@@ -61,9 +61,11 @@ mortalityServer <- function(id, cache, i18n) {
 
       lbr_mean <- reactive({
         req(coverage())
+        denom <- cache()$maternal_denominator
+        cov <- paste0('cov_instlivebirths_', denom)
         coverage() %>%
-          select(year, cov_instlivebirths_dhis2) %>%
-          summarise(lbr_mean = mean(cov_instlivebirths_dhis2)) %>%
+          select(year, all_of(cov)) %>%
+          summarise(lbr_mean = mean(!!sym(cov))) %>%
           pull(lbr_mean)
       })
 

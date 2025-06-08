@@ -1257,39 +1257,39 @@
 },
 {
   "key": "figure_live_births_outlier",
-  "en": "Figure 1c: Comparison of number of live births before and after adjustments for completness and outliers",
-  "fr": "Figure 1c : Comparaison du nombre de naissances vivantes avant et après ajustements pour complétude et valeurs aberrantes",
-  "pt": "Figura 1c: Comparação do número de nascimentos vivos antes e depois dos ajustes de completude e valores discrepantes"
+  "en": "Comparison of number of live births before and after adjustments for completness and outliers",
+  "fr": "Comparaison du nombre de naissances vivantes avant et après ajustements pour complétude et valeurs aberrantes",
+  "pt": "Comparação do número de nascimentos vivos antes e depois dos ajustes de completude e valores discrepantes"
 },
 {
   "key": "figure_penta_outlier",
-  "en": "Figure 1d: Comparison of number of penta1 vaccination before and after adjustments for completness and outliers",
-  "fr": "Figure 1d : Comparaison du nombre de vaccinations Penta1 avant et après ajustements pour complétude et valeurs aberrantes",
-  "pt": "Figura 1d: Comparação do número de vacinas Penta1 antes e depois dos ajustes de completude e valores discrepantes"
+  "en": "Comparison of number of penta1 vaccination before and after adjustments for completness and outliers",
+  "fr": "Comparaison du nombre de vaccinations Penta1 avant et après ajustements pour complétude et valeurs aberrantes",
+  "pt": "Comparação do número de vacinas Penta1 antes e depois dos ajustes de completude e valores discrepantes"
 },
 {
   "key": "figure_anc1_outlier",
-  "en": "Figure 1e: Comparison of number of ANC1 before and after adjustments for completness and outliers",
-  "fr": "Figure 1e : Comparaison du nombre de ANC1 avant et après ajustements pour complétude et valeurs aberrantes",
-  "pt": "Figura 1e: Comparação do número de ANC1 antes e depois dos ajustes de completude e valores discrepantes"
+  "en": "Comparison of number of ANC1 before and after adjustments for completness and outliers",
+  "fr": "Comparaison du nombre de ANC1 avant et après ajustements pour complétude et valeurs aberrantes",
+  "pt": "Comparação do número de ANC1 antes e depois dos ajustes de completude e valores discrepantes"
 },
 {
   "key": "figure_mcv1_outlier",
-  "en": "Figure 1f: Comparison of number of measles vaccination before and after adjustments for completness and outliers",
-  "fr": "Figure 1f : Comparaison du nombre de vaccinations contre la rougeole avant et après ajustements pour complétude et valeurs aberrantes",
-  "pt": "Figura 1f: Comparação do número de vacinas contra sarampo antes e depois dos ajustes de completude e valores discrepantes"
+  "en": "Comparison of number of measles vaccination before and after adjustments for completness and outliers",
+  "fr": "Comparaison du nombre de vaccinations contre la rougeole avant et après ajustements pour complétude et valeurs aberrantes",
+  "pt": "Comparação do número de vacinas contra sarampo antes e depois dos ajustes de completude e valores discrepantes"
 },
 {
   "key": "figure_ideliv_outlier",
-  "en": "Figure 1f: Comparison of number of institutional deliveries before and after adjustments for completness and outliers",
-  "fr": "Figure 1f : Comparaison du nombre d'accouchements en établissement avant et après ajustements pour complétude et valeurs aberrantes",
-  "pt": "Figura 1f: Comparação do número de partos institucionais antes e depois dos ajustes de completude e valores discrepantes"
+  "en": "Comparison of number of institutional deliveries before and after adjustments for completness and outliers",
+  "fr": "Comparaison du nombre d'accouchements en établissement avant et après ajustements pour complétude et valeurs aberrantes",
+  "pt": "Comparação do número de partos institucionais antes e depois dos ajustes de completude e valores discrepantes"
 },
 {
   "key": "figure_opd_total_outlier",
-  "en": "Figure 1f: Comparison of number of OPD Visits before and after adjustments for completeness and outliers",
-  "fr": "Figure 1f : Comparaison du nombre total de consultations externes avant et après ajustements pour la complétude et les valeurs aberrantes",
-  "pt": "Figura 1f: Comparação do número total de visitas ambulatoriais antes e depois dos ajustes de completude e valores discrepantes"
+  "en": "Comparison of number of OPD Visits before and after adjustments for completeness and outliers",
+  "fr": "Comparaison du nombre total de consultations externes avant et après ajustements pour la complétude et les valeurs aberrantes",
+  "pt": "Comparação do número total de visitas ambulatoriais antes e depois dos ajustes de completude e valores discrepantes"
 },
 {
   "key": "title_national_rates",

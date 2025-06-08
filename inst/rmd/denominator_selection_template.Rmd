@@ -66,7 +66,7 @@ adjustments <- data %>%
 ```{r}
 plot(adjustments,
      indicator = 'instlivebirths',
-     title = 'Figure 1c: Comparison of number of live births before and after adjustments for completness and outliers') +
+     title = 'Comparison of number of live births before and after adjustments for completness and outliers') +
   cd_report_theme()
 ```
 
@@ -75,7 +75,7 @@ plot(adjustments,
 ```{r}
 plot(adjustments,
      indicator = 'penta1',
-     title = 'Figure 1d: Comparison of number of penta1 vaccination before and after adjustments for completness and outliers') +
+     title = 'Comparison of number of penta1 vaccination before and after adjustments for completness and outliers') +
   cd_report_theme()
 ```
 
