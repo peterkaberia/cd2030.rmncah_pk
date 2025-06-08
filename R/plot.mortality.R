@@ -2,14 +2,14 @@
 #'
 #' Produces line plots for national mortality indicators with regional points for comparison.
 #'
-#' @param x A `cd_mortality_rate` object.
+#' @param x A `cd_mortality_summary` object.
 #' @param indicator One of `"mmr_inst"`, `"ratio_md_sb"`, `"sbr_inst"`, or `"nn_inst"`.
 #' @param ... Additional arguments passed to methods.
 #'
 #' @return A ggplot object.
 #'
 #' @export
-plot.cd_mortality_rate <- function(x, indicator = c('mmr_inst', 'ratio_md_sb', 'sbr_inst', 'nn_inst'), ...) {
+plot.cd_mortality_summary <- function(x, indicator = c('mmr_inst', 'ratio_md_sb', 'sbr_inst', 'nn_inst'), ...) {
   indicator <- arg_match(indicator)
 
   label <- switch(
@@ -109,4 +109,74 @@ plot.cd_mortality_ratio_summarised <- function(x, ...) {
       y = label_values$y
     ) +
     cd_plot_theme()
+}
+
+#' Plot Filtered Institutional Mortality Rates
+#'
+#' Visualizes institutional mortality rates (`MMR` or `SBR`) across regions using filled
+#' geographic polygons. Facets the map by year and applies a color gradient by value.
+#'
+#' @param x A `cd_mortality_summary_filtered` object returned by [filter_mortality_rate()].
+#' @param ... Additional arguments (not used).
+#'
+#' @return A `ggplot2` object. This function is called for its side effect of rendering a map.
+#'
+#' @details
+#' The function:
+#' - Determines the appropriate plot title and legend based on the `indicator` attribute
+#' - Projects the geometry to WGS84 for consistent map rendering
+#' - Facets by year and uses `geom_sf()` to draw filled polygons
+#' - Applies a sequential `Reds` color scale with gray for missing values
+#'
+#' @examples
+#' \dontrun{
+#' filtered <- filter_mortality_summary(mortality_data, "UGA", indicator = "mmr", plot_year = 2020:2022)
+#' plot(filtered)
+#' }
+#'
+#' @export
+plot.cd_mortality_summary_filtered <- function(x, ...) {
+  indicator <- attr_or_abort(x, 'indicator')
+
+  title <- switch (
+    indicator,
+    mmr_inst = 'Institutional MMR by Region',
+    sbr_inst = 'Institutional SBR by Region'
+  )
+
+  legend <- switch (
+    indicator,
+    mmr_inst = 'Institutional MMR per 100,000 livebirths',
+    sbr_inst = 'Institutional SBR per 1000'
+  )
+
+  x %>%
+    st_set_geometry('geometry') %>%
+    st_as_sf() %>%
+    st_set_crs(4326) %>%
+    st_transform(crs = 4326) %>%
+    ggplot() +
+      geom_sf(aes(fill = !!sym(indicator)), colour = 'white') +
+      facet_wrap(~ year, scales = 'fixed', ncol = 5) +
+      scale_fill_gradientn(
+        colours = brewer.pal(9, 'Reds'),
+        na.value = 'gray90',
+        name = legend
+      ) +
+      labs(title = title) +
+      cd_plot_theme() +
+      theme(
+        panel.border = element_blank(),
+        panel.spacing = unit(1, "lines"),
+        legend.key.size = unit(6, "mm"),
+        legend.background = element_blank(),
+        legend.title = element_text(size = 11),
+        legend.text = element_text(size = 9),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        axis.title = element_blank(),
+        axis.line = element_blank(),
+        strip.text = element_text(size = 12, face = "bold"),
+        aspect.ratio = 1
+      )
 }

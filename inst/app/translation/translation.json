@@ -2312,6 +2312,24 @@
   "pt": "Mortalidade"
 },
 {
+  "key": "title_mortality_institutional",
+  "en": "Institutional Mortality",
+  "fr": "Mortalité institutionnelle",
+  "pt": "Mortalidade institucional"
+},
+{
+  "key": "title_mortality_mapping",
+  "en": "Mortality Mapping",
+  "fr": "Cartographie de la mortalité",
+  "pt": "Mapeamento da mortalidade"
+},
+{
+  "key": "title_mortality_completeness",
+  "en": "Mortality Completeness",
+  "fr": "Complétude des données de mortalité",
+  "pt": "Completude dos dados de mortalidade"
+},
+{
   "key": "opt_mmr_inst",
   "en": "Maternal Mortality",
   "fr": "Mortalité maternelle",
@@ -2334,12 +2352,6 @@
   "en": "Neonatal Deaths",
   "fr": "Décès néonatals",
   "pt": "Óbitos Neonatais"
-},
-{
-  "key": "title_mortality_completeness",
-  "en": "Mortality Completeness",
-  "fr": "Exhaustivité des données sur la mortalité",
-  "pt": "Exaustividade dos Dados de Mortalidade"
 },
 {
   "key": "opt_mmr_ratio",

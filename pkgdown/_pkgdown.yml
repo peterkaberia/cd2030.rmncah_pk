@@ -132,8 +132,10 @@ reference:
     contents:
     - create_mortality_summary
     - create_mortality_ratios
+    - filter_mortality_summary
     - summarise_completeness_ratio
-    - plot.cd_mortality_rate
+    - plot.cd_mortality_summary
+    - plot.cd_mortality_summary_filtered
     - plot.cd_mortality_ratio_summarised
 
   - title: "Calculate Health Utilization Metrics"
