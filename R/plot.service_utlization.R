@@ -32,7 +32,7 @@ plot.cd_service_utilization_map <- function(x, ...) {
       y1_label = 'Under-5',
       y2_label = 'All ages',
       title = 'IPD admissions',
-      y_label = 'Mean # of IPD admissions per person'
+      y_label = 'Mean # of IPD admissions per 100 persons'
     ),
     under5 = list(
       y1 = 'perc_opd_under5',
