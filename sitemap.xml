@@ -44,7 +44,10 @@
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/filter_indicator_coverage.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/filter_inequality.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/filter_mapping_data.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/filter_mortality_summary.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/filter_out_years.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/filter_service_utilization.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/filter_service_utilization_map.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/generate_adjustment_values.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/generate_fpet_summary.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/generate_report.html</loc></url>
@@ -72,6 +75,7 @@
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_equity_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_excel_data.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_fpet_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_survey_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_un_estimates.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_un_mortality_data.html</loc></url>
@@ -90,13 +94,15 @@
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_indicator_coverage_filtered.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_inequality_filtered.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_mapping_filtered.html</loc></url>
-<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_mortality_rate.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_mortality_ratio_summarised.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_mortality_summary.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_mortality_summary_filtered.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_outlier.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_outlier_list.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_population_metrics.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_ratios_summary.html</loc></url>
-<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_service_utilization.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_service_utilization_filtered.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_service_utilization_map.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot_comparison.cd_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot_line_graph.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot_national_health_metric.html</loc></url>

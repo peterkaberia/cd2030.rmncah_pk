@@ -62,13 +62,15 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>This is a web app for analysing vaccine data for the Countdown 2030. It’s also an R package so you can use some features in the code directly.</p>
+<p>This is a web app for analysing health facility data from the DHIS 2 database using the Countdown 2030 analytical approach. The app also integrates analysis using the household surveys (DHS, MICS) It’s also an R package, so you can use some features in the code directly.</p>
 </div>
 <div class="section level2">
 <h2 id="features">Features<a class="anchor" aria-label="anchor" href="#features"></a>
 </h2>
 <ul>
-<li>Analyze vaccine data for Countdown 2030.</li>
+<li>Data quality assessment.</li>
+<li>Countdown 2030 analytical approach.</li>
+<li>Routine facility and survey data analysis integration</li>
 <li>Use as an R package for programmatic access.</li>
 <li>Interactive visualizations for quick insights.</li>
 </ul>
@@ -77,7 +79,7 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <!--
-You can install a stable version of cd2030 from [GitHub](https://github.com/) with:
+You can install a stable version of cd2030 app from [GitHub](https://github.com/) with:
 &#10;
 ``` r
 devtools::install_github("aphrcwaro/cd2030.rmncah@v1.0.0")
@@ -87,7 +89,7 @@ devtools::install_github("aphrcwaro/cd2030.rmncah@v1.0.0")
 <div class="section level2">
 <h2 id="development-version">Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
 </h2>
-<p>To get a bug fix or to use a feature from the development version, you can install the development version of cd2030.</p>
+<p>To get a bug fix or to use a feature from the development version, you can install the development version of cd2030 app.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"aphrcwaro/cd2030.rmncah"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -102,7 +104,7 @@ devtools::install_github("aphrcwaro/cd2030.rmncah@v1.0.0")
 <div class="section level2">
 <h2 id="example-usage">Example Usage<a class="anchor" aria-label="anchor" href="#example-usage"></a>
 </h2>
-<p>Analyze vaccine data programmatically:</p>
+<p>Analyze DHIS 2 data programmatically:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/load_excel_data.html">load_excel_data</a></span><span class="op">(</span><span class="st">"/path/to/hfd/data.xlsx"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/calculate_average_reporting_rate.html">calculate_average_reporting_rate</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></code></pre></div>
