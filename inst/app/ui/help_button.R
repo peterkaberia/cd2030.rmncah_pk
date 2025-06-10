@@ -22,7 +22,7 @@ helpButtonServer <- function(id, title, size = 'l', md_file) {
         #   easyClose = TRUE,
         #   fade = FALSE
         # ))
-        url <- paste0('https://aphrcwaro.github.io/rmncah_guide/', '/', md_file)
+        url <- paste0('https://aphrcwaro.github.io/rmncah_guide/')
         browseURL(url)
       })
     }

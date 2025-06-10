@@ -78,8 +78,8 @@ consistencyCheckServer <- function(id, cache, i18n) {
         filename = reactive('anc1_penta1_plot'),
         data = data,
         i18n = i18n,
-        plot_function = function() {
-          plot_comparison_anc1_penta1(data())
+        plot_function = function(dt) {
+          plot_comparison_anc1_penta1(dt)
         }
       )
 
@@ -88,8 +88,8 @@ consistencyCheckServer <- function(id, cache, i18n) {
         filename = reactive('penta1_penta3_plot'),
         data = data,
         i18n = i18n,
-        plot_function = function() {
-          plot_comparison_penta1_penta3(data())
+        plot_function = function(dt) {
+          plot_comparison_penta1_penta3(dt)
         }
       )
 
@@ -98,8 +98,8 @@ consistencyCheckServer <- function(id, cache, i18n) {
         filename = reactive(paste0(input$x_axis, '_', input$y_axis, '_plot')),
         data = data,
         i18n = i18n,
-        plot_function = function() {
-          plot_comparison(data(), input$x_axis, input$y_axis)
+        plot_function = function(dt) {
+          plot_comparison(dt, input$x_axis, input$y_axis)
         }
       )
 

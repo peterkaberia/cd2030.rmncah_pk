@@ -1381,6 +1381,12 @@
   "pt": "Carregar Pasta de Pesquisa"
 },
 {
+  "key": "title_upload_private",
+  "en": "Upload Sector Folder",
+  "fr": "Téléverser le dossier du secteur",
+  "pt": "Carregar pasta do setor"
+},
+{
   "key": "title_subnational_mapping_opt",
   "en": "Subnational Manual Data Mapping (Optional)",
   "fr": "Cartographie manuelle des données infranationales (optionnel)",
