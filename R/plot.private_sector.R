@@ -102,7 +102,7 @@ plot.cd_private_sector_plot_data <- function(x, ..., country_name = NULL) {
       y = "Prevalence (%)",
       fill = "Sector"
     ),
-    theme_minimal(),
+    cd_plot_theme(),
     theme(
       plot.title = element_text(hjust = 0.5, face = "bold"),
       axis.text.x = element_text(angle = 0, hjust = 0.5), # Keep x-axis text horizontal

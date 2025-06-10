@@ -21,7 +21,7 @@ privateSectorUI <- function(id, i18n) {
       width = 12,
 
       tabPanel(title = i18n$t("opt_ratio_fac_pop"), downloadCoverageUI(ns('national'))),
-      tabPanel(title = i18n$t("opt_ratio_hos_pop"), downloadCoverageUI(ns('are')))
+      tabPanel(title = i18n$t("opt_ratio_hos_pop"), downloadCoverageUI(ns('area')))
     )
   )
 }
@@ -109,7 +109,7 @@ privateSectorServer <- function(id, cache, i18n) {
                 new_log <- 'log_loaded_area_survey'
               } else if (grepl('^csection_national', .x$name)) {
                 nat_cs <- load_csection_estimates(path = file_path, country_iso = country_iso(), level = 'national')
-                cache()$set_csection_national_estimates(educ)
+                cache()$set_csection_national_estimates(nat_cs)
                 new_log <- 'log_loaded_maternal_education_survey'
               } else {
                 new_log <- 'log_unknown_file_pattern'
