@@ -162,7 +162,7 @@ dataAdjustmentServer <- function(id, cache, i18n) {
         'data_adjustment',
         cache = cache,
         md_title = i18n$t("title_data_adjustment"),
-        md_file = '2_reporting_rate.md',
+        md_file = 'numerator-adjustments.html#implementation-conducting-analysis-in-the-shiny-app-1',
         i18n = i18n
       )
     }

@@ -15,13 +15,15 @@ helpButtonServer <- function(id, title, size = 'l', md_file) {
     module = function(input, output, session) {
 
       observeEvent(input$help, {
-        showModal(modalDialog(
-          title = tags$div(class = "text-info", title),
-          size = size,
-          div(class = "modal-rmd-content", includeMarkdown(file.path('help', md_file))),
-          easyClose = TRUE,
-          fade = FALSE
-        ))
+        # showModal(modalDialog(
+        #   title = tags$div(class = "text-info", title),
+        #   size = size,
+        #   div(class = "modal-rmd-content", includeMarkdown(file.path('help', md_file))),
+        #   easyClose = TRUE,
+        #   fade = FALSE
+        # ))
+        url <- paste0('https://aphrcwaro.github.io/rmncah_guide/', '/', md_file)
+        browseURL(url)
       })
     }
   )
