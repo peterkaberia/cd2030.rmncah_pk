@@ -2441,6 +2441,12 @@
   "en": "FPET Projections Options",
   "fr": "Options de projection FPET",
   "pt": "Opções de Projeção do FPET"
-    }
+    },
+    {
+  "key": "title_private_sector",
+  "en": "Public/Private Share",
+  "fr": "Part publique/privée",
+  "pt": "Participação pública/privada"
+}
   ]
 }
