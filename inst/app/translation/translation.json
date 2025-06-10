@@ -229,18 +229,11 @@
   "pt": "Tipo de relatório:"
 },
 {
-  "key": "opt_full_report",
-  "en": "Full Report",
-  "fr": "Rapport complet",
-  "pt": "Relatório completo"
+  "key": "opt_synthesis_report",
+  "en": "Synthesis Report",
+  "fr": "Rapport de synthès",
+  "pt": "Relatório de síntese"
 },
-{
-  "key": "opt_one_pager",
-  "en": "National One Pager",
-  "fr": "Page unique nationale",
-  "pt": "Resumo nacional"
-},
-
    {
   "key": "opt_admin_level_one_pager",
   "en": "Admin Level One Pager",
@@ -2448,6 +2441,12 @@
   "en": "FPET Projections Options",
   "fr": "Options de projection FPET",
   "pt": "Opções de Projeção do FPET"
-    }
+    },
+    {
+  "key": "title_private_sector",
+  "en": "Public/Private Share",
+  "fr": "Part publique/privée",
+  "pt": "Participação pública/privada"
+}
   ]
 }
