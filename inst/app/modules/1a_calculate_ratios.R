@@ -97,8 +97,8 @@ calculateRatiosServer <- function(id, cache, i18n) {
         filename = reactive('ratio_plot'),
         data = ratio_summary,
         i18n = i18n,
-        plot_function = function() {
-          plot(ratio_summary())
+        plot_function = function(data) {
+          plot(data)
         }
       )
 
