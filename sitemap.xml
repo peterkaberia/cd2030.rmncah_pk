@@ -72,10 +72,12 @@
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/interpret.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/is_maternal_indicator.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/list_outlier_units.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_csection_estimates.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_equity_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_excel_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_fpet_data.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_private_sector_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_survey_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_un_estimates.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/load_un_mortality_data.html</loc></url>
@@ -100,6 +102,7 @@
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_outlier.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_outlier_list.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_population_metrics.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_private_sector_plot_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_ratios_summary.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_service_utilization_filtered.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot.cd_service_utilization_map.html</loc></url>
@@ -107,6 +110,7 @@
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot_line_graph.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/plot_national_health_metric.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/prepare_population_metrics.html</loc></url>
+<url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/prepare_private_sector_plot_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/print.cd_data.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/print_notes.html</loc></url>
 <url><loc>https://aphrcwaro.github.io/cd2030.rmncah/reference/robust_max.html</loc></url>
