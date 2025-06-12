@@ -173,6 +173,13 @@ privateSectorServer <- function(id, cache, i18n) {
         i18n = i18n,
         sheet_name = reactive(i18n$t('opt_sbr_inst'))
       )
+
+      contentHeaderServer(
+        'private_sector',
+        cache = cache,
+        path = 'private-sector-analyses',
+        i18n = i18n
+      )
     }
   )
 }
