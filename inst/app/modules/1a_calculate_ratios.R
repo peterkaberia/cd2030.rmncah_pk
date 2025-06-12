@@ -105,9 +105,8 @@ calculateRatiosServer <- function(id, cache, i18n) {
       contentHeaderServer(
         'ratios',
         cache = cache,
-        objects = pageObjectsConfig(input),
-        md_title = i18n$t("title_ratios"),
-        md_file = '2_calculate_ratios.md',
+        path = 'numerator-assessment',
+        section = 'sec-dqa-ratios',
         i18n = i18n
       )
     }

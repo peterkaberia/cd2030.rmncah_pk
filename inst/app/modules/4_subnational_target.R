@@ -109,9 +109,7 @@ subnationalTargetServer <- function(id, cache, i18n) {
       contentHeaderServer(
         'low_reporting',
         cache = cache,
-        objects = pageObjectsConfig(input),
-        md_title = i18n$t("title_coverage"),
-        md_file = '2_calculate_ratios.md',
+        path = 'subnational-global-coverage',
         i18n = i18n
       )
 

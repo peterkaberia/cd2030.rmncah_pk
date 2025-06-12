@@ -288,9 +288,8 @@ reportingRateServer <- function(id, cache, i18n) {
       contentHeaderServer(
         'reporting_rate',
         cache = cache,
-        objects = pageObjectsConfig(input),
-        md_title = i18n$t("title_reporting"),
-        md_file = 'quality_checks_reporting_rate.md',
+        path = 'numerator-assessment',
+        section = 'sec-dqa-reporting-rate',
         i18n = i18n
       )
     }
