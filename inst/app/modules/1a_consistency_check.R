@@ -106,9 +106,8 @@ consistencyCheckServer <- function(id, cache, i18n) {
       contentHeaderServer(
         'consistency_checks',
         cache = cache,
-        objects = pageObjectsConfig(input),
-        md_title = i18n$t("title_consistency"),
-        md_file = 'quality_checks_internal_consistency.md',
+        path = 'numerator-assessment',
+        section = 'sec-dqa-consistency',
         i18n = i18n
       )
     }

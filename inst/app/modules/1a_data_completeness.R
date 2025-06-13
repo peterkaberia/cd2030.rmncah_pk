@@ -216,9 +216,8 @@ dataCompletenessServer <- function(id, cache, i18n) {
       contentHeaderServer(
         'data_completeness',
         cache = cache,
-        objects = pageObjectsConfig(input),
-        md_title = i18n$t('title_completeness'),
-        md_file = 'quality_checks_data_completeness.md',
+        path = 'numerator-assessment',
+        section = 'sec-dqa-data-completeness',
         i18n = i18n
       )
     }

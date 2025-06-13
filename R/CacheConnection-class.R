@@ -458,7 +458,6 @@ CacheConnection <- R6::R6Class(
     #' @description Set survey estimates.
     #' @param value Named numeric vector.
     set_survey_estimates = function(value) {
-      print(value)
       if (!is.numeric(value) || !all(c('anc1', 'anc4', 'penta1', 'penta3', 'measles1', 'bcg', 'ideliv', 'lbw', 'csection') %in% names(value))) {
         cd_abort(c('x' = 'Survey must be a numeric vector containing {.val anc1}, {.val penta1} and {.val penta3}'))
       }

@@ -242,9 +242,8 @@ outlierDetectionServer <- function(id, cache, i18n) {
       contentHeaderServer(
         'outlier_detection',
         cache = cache,
-        objects = pageObjectsConfig(input),
-        md_title = i18n$t('title_outlier'),
-        md_file = 'quality_checks_outlier_detection.md',
+        path = 'numerator-assessment',
+        section = 'sec-dqa-outlier',
         i18n = i18n
       )
     }
