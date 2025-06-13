@@ -42,8 +42,11 @@ library(officer)
 
 cache <- params$cache
 data <- cache$countdown_data
+adjusted_data <- cache$adjusted_data
 country <- cache$country
 threshold <- cache$performance_threshold
+un_estimates <- cache$un_estimates
+survey_estimates <- cache$survey_estimates
 ```
 
 ### Analysis of reproductive, maternal, newborn, child and adolescent health indicators for 2019-2024: Synthesis chartbook Country Annual meeting (CAM), Nairobi, 16-20 June 2025 Countdown to 2030 in partnership with Kenya Ministry of Health, Global Financing Facility, WHO, WAHO, UNICEF
@@ -182,34 +185,34 @@ indicator_coverage %>%
 Institutional Deliveries
 
 ```{r}
-equiplot_area(cache$area_survey, 'instdeliveries') +
+equiplot_area(cache$area_survey, 'instlivebirths') +
   cd_report_theme()
 ```
 
 ```{r}
-equiplot_wealth(cache$wiq_survey, 'instdeliveries') +
+equiplot_wealth(cache$wiq_survey, 'instlivebirths') +
   cd_report_theme()
 ```
 
 ```{r}
-equiplot_education(cache$education_survey, 'instdeliveries') +
+equiplot_education(cache$education_survey, 'instlivebirths') +
   cd_report_theme()
 ```
 
 Penta 3
 
 ```{r}
-equiplot_area(cache$area_survey, 'instdeliveries') +
+equiplot_area(cache$area_survey, 'penta3') +
   cd_report_theme()
 ```
 
 ```{r}
-equiplot_wealth(cache$wiq_survey, 'instdeliveries') +
+equiplot_wealth(cache$wiq_survey, 'penta3') +
   cd_report_theme()
 ```
 
 ```{r}
-equiplot_education(cache$education_survey, 'instdeliveries') +
+equiplot_education(cache$education_survey, 'penta3') +
   cd_report_theme()
 ```
 
@@ -248,7 +251,7 @@ admin_level_1_inequality %>%
 
 ```{r}
 admin_level_1_mapping <- cache$get_mapping_data('adminlevel_1')
-max_year <- max(admin_level_1_mapping$year)
+max_year <- robust_max(admin_level_1_mapping$year)
 
 admin_level_1_mapping %>% 
   filter_mapping_data('instdeliveries', denominator = cache$maternal_denominator,
@@ -433,7 +436,7 @@ service_utilization %>%
 
 ```{r}
 admin1_service_utilization <- cache$compute_service_utilization('adminlevel_1')
-max_year <- max(admin1_service_utilization$year)
+max_year <- robust_max(admin1_service_utilization$year)
 
 admin1_filtered <- admin1_service_utilization %>% 
   cache$filter_service_utilization(indicator = 'opd', map_years = max_year)

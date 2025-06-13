@@ -93,7 +93,7 @@ plot.cd_private_sector_plot_data <- function(x, ..., country_name = NULL) {
     scale_y_continuous(
       breaks = seq(0, 1, by = 0.1),
       labels = seq(0, 100, by = 10),
-      limits = c(0, max(label_df$y_pos_text, na.rm = TRUE) * 1.1) # Max Y-limit considering text position
+      limits = c(0, robust_max(label_df$y_pos_text, 100) * 1.1) # Max Y-limit considering text position
     ),
     scale_fill_manual(values = c("Public" = "#2196F3", "Private" = "#E91E63")), # Using more distinct blue/red
     labs(

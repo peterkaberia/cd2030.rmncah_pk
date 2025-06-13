@@ -133,8 +133,7 @@ nationalCoverageServer <- function(id, cache, i18n) {
       contentHeaderServer(
         'national_coverage',
         cache = cache,
-        path = 'denominator-assessment',
-        section = 'sec-nat-cov-anc',
+        path = 'national-coverage',
         i18n = i18n
       )
     }
