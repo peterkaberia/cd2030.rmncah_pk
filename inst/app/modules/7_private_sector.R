@@ -6,13 +6,17 @@ privateSectorUI <- function(id, i18n) {
     dashboardTitle = i18n$t('title_private_sector'),
     i18n = i18n,
 
+    include_report = TRUE,
+
     optionsHeader = contentOptions(
       title = i18n$t('title_analysis_options'),
-      directoryInput(
-        ns('directory_select'),
-        label = i18n$t('title_upload_private'),
-        buttonLabel = i18n$t('btn_browse_or_drop'),
-        accept = '.dta'
+      column(12,
+        directoryInput(
+          ns('directory_select'),
+          label = i18n$t('title_upload_private'),
+          buttonLabel = i18n$t('btn_browse_or_drop'),
+          accept = '.dta'
+        )
       )
     ),
 
@@ -20,8 +24,8 @@ privateSectorUI <- function(id, i18n) {
       title = i18n$t('title_private_sector'),
       width = 12,
 
-      tabPanel(title = i18n$t("opt_ratio_fac_pop"), downloadCoverageUI(ns('national'))),
-      tabPanel(title = i18n$t("opt_ratio_hos_pop"), downloadCoverageUI(ns('area')))
+      tabPanel(title = i18n$t("opt_private_national"), downloadCoverageUI(ns('national'))),
+      tabPanel(title = i18n$t("opt_private_area"), downloadCoverageUI(ns('area')))
     )
   )
 }

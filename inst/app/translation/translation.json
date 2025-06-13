@@ -2453,6 +2453,18 @@
   "en": "Public/Private Share",
   "fr": "Part publique/privée",
   "pt": "Participação pública/privada"
+},
+{
+  "key": "opt_private_national",
+  "en": "National",
+  "fr": "National",
+  "pt": "Nacional"
+},
+{
+  "key": "opt_private_area",
+  "en": "Urban/Rural",
+  "fr": "Urbain/Rural",
+  "pt": "Urbano/Rural"
 }
   ]
 }
