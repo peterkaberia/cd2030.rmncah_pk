@@ -359,7 +359,7 @@ CacheConnection <- R6::R6Class(
     #' @return Character. Either the maternal or vaccination denominator.
     filter_mortality_summary = function(.data, indicator, map_years = NULL) {
       check_cd_class(.data, expected_class = 'cd_mortality_summary')
-      years <- if (is.null(map_years)) self$mapping_years else map_years
+      years <- if (is.null(map_years)) self$mortality_mapping_years else map_years
       .data %>%
         filter_mortality_summary(self$country_iso, indicator, years, self$map_mapping)
     },
@@ -382,7 +382,7 @@ CacheConnection <- R6::R6Class(
     #' @param map_years the years to include in a map
     filter_service_utilization = function(.data, indicator, map_years = NULL) {
       check_cd_class(.data, expected_class = 'cd_service_utilization')
-      years <- if (is.null(map_years)) self$mapping_years else map_years
+      years <- if (is.null(map_years)) self$utilization_mapping_years else map_years
       .data %>%
         filter_service_utilization(self$country_iso, indicator, years, self$map_mapping)
     },
@@ -499,6 +499,14 @@ CacheConnection <- R6::R6Class(
     #' @description Set mapping years.
     #' @param value Integer vector.
     set_mapping_years = function(value) private$setter('selected_mapping_years', value, is_integerish),
+
+    #' @description Set mapping years.
+    #' @param value Integer vector.
+    set_mortality_mapping_years = function(value) private$setter('selected_mortality_mapping_years', value, is_integerish),
+
+    #' @description Set mapping years.
+    #' @param value Integer vector.
+    set_utilization_mapping_years = function(value) private$setter('selected_utilization_mapping_years', value, is_integerish),
 
     #' @description Set FPET data.
     #' @param value Data frame.
@@ -702,6 +710,12 @@ CacheConnection <- R6::R6Class(
     #' @field selected_district Gets selected district.
     selected_district = function(value) private$getter('selected_district', value),
 
+    #' @field mortality_mapping_years Gets mapping years.
+    mortality_mapping_years = function(value) private$getter('selected_mortality_mapping_years', value),
+
+    #' @field utilization_mapping_years Gets mapping years.
+    utilization_mapping_years = function(value) private$getter('selected_utilization_mapping_years', value),
+
     #' @field mapping_years Gets mapping years.
     mapping_years = function(value) private$getter('selected_mapping_years', value),
 
@@ -782,7 +796,7 @@ CacheConnection <- R6::R6Class(
     #' @field csection_national_estimates Gets map mapping.
     csection_national_estimates = function(value) private$getter('csection_national_estimates', value),
 
-    #' @field csection_ares_estimates Gets map mapping.
+    #' @field csection_area_estimates Gets map mapping.
     csection_area_estimates = function(value) private$getter('csection_area_estimates', value),
 
     #' @field check_inequality_params checks if inputs for inequality calculations are available
@@ -825,6 +839,8 @@ CacheConnection <- R6::R6Class(
       maternal_denominator = 'anc1',
       selected_admin_level_1 = NULL,
       selected_district = NULL,
+      selected_mortality_mapping_years = NULL,
+      selected_utilization_mapping_years = NULL,
       selected_mapping_years = NULL,
       # palette = c(coverage = 'Greens', dropout = 'Reds'),
       un_estimates = NULL,

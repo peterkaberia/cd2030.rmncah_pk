@@ -48,7 +48,7 @@ plot.cd_adjustment_values <- function(x,
                                       title = NULL,
                                       legend_labels = NULL,
                                       ...) {
-  year <- perc_diff <- type <- value <- NULL
+  year = perc_diff = type = value = NULL
 
   indicator <- arg_match(indicator, get_all_indicators())
 

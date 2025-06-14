@@ -61,6 +61,10 @@ from \code{.rds} files.
 
 \item{\code{selected_district}}{Gets selected district.}
 
+\item{\code{mortality_mapping_years}}{Gets mapping years.}
+
+\item{\code{utilization_mapping_years}}{Gets mapping years.}
+
 \item{\code{mapping_years}}{Gets mapping years.}
 
 \item{\code{fpet_data}}{Gets UN estimates.}
@@ -84,6 +88,14 @@ from \code{.rds} files.
 \item{\code{survey_mapping}}{Gets survey mapping.}
 
 \item{\code{map_mapping}}{Gets map mapping.}
+
+\item{\code{sector_national_estimates}}{Gets map mapping.}
+
+\item{\code{sector_area_estimates}}{Gets map mapping.}
+
+\item{\code{csection_national_estimates}}{Gets map mapping.}
+
+\item{\code{csection_area_estimates}}{Gets map mapping.}
 
 \item{\code{check_inequality_params}}{checks if inputs for inequality calculations are available}
 
@@ -134,6 +146,8 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-set_selected_admin_level_1}{\code{CacheConnection$set_selected_admin_level_1()}}
 \item \href{#method-CacheConnection-set_selected_district}{\code{CacheConnection$set_selected_district()}}
 \item \href{#method-CacheConnection-set_mapping_years}{\code{CacheConnection$set_mapping_years()}}
+\item \href{#method-CacheConnection-set_mortality_mapping_years}{\code{CacheConnection$set_mortality_mapping_years()}}
+\item \href{#method-CacheConnection-set_utilization_mapping_years}{\code{CacheConnection$set_utilization_mapping_years()}}
 \item \href{#method-CacheConnection-set_fpet_data}{\code{CacheConnection$set_fpet_data()}}
 \item \href{#method-CacheConnection-set_un_estimates}{\code{CacheConnection$set_un_estimates()}}
 \item \href{#method-CacheConnection-set_un_mortality_estimates}{\code{CacheConnection$set_un_mortality_estimates()}}
@@ -145,6 +159,10 @@ Update a field (with change tracking)}
 \item \href{#method-CacheConnection-set_education_survey}{\code{CacheConnection$set_education_survey()}}
 \item \href{#method-CacheConnection-set_survey_mapping}{\code{CacheConnection$set_survey_mapping()}}
 \item \href{#method-CacheConnection-set_map_mapping}{\code{CacheConnection$set_map_mapping()}}
+\item \href{#method-CacheConnection-set_sector_national_estimates}{\code{CacheConnection$set_sector_national_estimates()}}
+\item \href{#method-CacheConnection-set_sector_area_estimates}{\code{CacheConnection$set_sector_area_estimates()}}
+\item \href{#method-CacheConnection-set_csection_national_estimates}{\code{CacheConnection$set_csection_national_estimates()}}
+\item \href{#method-CacheConnection-set_csection_area_estimates}{\code{CacheConnection$set_csection_area_estimates()}}
 \item \href{#method-CacheConnection-clone}{\code{CacheConnection$clone()}}
 }
 }
@@ -788,6 +806,40 @@ Set mapping years.
 }
 }
 \if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_mortality_mapping_years"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_mortality_mapping_years}{}}}
+\subsection{Method \code{set_mortality_mapping_years()}}{
+Set mapping years.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_mortality_mapping_years(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Integer vector.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_utilization_mapping_years"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_utilization_mapping_years}{}}}
+\subsection{Method \code{set_utilization_mapping_years()}}{
+Set mapping years.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_utilization_mapping_years(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Integer vector.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-CacheConnection-set_fpet_data"></a>}}
 \if{latex}{\out{\hypertarget{method-CacheConnection-set_fpet_data}{}}}
 \subsection{Method \code{set_fpet_data()}}{
@@ -964,6 +1016,74 @@ Set survey mapping table.
 Set map overlay mapping.
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_map_mapping(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Data frame.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_sector_national_estimates"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_sector_national_estimates}{}}}
+\subsection{Method \code{set_sector_national_estimates()}}{
+Set map overlay mapping.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_sector_national_estimates(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Data frame.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_sector_area_estimates"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_sector_area_estimates}{}}}
+\subsection{Method \code{set_sector_area_estimates()}}{
+Set map overlay mapping.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_sector_area_estimates(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Data frame.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_csection_national_estimates"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_csection_national_estimates}{}}}
+\subsection{Method \code{set_csection_national_estimates()}}{
+Set map overlay mapping.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_csection_national_estimates(value)}\if{html}{\out{</div>}}
+}
+
+\subsection{Arguments}{
+\if{html}{\out{<div class="arguments">}}
+\describe{
+\item{\code{value}}{Data frame.}
+}
+\if{html}{\out{</div>}}
+}
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-CacheConnection-set_csection_area_estimates"></a>}}
+\if{latex}{\out{\hypertarget{method-CacheConnection-set_csection_area_estimates}{}}}
+\subsection{Method \code{set_csection_area_estimates()}}{
+Set map overlay mapping.
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{CacheConnection$set_csection_area_estimates(value)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

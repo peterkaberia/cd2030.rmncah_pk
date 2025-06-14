@@ -16,9 +16,9 @@ nationalCoverageUI <- function(id, i18n) {
       width = 12,
 
       tabPanel(title = i18n$t("opt_anc4"), downloadCoverageUI(ns('anc4'))),
-      tabPanel(title = i18n$t("opt_ideliv"), downloadCoverageUI(ns('ideliv'))),
+      tabPanel(title = i18n$t("opt_livebirths"), downloadCoverageUI(ns('livebirths'))),
       tabPanel(title = i18n$t("opt_lbw"), downloadCoverageUI(ns('lbw'))),
-      tabPanel(title = i18n$t("opt_penta1"), downloadCoverageUI(ns('penta1'))),
+      tabPanel(title = i18n$t("opt_penta3"), downloadCoverageUI(ns('penta3'))),
       tabPanel(title = i18n$t("opt_mcv1"), downloadCoverageUI(ns('measles1'))),
       tabPanel(
         title = i18n$t("opt_custom_check"),
@@ -52,10 +52,10 @@ nationalCoverageServer <- function(id, cache, i18n) {
           filter_coverage('anc4', denominator = cache()$get_denominator('anc4'))
       })
 
-      ideliv_coverage <- reactive({
+      livebirths_coverage <- reactive({
         req(coverage())
         coverage() %>%
-          filter_coverage('instdeliveries', denominator = cache()$get_denominator('instdeliveries'))
+          filter_coverage('instlivebirths', denominator = cache()$get_denominator('instlivebirths'))
       })
 
       lbw_coverage <- reactive({
@@ -64,10 +64,10 @@ nationalCoverageServer <- function(id, cache, i18n) {
           filter_coverage('low_bweight', denominator = cache()$get_denominator('low_bweight'))
       })
 
-      penta1_coverage <- reactive({
+      penta3_coverage <- reactive({
         req(coverage())
         coverage() %>%
-          filter_coverage('penta1', denominator = cache()$get_denominator('penta1'))
+          filter_coverage('penta3', denominator = cache()$get_denominator('penta3'))
       })
 
       measles1_coverage <- reactive({
@@ -77,7 +77,7 @@ nationalCoverageServer <- function(id, cache, i18n) {
       })
 
       custom_coverage <- reactive({
-        req(coverage())
+        req(coverage(), input$indicator)
         coverage() %>%
           filter_coverage(input$indicator, denominator = cache()$get_denominator(input$indicator))
       })
@@ -91,10 +91,10 @@ nationalCoverageServer <- function(id, cache, i18n) {
       )
 
       downloadCoverageServer(
-        id = 'ideliv',
-        filename = reactive(paste0('ideliv_survey_', cache()$get_denominator('instdeliveries'))),
-        data_fn = ideliv_coverage,
-        sheet_name = reactive(i18n$t("title_ideliv_coverage")),
+        id = 'livebirths',
+        filename = reactive(paste0('livebirths_survey_', cache()$get_denominator('instlivebirths'))),
+        data_fn = livebirths_coverage,
+        sheet_name = reactive(i18n$t("title_livebirths_coverage")),
         i18n = i18n
       )
 
@@ -107,9 +107,9 @@ nationalCoverageServer <- function(id, cache, i18n) {
       )
 
       downloadCoverageServer(
-        id = 'penta1',
-        filename = reactive(paste0('penta1_survey_', cache()$get_denominator('penta1'))),
-        data_fn = penta1_coverage,
+        id = 'penta3',
+        filename = reactive(paste0('penta3_survey_', cache()$get_denominator('penta3'))),
+        data_fn = penta3_coverage,
         sheet_name = reactive(i18n$t("title_penta1_coverage")),
         i18n = i18n
       )

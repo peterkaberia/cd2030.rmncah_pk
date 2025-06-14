@@ -54,7 +54,7 @@ subnationalTargetServer <- function(id, cache, i18n) {
       anc4_threshold <- reactive({
         req(indicator_coverage(), cache()$maternal_denominator)
         indicator_coverage() %>%
-          calculate_threshold(indicator = 'maternal', denominator = cache()$maternal_denominator)
+          calculate_threshold(indicator = 'anc4', denominator = cache()$maternal_denominator)
       })
 
       ideliv_threshold <- reactive({

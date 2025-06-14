@@ -7,7 +7,7 @@
 calculate_threshold(
   .data,
   denominator = c("dhis2", "anc1", "penta1", "penta1derived"),
-  indicator = c("maternal", "vaccine")
+  indicator = c("anc4", "instdeliveries", "vaccine")
 )
 }
 \arguments{
