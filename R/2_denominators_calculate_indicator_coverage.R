@@ -143,7 +143,7 @@ filter_indicator_coverage <- function(.data, indicator, survey_coverage = 88) {
         grepl("_penta1derived$", name) ~ "Penta 1 population Growth"
       ),
       category = factor(category, levels = c("DHIS2 projection", "ANC1-derived", "Penta1-derived", "UN projection", "Penta 1 population Growth")),
-      indicator_name = str_extract(name, "(?<=cov_).*?(?=_)")
+      indicator_name = str_extract(name, "(?<=cov_)(.*)(?=_[^_]+$)")
     ) %>%
     filter(year == max_year, indicator_name == indicator)
 

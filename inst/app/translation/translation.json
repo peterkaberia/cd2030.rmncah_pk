@@ -1237,6 +1237,12 @@
   "pt": "ANC1"
 },
 {
+  "key": "opt_livebirths",
+  "en": "Live Births",
+  "fr": "Naissances Vivantes",
+  "pt": "Nascimentos Vivos"
+},
+{
   "key": "opt_ideliv",
   "en": "Institutional Delivery",
   "fr": "Accouchement en établissement",
@@ -1388,9 +1394,9 @@
 },
 {
   "key": "title_subnational_mapping_opt",
-  "en": "Subnational Manual Data Mapping (Optional)",
-  "fr": "Cartographie manuelle des données infranationales (optionnel)",
-  "pt": "Mapeamento Manual de Dados Subnacionais (Opcional)"
+  "en": "Subnational Manual Data Mapping",
+  "fr": "Cartographie manuelle des données infranationales",
+  "pt": "Mapeamento Manual de Dados Subnacionais"
 },
 {
   "key": "btn_map_survey",
@@ -1496,9 +1502,9 @@
 },
 {
   "key": "title_survey_year",
-  "en": "Vaccines Survey Year",
-  "fr": "Année de l'enquête",
-  "pt": "Ano da Pesquisa de Vacinas"
+  "en": "Recent Survey Year",
+  "fr": "Année d'enquête récente",
+  "pt": "Ano recente da pesquisa"
 },
 {
   "key": "title_national_coverage_trend",

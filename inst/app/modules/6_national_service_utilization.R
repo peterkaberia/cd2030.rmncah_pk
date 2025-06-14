@@ -6,6 +6,11 @@ nationalServiceUtilizationUI <- function(id, i18n) {
     dashboardTitle = i18n$t("title_national_utilization"),
     i18n = i18n,
 
+    optionsHeader = contentOptions(
+      title = i18n$t('title_analysis_options'),
+      column(3, selectizeInput(ns('years'), label = i18n$t("title_select_years"), choice = NULL, multiple = TRUE))
+    ),
+
     include_report = TRUE,
 
     tabBox(
@@ -87,6 +92,23 @@ nationalServiceUtilizationServer <- function(id, cache, i18n) {
         req(admin1_utilization_data())
         admin1_utilization_data() %>%
           cache()$filter_service_utilization('ipd')
+      })
+
+      observe({
+        req(cache(), admin1_utilization_data())
+
+        survey_years <- admin1_utilization_data() %>%
+          distinct(year) %>%
+          arrange(year) %>%
+          pull(year)
+
+        survey_years <- c('All years' = '', survey_years)
+        updateSelectizeInput(session, 'years', choices = survey_years, selected = cache()$utilization_mapping_years)
+      })
+
+      observeEvent(input$years, {
+        req(cache())
+        cache()$set_utilization_mapping_years(as.integer(input$years))
       })
 
       downloadCoverageServer(

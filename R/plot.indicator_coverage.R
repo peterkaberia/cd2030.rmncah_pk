@@ -249,14 +249,31 @@ plot.cd_indicator_coverage <- function(x,
 #'
 #' @export
 plot.cd_indicator_coverage_filtered <- function(x, ...) {
-  country <- year <- category <- name <- indicator_name <- value <- NULL
+  country = year = category = name = indicator_name = value = NULL
 
   # Match the selected indicator to ensure it is valid
   indicator <- attr_or_abort(x, 'indicator')
+
   coverage <- attr_or_abort(x, 'coverage')
+  year <- unique(x$year)
+  indicator_name <- unique(x$indicator_name)
+  indicator_name <- switch (
+    indicator_name,
+    instdeliveries = 'Institutional Devliery',
+    anc4 = 'ANC 4',
+    low_bweight = 'Low Birth Weight',
+    penta3 = 'Penta 3',
+    measles1 = 'Measles 1',
+    bcg = 'BCG',
+    indicator_name
+  )
 
   # Auto-generate title based on the selected indicator
-  title_text <- paste(indicator, "Coverage, DHIS2-based with different denominators, and survey coverage")
+  title_text <- str_glue("{indicator_name} Coverage, DHIS2-based with different denominators, and survey coverage for {year}")
+
+  max_y <- robust_max(c(x$value, coverage))
+  limits <- c(0, max_y)
+  breaks <- scales::pretty_breaks(n = 11)(limits)
 
   # Plot
   ggplot(x, aes(x = category, y = value)) +
@@ -268,7 +285,7 @@ plot.cd_indicator_coverage_filtered <- function(x, ...) {
       title = title_text,
       x = NULL, y = "Coverage (%)"
     ) +
-    # scale_y_continuous(labels = scales::number_format()) +
+    scale_y_continuous(limits = limits, breaks = breaks, expand = expansion(mult = c(0,0.1))) +
     scale_color_manual(
       values = c("Facility-based coverage (%)" = "darkgoldenrod3", "Coverage survey, national" = "darkgreen"),
       name = "Coverage Type"

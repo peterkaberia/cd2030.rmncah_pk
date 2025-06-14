@@ -4,7 +4,7 @@
 \alias{robust_max}
 \title{Robust Maximum Value Calculation}
 \usage{
-robust_max(x, fallback = NA_real_)
+robust_max(x, fallback = NA)
 }
 \arguments{
 \item{x}{A numeric vector.}

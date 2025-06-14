@@ -55,8 +55,16 @@ plot.cd_ratios_summary <- function(x, ...) {
 
   plot_data %>%
     ggplot(aes(name, value, fill = year)) +
-    geom_col(position = position_dodge2()) +
-    scale_y_continuous(breaks = scales::pretty_breaks(6)) +
+    geom_col(position = position_dodge2(), width = 0.6) +
+    geom_text(
+      aes(label = round(value, 2)),
+      position = position_dodge2(width = 0.6),
+      vjust = -0.5,
+      size = 3
+    ) +
+    geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
+    geom_hline(yintercept = 1.5, linetype = "dashed", color = "blue") +
+    scale_y_continuous(breaks = scales::pretty_breaks(n = 6)) +
     scale_fill_manual(values = color_mapping) +
     labs(
       title = "Ratio of number of facility reported ANC1 to penta1, and penta1 to penta3 compared to expected ratios",

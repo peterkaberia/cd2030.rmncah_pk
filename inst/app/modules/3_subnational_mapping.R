@@ -18,9 +18,9 @@ subnationalMappingUI <- function(id, i18n) {
       width = 12,
 
       tabPanel(title = i18n$t("opt_anc4"), downloadCoverageUI(ns('anc4'))),
-      tabPanel(title = i18n$t("opt_ideliv"), downloadCoverageUI(ns('ideliv'))),
+      tabPanel(title = i18n$t("opt_livebirths"), downloadCoverageUI(ns('livebirths'))),
       tabPanel(title = i18n$t("opt_lbw"), downloadCoverageUI(ns('lbw'))),
-      tabPanel(title = i18n$t("opt_penta1"), downloadCoverageUI(ns('penta1'))),
+      tabPanel(title = i18n$t("opt_penta3"), downloadCoverageUI(ns('penta3'))),
       tabPanel(title = i18n$t("opt_mcv1"), downloadCoverageUI(ns('measles1'))),
       tabPanel(
         title = i18n$t("opt_custom_check"),
@@ -60,10 +60,10 @@ subnationalMappingServer <- function(id, cache, i18n) {
                               palette = input$palette, plot_year = years())
       })
 
-      ideliv_mapping <- reactive({
+      livebirths_mapping <- reactive({
         req(mapping_dt(), input$palette)
         mapping_dt() %>%
-          filter_mapping_data('instdeliveries', denominator = cache()$get_denominator('instdeliveries'),
+          filter_mapping_data('instlivebirths', denominator = cache()$get_denominator('instdlivebirths'),
                               palette = input$palette, plot_year = years())
       })
 
@@ -74,10 +74,10 @@ subnationalMappingServer <- function(id, cache, i18n) {
                               palette = input$palette, plot_year = years())
       })
 
-      penta1_mapping <- reactive({
+      penta3_mapping <- reactive({
         req(mapping_dt(), input$palette)
         mapping_dt() %>%
-          filter_mapping_data('penta1', denominator = cache()$get_denominator('penta1'),
+          filter_mapping_data('penta3', denominator = cache()$get_denominator('penta3'),
                               palette = input$palette, plot_year = years())
       })
 
@@ -121,10 +121,10 @@ subnationalMappingServer <- function(id, cache, i18n) {
       )
 
       downloadCoverageServer(
-        id = 'ideliv',
-        filename = reactive(paste0('ideliv_adminlevel_1_map_', cache()$get_denominator('instdeliveries'))),
-        data_fn = ideliv_mapping,
-        sheet_name = reactive(i18n$t("title_ideliv")),
+        id = 'livebirths',
+        filename = reactive(paste0('livebirths_adminlevel_1_map_', cache()$get_denominator('instlivebirths'))),
+        data_fn = livebirths_mapping,
+        sheet_name = reactive(i18n$t("title_livebirths")),
         i18n = i18n
       )
 
@@ -137,10 +137,10 @@ subnationalMappingServer <- function(id, cache, i18n) {
       )
 
       downloadCoverageServer(
-        id = 'penta1',
-        filename = reactive(paste0('penta1_adminlevel_1_map_', cache()$get_denominator('penta1'))),
-        data_fn = penta1_mapping,
-        sheet_name = reactive(i18n$t("title_penta1")),
+        id = 'penta3',
+        filename = reactive(paste0('penta3_adminlevel_1_map_', cache()$get_denominator('penta3'))),
+        data_fn = penta3_mapping,
+        sheet_name = reactive(i18n$t("title_penta3")),
         i18n = i18n
       )
 
