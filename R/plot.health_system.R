@@ -225,15 +225,21 @@ plot_national_health_metric <- function(.data, metric = c('performance', 'densit
 
   labels <- metric_labels[[metric]]
 
-  .data %>%
+  data <- .data %>%
     select(all_of(labels$columns)) %>%
     pivot_longer(cols = everything(), names_to = 'indicator', values_to = 'value') %>%
-    mutate(indicator = factor(indicator, levels = rev(labels$columns), labels = rev(labels$labels))) %>%
+    mutate(indicator = factor(indicator, levels = rev(labels$columns), labels = rev(labels$labels)))
+
+  y_max <- robust_max(data$value)
+  limits <- c(0, y_max)
+  breaks <- scales::pretty_breaks(n = 11)(limits)
+
+  data %>%
     ggplot(aes(x = indicator, y =value)) +
     geom_col(fill = '#2c7fb8', width = 0.6) +
     coord_flip() +
     geom_text(aes(label = sprintf("%.1f", value)), hjust = -0.1, size = 4) +
-    scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25), expand = expansion(mult = c(0, 0.1))) +
+    scale_y_continuous(limits = limits, breaks = breaks, expand = expansion(mult = c(0, 0.1))) +
     labs(title = labels$title, y = NULL, x = NULL, caption = labels$caption) +
     cd_plot_theme()
 }

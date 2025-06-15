@@ -12,6 +12,7 @@ output:
       height: 8.3
       width: 11.7
       orient: "landscape"
+      unit: "in"
     page_margins:
       bottom: 0.1
       top: 0.1

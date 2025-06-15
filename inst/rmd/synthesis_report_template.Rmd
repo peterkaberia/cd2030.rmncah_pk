@@ -11,6 +11,8 @@ output:
     page_size:
       height: 22.0
       width: 13.93
+      orient: "portrait"
+      unit: "in"
     page_margins:
       bottom: 0.5
       top: 0.5

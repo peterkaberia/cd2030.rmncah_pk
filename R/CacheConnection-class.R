@@ -819,6 +819,12 @@ CacheConnection <- R6::R6Class(
     check_mortality_params = function() {
       !is.null(self$adjusted_data) &&
         !is.null(self$un_mortality_estimates)
+    },
+
+    #' @field check_sector_params checks if inputs for mortality calculations are available
+    check_sector_params = function() {
+      !is.null(self$sector_national_estimates) && !is.null(self$sector_area_estimates) &&
+        !is.null(self$csection_national_estimates) && !is.null(self$csection_area_estimates)
     }
   ),
   private = list(

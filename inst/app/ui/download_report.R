@@ -31,8 +31,8 @@ downloadReportServer <- function(id, cache, i18n) {
       observeEvent(input$download, {
         req(cache())
 
-        if (is.null(cache()$un_estimates) || is.null(cache()$wuenic_estimates) ||
-            is.null(cache()$national_survey) || is.null(cache()$regional_survey)) {
+        if (!cache()$check_coverage_params || !cache()$check_mortality_params ||
+            !cache()$check_sector_params) {
           # Show an error dialog if data is not available
           showModal(
             modalDialog(

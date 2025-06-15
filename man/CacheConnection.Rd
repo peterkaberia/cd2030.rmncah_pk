@@ -101,7 +101,9 @@ from \code{.rds} files.
 
 \item{\code{check_coverage_params}}{checks if inputs for coverage calculations are available}
 
-\item{\code{check_mortality_params}}{checks if inputs for mortality calculations are available
+\item{\code{check_mortality_params}}{checks if inputs for mortality calculations are available}
+
+\item{\code{check_sector_params}}{checks if inputs for mortality calculations are available
 Update a field (with change tracking)}
 }
 \if{html}{\out{</div>}}
