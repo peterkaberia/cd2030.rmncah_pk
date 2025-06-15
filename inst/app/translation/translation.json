@@ -1484,15 +1484,15 @@
 },
 {
   "key": "title_denominator",
-  "en": "Select Denominator",
-  "fr": "Sélectionner le dénominateur",
-  "pt": "Selecionar Denominador"
+  "en": "Select Best Vaccination Denominator",
+  "fr": "Sélectionner le meilleur dénominateur de vaccination",
+  "pt": "Selecionar o melhor denominador de vacinação"
 },
 {
   "key": "title_maternal_denominator",
-  "en": "Select Maternal Denominator",
-  "fr": "Sélectionner le dénominateur maternel",
-  "pt": "Selecionar Denominador Materno"
+  "en": "Select Best Maternal Denominator",
+  "fr": "Sélectionner le meilleur dénominateur maternel",
+  "pt": "Selecionar o melhor denominador materno"
 },
 {
   "key": "title_survey_data_year",
