@@ -45,7 +45,7 @@ plot.cd_health_system_comparison <- function(x,
       y = 'ad1_ratio_hos_pop',
       x_label = 'Number of under-5 IPD Admissions per child per year',
       y_label = "Number of Hospitals per 100,000 population",
-      title = 'Under-5 OPD Admission by hospital density by admin level 1',
+      title = 'Under-5 IPD Admission by hospital density by admin level 1',
       caption = NULL
     ),
     ratio_ipd_u5_bed = list(
