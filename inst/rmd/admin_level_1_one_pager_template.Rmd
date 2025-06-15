@@ -286,7 +286,7 @@ opd_cov <- paste0('cov_opd_under5_', cache$get_denominator('opd_under5'))
 cov %>% 
   select(district, any_of(c(anc4_cov, anc1_cov, births_cov, cs_cov, pnc_cov, penta3_cov, mcv1_cov, opd_cov))) %>% 
   arrange(district) %>% 
-  mutate(across(-district, round, digits = 1))
+  mutate(across(-district, round, digits = 1)) %>% 
   flextable() %>%
   set_header_labels(
     values = list2(
