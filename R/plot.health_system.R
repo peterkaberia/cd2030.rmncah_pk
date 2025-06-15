@@ -71,7 +71,7 @@ plot.cd_health_system_comparison <- function(x,
       scale_x_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.1))) +
       scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.1))) +
       # scale_colour_manual(values = c('District' = '#045a8d', 'Linear fit' = 'black', 'Diagonale' = 'red')) +
-      scale_colour_manual(values = c('District' = '#045a8d', 'Linear fit' = 'black')) +
+      scale_colour_manual(values = c('Admin1 units' = '#045a8d', 'Linear fit' = 'black')) +
       labs(
         title = labels_prop$title,
         x = labels_prop$x_label,
