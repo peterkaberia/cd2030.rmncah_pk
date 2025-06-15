@@ -187,7 +187,8 @@ Then, interpret the data if there is sufficient confidence in the observed level
 
 ### Background
 
-Monitoring the coverage of interventions is a critical and direct output of health systems. It is most useful if the national plan has meaningful targets. Both health facility and survey data need to be used.
+Monitoring progress in the uptake and equitable access to family planning services is central to achieving global health and development goals, particularly the Sustainable Development Goal (SDG) 3.7.1, which aims to ensure universal access to sexual and reproductive healthcare services, including for family planning, by 2030. Two key indicators commonly used to assess family planning performance are the Prevalence of Modern Contraceptive Methods (mCPR) and the Percentage of Demand for Family Planning Satisfied with a Modern Method. These indicators not only reflect the extent of contraceptive use among women of reproductive age, particularly those currently married or in union, but also signal the health system’s responsiveness to reproductive intentions and rights. The modern contraceptive prevalence rate (mCPR) indicates the percentage of women utilizing any contemporary method of contraception, providing a direct measure of family planning adoption. In contrast, demand satisfied with a modern method accounts for both current use and unmet need, thereby offering a more comprehensive measure of whether women's reproductive health needs are being fulfilled. Together, these indicators provide insight into both supply- and demand-side dynamics within the family planning landscape. 
+Analyzing trends in mCPR and demand satisfied over time allows policymakers, researchers, and program implementers to identify whether countries are making adequate progress, facing stagnation, or experiencing disparities in access. The Family Planning Estimation Tool (FPET), developed by Track20, uses Bayesian modeling to generate national estimates and projections, accommodating irregular survey intervals and enabling tracking toward 2030 targets. However, while aggregate trends are useful, interpreting the relationship between mCPR and demand satisfied is particularly crucial: a scenario where mCPR increases but demand satisfied does not may suggest persistent inequities, service delivery gaps, or a growing unmet need among specific subgroups.
 
 ```{r}
 cache$fpet_data %>% 
@@ -202,9 +203,12 @@ cache$fpet_data %>%
 
 ---
 
-First address data quality: Are the levels and trends plausible? Is there good consistency between the facility and survey data? 
-
-Then, interpret the data if there is sufficient confidence in the observed levels and trends. How does the coverage perform compared to the targets? Is this a positive trend? Are there explanations for the observed levels and trends?
+-	What are the overall trends observed over time for both indicators?
+Examine whether there is consistent progress in the prevalence of modern contraceptive methods (mCPR) and the proportion of demand satisfied with a modern method. Are the trends linear, exponential, or showing signs of stagnation or reversal?
+-	How does the country's performance align with national or global targets (e.g., SDG 3.7.1)?
+Assess whether the observed trajectory suggests that the country is on track to meet the Sustainable Development Goal (SDG) target 3.7.1 by 2030, which aims to ensure universal access to sexual and reproductive health-care services, including for family planning.
+-	What are the implications if mCPR is increasing while demand satisfied with a modern method is not?
+Analyze whether a divergence in these trends may indicate a persistently high level of unmet need for family planning, suggesting that while more women are using modern methods, an even greater proportion are still unable to meet their contraceptive needs.
 
 ---
 
@@ -214,7 +218,7 @@ Then, interpret the data if there is sufficient confidence in the observed level
 
 ### Background
 
-Monitoring the coverage of interventions is a critical and direct output of health systems. It is most useful if the national plan has meaningful targets. Both health facility and survey data need to be used.
+The global health community has committed to eliminating preventable maternal and newborn deaths through a series of interconnected targets and strategic frameworks. Two key initiatives—Ending Preventable Maternal Mortality (EPMM) and Every Newborn Action Plan (ENAP)—jointly provide a coordinated roadmap to strengthen health systems, ensure equitable access to quality care, and improve accountability for maternal and newborn outcomes. Central to these frameworks are measurable coverage indicators and time-bound targets that track progress toward universal health coverage and the Sustainable Development Goals (SDGs), particularly SDG 3.1 and 3.2.
 
 #### Maternal
 
@@ -240,9 +244,11 @@ indicator_coverage %>%
 
 ---
 
-First address data quality: Are the levels and trends plausible? Is there good consistency between the facility and survey data? 
-
-Then, interpret the data if there is sufficient confidence in the observed levels and trends. The interpretation should focus on whether inequalities have reduced over time and to what extent global targets for subnational coverage have been met.
+- Interpret in line with the expected Subnational targets: 
+ANC 4+ time attendances: at least 80% of the district should have a coverage of at least 70% 
+- Institutional delivery: at least 80% of the district should have a coverage of at least 80%
+- Postnatal care within 48 hours: at least 80% of the district should have a coverage of at least 60%
+- Immunization indicators: at least 80% of the district should have a coverage of at least 90%
 
 ---
 

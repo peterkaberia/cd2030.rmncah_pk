@@ -43,7 +43,7 @@ knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
   error = TRUE,
-  dpi=1200
+  dpi=300
 )
 
 library(cd2030.rmncah)
