@@ -1,5 +1,5 @@
 ---
-title: " `r params$adminlevel_1` - Countdown Analysis"
+title: "Sub-National Statistical Profile: `r params$adminlevel_1`"
 output: 
   html_document:
     toc: true
@@ -14,9 +14,9 @@ output:
       orient: "landscape"
     page_margins:
       bottom: 0.1
-      top: 0
-      right: 0
-      left: 0
+      top: 0.1
+      right: 0.1
+      left: 0.1
       gutter: 0
       header: 0
       footer: 0
@@ -135,43 +135,16 @@ plot_subnational_comparison <- function(.data, indicator = c('penta3', 'instdeli
       plot.margin = margin(0, 0, 0, 0)
     )
 }
-
-get_top_bottom_table <- function(.data, indicator = c('penta3', 'instdeliveries'), denominator = c('penta1', 'anc1', 'dhis2', 'penta1derived')) {
-  check_required(.data)
-  indicator <- arg_match(indicator)
-  denominator <- arg_match(denominator)
-  
-  indicator_col <- sym(paste0('cov_', indicator, '_', denominator))
-  
-  max_year <- robust_max(.data$year)
-
-  .data %>% 
-    select(year, district, !!indicator_col) %>% 
-    mutate(!!indicator_col := round(!!indicator_col)) %>% 
-    filter(!is.na(!!indicator_col)) %>% 
-    pivot_wider(names_from = year, values_from = !!indicator_col) %>%
-    arrange(desc(!!sym(as.character(max_year)))) %>%
-    mutate(rank = row_number()) %>%
-    filter(rank <= 4 | rank > (n() - 4)) %>%
-    select(-rank) %>%
-    flextable() %>%
-    set_caption(caption = str_glue("Top and bottom 4 Coverage {indicator}, by districts (HMIS)"), ) %>%
-    # style(i = 1, part = "caption", pr_t = fp_text(bold = TRUE, font.size = 9)) %>%
-    fontsize(part = 'body', size = 7) %>%
-    bold(part = "header", bold = TRUE) %>%
-    fontsize(part = 'header', size = 7) %>%
-    set_table_properties(layout = "autofit")
-}
 ```
 
 <!---BLOCK_MULTICOL_START--->
 
-```{r, fig.width=4, fig.height=2}
+```{r, fig.width=3.6, fig.height=1.5}
 
-cov <- cache$calculate_indicator_coverage('district')
+cov <- cache$calculate_indicator_coverage('district') %>% 
+  filter(adminlevel_1 == !!adminlevel_1, year == last_year) 
 
-cov <- cov %>% 
-  filter(adminlevel_1 == !!adminlevel_1, year == last_year) %>% 
+pop_cov <- cov %>% 
   # select(district, totunder1_dhis2, totinftpenta_penta1, totinftpenta_penta1derived)
   select(district, totunder1_dhis2)
 
@@ -179,7 +152,7 @@ table_data <- data %>%
   filter(adminlevel_1 == !!adminlevel_1, year == last_year) %>%
   distinct(district, total_pop, live_births) %>%
   # distinct(district, total_pop) %>%
-  left_join(cov, join_by(district)) %>%
+  left_join(pop_cov, join_by(district)) %>%
   mutate(across(where(is.numeric), ~ round(.x)))
 
 totals <- table_data %>%
@@ -199,10 +172,41 @@ bind_rows(totals, table_data) %>%
   bold(part = "header", bold = TRUE) %>%
   fontsize(part = 'header', size = 7) %>%
   bold(i = 1, part = "body") %>% 
-  set_table_properties(layout = "autofit")
+  autofit() %>% 
+  fit_to_width(max_width = 3.6)
+
+run_columnbreak()
 ```
 
-```{r, fig.width=4, fig.height=2}
+```{r, fig.width=3.6, fig.height=1.5}
+admin1_cov %>% 
+  filter_coverage('penta3', denominator = cache$get_denominator('penta3'), region = adminlevel_1) %>% 
+  plot() +
+  cd_report_theme(base_size = 7) +
+  theme(
+    legend.position = 'none',
+    plot.margin = margin(0, 0, 0, 0)
+  )
+
+run_columnbreak()
+```
+
+```{r, fig.width=3.6, fig.height=1.5}
+admin1_cov %>% 
+  filter_coverage('instdeliveries', denominator = cache$get_denominator('instdeliveries'), region = adminlevel_1) %>% 
+  plot() +
+  cd_report_theme(base_size = 7) +
+  theme(
+    legend.position = 'none',
+    plot.margin = margin(0, 0, 0, 0)
+  )
+```
+
+<!---BLOCK_MULTICOL_STOP{widths: [3.63,3.63,3.63], space: 0.2, sep: false}--->
+
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=3.6, fig.height=2.5}
 years <- unique(data$year)
 
 data %>%
@@ -228,10 +232,9 @@ data %>%
 	as_grouped_data(groups = 'type') %>%
 	as_flextable() %>%
   bold(part = "header", bold = TRUE) %>%
-  fontsize(part = 'header', size = 7) %>%
+  fontsize(part = 'header', size = 9) %>%
 	bold(j = 1, i = ~ !is.na(type), bold = TRUE, part = "body") %>%
 	bold(i = ~ is.na(type) & no =='4', bold = TRUE, part = "body") %>%
-  fontsize(size = 7, part = 'body') %>% 
 	colformat_double(i = ~ is.na(type) & !no %in% c("3a", "3b"), j = as.character(years), digits = 0, big.mark = ",") %>%
 	colformat_double(i = ~ is.na(type) & no %in% c("3a", "3b"), j = as.character(years), digits = 2) %>%
 	# bg(
@@ -252,52 +255,52 @@ data %>%
 		i = ~ !is.na(type), part = "body",
 		bg = 'lightgoldenrodyellow'
 	) %>%
-  fontsize(size = 7, part = 'body') %>% 
+  fontsize(size = 9, part = 'body') %>% 
 	theme_vanilla() %>%
-	set_table_properties(layout = "autofit")
-```
+	autofit() %>% 
+  fit_to_width(max_width = 3.6)
 
-
-```{r, fig.width=4, fig.height=1.5}
 run_columnbreak()
-admin1_cov %>% 
-  filter_coverage('penta3', denominator = cache$get_denominator('penta3'), region = adminlevel_1) %>% 
-  plot() +
-  cd_report_theme(base_size = 7) +
-  theme(
-    legend.position = 'none',
-    plot.margin = margin(0, 0, 0, 0)
-  )
 ```
-
-```{r, fig.width=4, fig.height=2.5}
+```{r, fig.width=3.6, fig.height=2.5}
 plot_subnational_comparison(admin1_cov, 'penta3', denominator = cache$get_denominator('penta3'), last_year = last_year)
-```
-
-
-```{r, fig.width=5, fig.height=1.5}
-get_top_bottom_table(admin2_cov, 'penta3', denominator = cache$get_denominator('penta3'))
-```
-
-```{r, fig.width=4, fig.height=1.5}
 run_columnbreak()
-
-admin1_cov %>% 
-  filter_coverage('instdeliveries', denominator = cache$get_denominator('instdeliveries'), region = adminlevel_1) %>% 
-  plot() +
-  cd_report_theme(base_size = 7) +
-  theme(
-    legend.position = 'none',
-    plot.margin = margin(0, 0, 0, 0)
-  )
+```
+```{r, fig.width=3.6, fig.height=2.5}
+plot_subnational_comparison(admin1_cov, 'instdeliveries', denominator = cache$get_denominator('instdeliveries'), last_year = last_year)
 ```
 
-```{r, fig.width=4, fig.height=2.5}
-plot_subnational_comparison(admin1_cov, 'instdeliveries', denominator = cache$get_denominator('penta3'), last_year = last_year)
-```
+<!---BLOCK_MULTICOL_STOP{widths: [3.63,3.63,3.63], space: 0.2, sep: false}--->
 
-```{r, fig.width=5, fig.height=1.5}
-get_top_bottom_table(admin2_cov, 'instdeliveries', denominator = cache$get_denominator('instdeliveries'))
-```
+```{r, fig.height=2.8}
+anc4_cov <- paste0('cov_anc4_', cache$get_denominator('anc4'))
+anc1_cov <- paste0('cov_anc_1trimeter_', cache$get_denominator('anc_1trimeter'))
+births_cov <- paste0('cov_instlivebirths_', cache$get_denominator('instlivebirths'))
+cs_cov <- paste0('cov_csection_', cache$get_denominator('csection'))
+pnc_cov <- paste0('cov_pnc48h_', cache$get_denominator('pnc48h'))
+penta3_cov <- paste0('cov_penta3_', cache$get_denominator('penta3'))
+mcv1_cov <- paste0('cov_measles1_', cache$get_denominator('measles1'))
+opd_cov <- paste0('cov_opd_under5_', cache$get_denominator('opd_under5'))
 
-<!---BLOCK_MULTICOL_STOP{widths: [4,4,4], space: 0.2, sep: true}--->
+cov %>% 
+  select(district, any_of(c(anc4_cov, anc1_cov, births_cov, cs_cov, pnc_cov, penta3_cov, mcv1_cov, opd_cov))) %>% 
+  arrange(district) %>% 
+  mutate(across(-district, round, digits = 1))
+  flextable() %>%
+  set_header_labels(
+    values = list2(
+      !!anc4_cov := "ANC 4",
+      !!anc1_cov := "ANC 1st Trimester",
+      !!births_cov := "Institutional Live Births",
+      !!cs_cov := "C-Section",
+      !!pnc_cov := "PNC 48h",
+      !!penta3_cov := "Penta 3",
+      !!mcv1_cov := "MCV 1",
+      !!opd_cov := "OPD Under 5"
+    )
+  ) %>%
+  fontsize(part = 'body', size = 7) %>%
+  bold(part = "header", bold = TRUE) %>%
+  fontsize(part = 'header', size = 7) %>%
+  autofit()
+```
