@@ -2257,10 +2257,10 @@
   "pt": "Internações <5 anos por Leito"
 },
 {
-  "key": "opt_ratio_opd_u5_hos",
-  "en": "OPD Under 5/Hospitals",
-  "fr": "Consultations externes <5 ans/Hôpitaux",
-  "pt": "OPD <5 anos/Hospitais"
+  "key": "opt_ratio_ipd_u5_hos",
+  "en": "IPD Under 5/Hospitals",
+  "fr": "Hospitalisations <5 ans/Hôpitaux",
+  "pt": "Internações <5 anos/Hospitais"
 },
 {
   "key": "opt_cov_instdeliveries_hstaff",

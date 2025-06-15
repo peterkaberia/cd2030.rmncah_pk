@@ -1,6 +1,5 @@
 ---
-title: "Synthesis Report for `r params$country`"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+title: "`r params$country`"
 output: 
   html_document:
     toc: true
@@ -8,7 +7,7 @@ output:
     theme: cerulean
     highlight: kate
   officedown::rdocx_document:
-    reference_docx: report-template.docx
+    reference_docx: synthesis-template.docx
     page_size:
       height: 22.0
       width: 13.93
@@ -121,23 +120,21 @@ data %>%
 		bg = 'lightgoldenrodyellow'
 	) %>%
 	theme_vanilla() %>%
-	autofit()
+  autofit() %>% 
+	fit_to_width(max_width = 8)
 
 run_columnbreak()
 ```
-#### Interpretations 
 
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - What is the overall quality of the data as assessed by the overall annual data quality score?
 - Is there a data quality pattern by year for which there is an explanation? 
 - Are there certain regions or other subnational units that are particularly problematic?
 - Are there certain reporting forms or services (e.g., antenatal care, labour and delivery, immunization) that are problematic? Was an adjustment done for incomplete reporting (provide the k value)?
 - Is there good consistency between reported numbers of ANC1 and penta1? If not, what could be the explanation?
-
----
 
 :::
 
@@ -167,96 +164,227 @@ plot(calculate_district_reporting_rate(data, threshold, region = adminlevel_1)) 
 
 **DENOMINATORS:** Service coverage is defined as the population who received the service (numerator) divided by the population who need the services: (the denominator). We test four options for denominator measures using institutional live births and Pent-3 immunization coverage (Figures 2c and 2d). The quality of the population projections in DHIS2 is assessed through consistency over time and comparison with the UN projections. Two denominators are also derived using near universal service such as ANC-1 and Penta-1. The most plausible is identified for use to generate other statistics.
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+```{r, fig.width=4.2}
 plot(prepare_population_metrics(adjusted_data, un_estimates = un_estimates), metric = 'births') +
   cd_report_theme()
-```
 
-```{r}
+run_columnbreak()
+```
+**Institutional Deliveries**
+```{r, fig.width=4.2}
 indicator_coverage <- cache$calculate_indicator_coverage('national')
 indicator_coverage %>% 
   filter_indicator_coverage('instdeliveries', unname(survey_estimates['ideliv'])) %>% 
   plot() +
   cd_report_theme()
+run_columnbreak()
 ```
-
-```{r}
+**Penta 3**
+```{r, fig.width=4.2}
 indicator_coverage %>% 
   filter_indicator_coverage('penta3', unname(survey_estimates['penta3'])) %>% 
   plot() +
   cd_report_theme()
 ```
 
-#### Interpretations 
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
 
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - How well does the national projection of births align with the UN projection?
 - Which denominator methods performed best at the national level for the live births coverage and penta3 coverage? And for subnational level for the two indicators?
 - What denominators are selected for the maternal (instdeliveries) and vaccination (penta3) indicators in the coverage analyses? 
 
----
+:::
+
+`r run_pagebreak()`
+
+## 2. National coverage trends: facility data and surveys
+
+#### Antenatal care: ANC4, ANC early visit, first trimester of pregnancy
+
+<!---BLOCK_MULTICOL_START--->
+
+**ANC 4**
+```{r, fig.width=6.3, fig.height=3}
+coverage <- cache$calculate_coverage('national')
+
+coverage %>%
+  filter_coverage('anc4', denominator = cache$get_denominator('anc4')) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+**ANC early visit**
+```{r, fig.width=6.3, fig.height=3}
+coverage %>%
+  filter_coverage('anc_1trimester', denominator = cache$get_denominator('anc_1trimester')) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
+
+::: {custom-style="Style1"}
+
+**Interpretations**
+
+- Are the levels and trends plausible? Is there good consistency between the facility and survey data?
 
 :::
+
+#### Institutional delivery
+
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=6.3, fig.height=3}
+coverage %>%
+  filter_coverage('instdeliveries', denominator = cache$get_denominator('instdeliveries')) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+::: {custom-style="Style1"}
+
+**Interpretations**
+
+- Are the levels and trends plausible? Is there good consistency between the facility and survey data?
+- How does the coverage perform compared to the targets? Is this a positive trend?
+
+:::
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
+
+#### Immunization: Penta 3, Measles 1
+
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=6.3, fig.height=3}
+coverage %>%
+  filter_coverage('instdeliveries', denominator = cache$get_denominator('instdeliveries')) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+```{r, fig.width=6.3, fig.height=3}
+coverage %>%
+  filter_coverage('instdeliveries', denominator = cache$get_denominator('instdeliveries')) %>% 
+  plot() +
+  cd_report_theme()
+
+run_columnbreak()
+```
+
+::: {custom-style="Style1"}
+
+**Interpretations**
+
+- Are the levels and trends plausible? Is there good consistency between the facility and survey data? How do the results compare to the UN estimates (WUENIC)?
+- How does the coverage perform compared to the targets? Is this a positive trend?
+
+:::
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
+
+#### Percent of districts achieving high coverage targets
+
+<!---BLOCK_MULTICOL_START--->
+
+**ANC 4**
+```{r, fig.width=4.2, fig.height=3}
+indicator_coverage <- cache$calculate_indicator_coverage('district')
+
+indicator_coverage %>%
+  calculate_threshold(indicator = 'anc4', denominator = cache$maternal_denominator) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+**Child Health Indicators**
+```{r, fig.width=4.2, fig.height=3}
+indicator_coverage %>%
+  calculate_threshold(indicator = 'vaccine', denominator = cache$denominator) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+::: {custom-style="Style1"}
+
+**Interpretations**
+
+- Has the proportion of districts that achieved the target varied over time?
+
+:::
+
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
+
+
+`r run_pagebreak()`
 
 ## 3. Equity
 
 #### Equity by wealth, education, rural-urban residence (from surveys)
 
-Institutional Deliveries
+**Institutional Deliveries**
+<!---BLOCK_MULTICOL_START--->
 
-```{r}
+```{r, fig.width=4.2}
 equiplot_area(cache$area_survey, 'instlivebirths') +
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=4.2}
 equiplot_wealth(cache$wiq_survey, 'instlivebirths') +
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=4.2}
 equiplot_education(cache$education_survey, 'instlivebirths') +
   cd_report_theme()
 ```
 
-Penta 3
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
 
-```{r}
+**Pentavalent 3rd Dose**
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=4.2}
 equiplot_area(cache$area_survey, 'penta3') +
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=4.2}
 equiplot_wealth(cache$wiq_survey, 'penta3') +
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=4.2}
 equiplot_education(cache$education_survey, 'penta3') +
   cd_report_theme()
 ```
 
-#### Interpretations 
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
 
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - Can you observe any systematic differences—such as specific groups consistently being left behind?
 - Are there observable patterns of inequality (e.g., linear, concentrated at the top or bottom)? If so, what potential strategies could be implemented to reduce these inequalities?
 - Are all subgroups experiencing increases or decreases in coverage/prevalence at the same pace?
 - Are inequalities changing over time?
 
----
-
 :::
 
 #### Geographical inequalities: Health facility data 
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+**Instituional Deliveries**
+```{r, fig.width=6.3}
 admin_level_1_inequality <- cache$calculate_inequality('adminlevel_1')
 
 admin_level_1_inequality %>% 
@@ -265,14 +393,19 @@ admin_level_1_inequality %>%
   cd_report_theme()
 ```
 
-```{r}
+**Pentavalent 3rd Dose**
+
+```{r, fig.width=6.3}
 admin_level_1_inequality %>% 
   filter_inequality('penta3') %>% 
   plot() +
   cd_report_theme()
 ```
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=3.1}
 admin_level_1_mapping <- cache$get_mapping_data('adminlevel_1')
 max_year <- robust_max(admin_level_1_mapping$year)
 
@@ -283,7 +416,7 @@ admin_level_1_mapping %>%
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=3.1}
 admin_level_1_mapping %>% 
   filter_mapping_data('penta3', denominator = cache$maternal_denominator,
                       palette = 'Blues', plot_year = max_year) %>% 
@@ -291,72 +424,111 @@ admin_level_1_mapping %>%
   cd_report_theme()
 ```
 
-#### Interpretations 
-
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - How has coverage evolved over time?
 - Has there been any change in inequality? Are the data points becoming more or less dispersed over time? Are the MADM (Mean Absolute Deviation from the Median) estimates changing throughout the period?
 - Which regions or districts are the best and worst performers?
 
----
-
 :::
 
-#### Percent of regions/provinces achieving high coverage targets
+<!---BLOCK_MULTICOL_STOP{widths: [3.183, 3.183, 6.365], space: 0.2, sep: false}--->
 
-```{r}
-indicator_coverage <- cache$calculate_indicator_coverage('adminlevel_1')
+`r run_pagebreak()`
 
-indicator_coverage %>%
-  calculate_threshold(indicator = 'vaccine', denominator = cache$denominator) %>% 
-  plot()
+## 4. Institutional mortality
+
+#### Institutional Mortality trends (iMMR, iSBR)
+
+<!---BLOCK_MULTICOL_START--->
+
+**iMMR**
+```{r, fig.width=4.2}
+mortality_summary <- cache$create_mortality_summary()
+plot(mortality_summary, indicator = 'mmr_inst') +
+  cd_report_theme()
 ```
 
-#### Interpretations 
+**iSBR**
+```{r, fig.width=4.2}
+plot(mortality_summary, indicator = 'sbr_inst') +
+  cd_report_theme()
+```
 
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
-- Has the proportion of regions or districts that achieved the target varied over time?
-
----
+- What can be said about the level and trend? Is this in line with what is expected based on UN estimates?
 
 :::
 
-## 4. Institutional mortality
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
+
+#### Institutional Mortality by admin1 units
+
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=4.2}
+max_year <- robust_max(mortality_summary$year)
+min_year <- min(mortality_summary$year, na.rm = TRUE)
+
+mmr_inst <- mortality_summary %>% 
+  cache$filter_mortality_summary('mmr', map_years = c(min_year, max_year))
+
+plot(mmr_inst) +
+  cd_report_theme()
+```
+
+```{r, fig.width=4.2}
+sbr_inst <- mortality_summary %>% 
+  cache$filter_mortality_summary('sbr', map_years = c(min_year, max_year))
+
+plot(sbr_inst) +
+  cd_report_theme()
+```
+
+::: {custom-style="Style1"}
+
+**Interpretations**
+
+- What are the 3 highest iMMR regions and the lowest iMMR & iSBR regions? (name with level) Is this as expected, or does it suggest data quality issues?
+- (are these more advanced regions where mortality is expected to be lower or are there less-developed regions with low mortality,. which could be an indication of major underreporting of deaths)
+
+:::
+
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
+
 
 #### Data quality metrics
 
 Ratio stillbirth to maternal deaths in the health facility data at national level
 
-```{r}
-mortality_summary <- cache$create_mortality_summary()
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=6.3}
 plot(mortality_summary, indicator = 'ratio_md_sb') +
   cd_report_theme()
 ```
 
-#### Interpretations 
-
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - A plausible ratio is in the range of 5 to 25 stillbirths per maternal death. Is the national ratio within the expected range?
 - What can be said about the top 3 and bottom 3 regions?
 - If the ratio is above 25, this may mean that maternal deaths are more underreported than stillbirths. If it is below 5, stillbirths are likely underreported. If the ratio is within the range, the reporting may be good if the mortality levels are in the expected range. If not, then both maternal deaths and stillbirths are underreported.
 
----
-
 :::
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
 
 Estimated completeness of facility maternal death and stillbirth reporting
 
-
-```{r}
+<!---BLOCK_MULTICOL_START--->
+```{r, fig.width=6.3}
 mortality_ratio <- mortality_summary %>% 
   cache$create_mortality_ratios()
 
@@ -364,68 +536,30 @@ plot(cache$summarise_completeness_ratio(mortality_ratio, 'mmr')) +
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=6.3}
 plot(cache$summarise_completeness_ratio(mortality_ratio, 'sbr')) +
   cd_report_theme()
 ```
 
-#### Interpretations 
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
 
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - Comment on the completeness of reporting of institutional MMR and SBR based on the population MMR and the Community to Institutional ratio
 
----
-
 :::
 
-#### Institutional Maternal Mortality Ratio (iMMR)
-
-```{r}
-plot(mortality_summary, indicator = 'mmr_inst') +
-  cd_report_theme()
-```
-
-#### Interpretations 
-
-::: {custom-style="Style1"}
-
----
-
-- What is the national iMMR? Is this as expected, e.g. in line with UN estimates? 
-- What are the 3 highest iMMR regions and the lowest iMMR regions? (name with level) Is this as expected, or does it suggest data quality issues? (are these more advanced regions where mortality is expected to be lower or are there less-developed regions with low mortality,. which could be an indication of major underreporting of deaths)
-
----
-
-:::
-
-#### Institutional Still birth rate (iSBR)
-
-```{r}
-plot(mortality_summary, indicator = 'sbr_inst') +
-  cd_report_theme()
-```
-
-#### Interpretations 
-
-::: {custom-style="Style1"}
-
----
-
-- What can be said about the level and trend? Is this in line with what is expected based on UN estimates?
-- What are the 3 highest iSBR regions and the lowest iSBR regions? (name with level) Is this as expected, or does it suggest data quality issues? (are these more advanced regions where mortality is expected to be lower or are there less-developed regions with low mortality,. which could be an indication of major underreporting of deaths)
-
----
-
-:::
+`r run_pagebreak()`
 
 ## 5. Curative health service utilization for sick children
 
 #### Outpatient and inpatient service utilization 
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=6.3}
 service_utilization <- cache$compute_service_utilization('national')
 service_utilization %>% 
   filter_service_utilization_map('opd') %>% 
@@ -433,31 +567,33 @@ service_utilization %>%
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=6.3}
 service_utilization %>% 
   filter_service_utilization_map('ipd') %>% 
   plot() +
   cd_report_theme()
-```
 
-#### Interpretations 
+run_columnbreak()
+```
 
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - What is the number of OPD visits per child per year during in 2024 and the trend over time?  Is it lower than 1 visit per year, which suggests low access? 
 - What can be said about the data quality for OPD & IPD visits? Is there consistency of reported numbers between years?
 - What is the number of IPD visits per 100 children per year during 2019-2024, is it increasing?  Is it lower than 2 per 100 children under-five, which suggests low access? 
 - What can be said about the OPD visits & admissions by region/province in 2024? How large is the difference between top and bottom regions? 
 
----
-
 :::
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
 
 #### Regional/provincial service utilization
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=4.2}
 admin1_service_utilization <- cache$compute_service_utilization('adminlevel_1')
 max_year <- robust_max(admin1_service_utilization$year)
 
@@ -467,62 +603,62 @@ plot(admin1_filtered) +
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=4.2}
 admin1_filtered <- admin1_service_utilization %>% 
   cache$filter_service_utilization(indicator = 'ipd', map_years = max_year)
 plot(admin1_filtered) +
   cd_report_theme()
 ```
 
-#### Interpretations 
-
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - What are the 3 regions with the highest OPD and IPD rates and the 3 regions with the lowest (region name with values)? Any reason? Potential data issues?
 
----
-
 :::
 
-#### Case Fatality Rate among Under 5
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+#### Case Fatality Rate among admissions Under 5
+
+```{r, fig.width=6.3}
 service_utilization %>% 
   filter_service_utilization_map('cfr') %>% 
   plot() +
   cd_report_theme()
 ```
 
-#### Interpretations 
-
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - What is the case fatality among admissions under-five? What are the trends?
 - What does this say about the quality of care? 
 
----
-
 :::
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
+
+`r run_pagebreak()`
 
 ## 6. Health system progress and performance
 
 #### Health system inputs
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=6.3}
 national_metrics <- calculate_health_system_metrics(data, 'national')
 plot_national_health_metric(national_metrics, 'density') +
   cd_report_theme()
 ```
 
-#### Interpretations 
-
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - Note on completeness of the data (private sector included)? 
 - What can be said about the national health system inputs? How do they compare to the benchmarks?
@@ -531,13 +667,15 @@ Bed density (Benchmark: 25)
 Health workforce density (Benchmark: 23 – needed to make major progress in reducing maternal and child mortality with high skilled birth attendance (WHO). 
 44.5 per 10,000 population to achieve universal health coverage
 
----
-
 :::
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
 
 #### Health system inputs by region/province
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=4.2}
 subnational_metrics <- calculate_health_system_metrics(data, 'adminlevel_1')
 
 plot(subnational_metrics, indicator = 'ratio_fac_pop',
@@ -546,19 +684,21 @@ plot(subnational_metrics, indicator = 'ratio_fac_pop',
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=4.2}
 plot(subnational_metrics, indicator = 'ratio_hos_pop',
         national_score = national_metrics$ratio_hos_pop,
         target = 2) +
   cd_report_theme()
 ```
 
-```{r}
+```{r, fig.width=4.2}
 plot(subnational_metrics, indicator = 'ratio_hstaff_pop',
         national_score = national_metrics$ratio_hstaff_pop,
         target = 23) +
   cd_report_theme()
 ```
+
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->
 
 ::: {custom-style="Style1"}
 
@@ -575,22 +715,49 @@ plot(subnational_metrics, indicator = 'ratio_hstaff_pop',
 
 #### Health system outputs by inputs at the subnational level
 
-```{r}
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=6.3}
 comparison <- cache$calculate_health_system_comparison()
 plot(comparison, indicator = 'cov_instdeliveries_hstaff',
         denominator = cache$maternal_denominator) +
   cd_report_theme()
 ```
 
-#### Interpretations 
-
 ::: {custom-style="Style1"}
 
----
+**Interpretations**
 
 - The interpretation should focus on whether the obtained picture has validity. This may be posited if it confirms some expectations such as more developed regions doing better
 - Describe poor and good performing regions/provinces
 
----
+:::
+
+<!---BLOCK_MULTICOL_STOP{widths: [6.365, 6.365], space: 0.2, sep: false}--->
+
+#### Private sector and RMNCAH services
+
+<!---BLOCK_MULTICOL_START--->
+
+```{r, fig.width=4.2}
+prepare_private_sector_plot_data(cache$sector_national_estimates, cache$csection_national_estimates) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+```{r, fig.width=4.2}
+prepare_private_sector_plot_data(cache$sector_area_estimates, cache$csection_area_estimates) %>% 
+  plot() +
+  cd_report_theme()
+```
+
+::: {custom-style="Style1"}
+
+**Interpretations**
+
+- Which indicators have higher private share?
+- Are there rural/urban differences?
 
 :::
+
+<!---BLOCK_MULTICOL_STOP{widths: [4.243,4.243,4.243], space: 0.2, sep: false}--->

@@ -13,7 +13,7 @@ plot.cd_health_system_comparison <- function(x,
                                               indicator = c(
                                                 'cov_instdeliveries_hstaff',
                                                 'ratio_opd_u5_hstaff',
-                                                'ratio_opd_u5_hos',
+                                                'ratio_ipd_u5_hos',
                                                 'ratio_ipd_u5_bed'),
                                               denominator = NULL
 ) {
@@ -40,12 +40,12 @@ plot.cd_health_system_comparison <- function(x,
       title = 'Under-5 OPD Visits by health workforce density by admin level 1',
       caption = NULL
     ),
-    ratio_opd_u5_hos = list(
-      x = 'ad1_ratio_opd_u5_pop',
+    ratio_ipd_u5_hos = list(
+      x = 'ad1_ratio_ipd_u5_pop',
       y = 'ad1_ratio_hos_pop',
-      x_label = 'Number of under-5 OPD visits per child per year',
+      x_label = 'Number of under-5 IPD Admissions per child per year',
       y_label = "Number of Hospitals per 100,000 population",
-      title = 'Under-5 OPD Visits by hospital density by admin level 1',
+      title = 'Under-5 OPD Admission by hospital density by admin level 1',
       caption = NULL
     ),
     ratio_ipd_u5_bed = list(

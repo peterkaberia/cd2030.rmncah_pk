@@ -14,7 +14,7 @@ healthSystemComparisonUI <- function(id, i18n) {
 
       tabPanel(title = i18n$t("opt_cov_instdeliveries_hstaff"), downloadCoverageUI(ns('cov_instdeliveries_hstaff'))),
       tabPanel(title = i18n$t("opt_ratio_opd_u5_hstaff"), downloadCoverageUI(ns('ratio_opd_u5_hstaff'))),
-      tabPanel(title = i18n$t("opt_ratio_opd_u5_hos"), downloadCoverageUI(ns('ratio_opd_u5_hos'))),
+      tabPanel(title = i18n$t("opt_ratio_ipd_u5_hos"), downloadCoverageUI(ns('ratio_ipd_u5_hos'))),
       tabPanel(title = i18n$t("opt_ratio_ipd_u5_bed"), downloadCoverageUI(ns('ratio_ipd_u5_bed')))
     )
   )
@@ -52,10 +52,10 @@ healthSystemComparisonServer <- function(id, cache, i18n) {
       )
 
       downloadCoverageServer(
-        id = 'ratio_opd_u5_hos',
-        filename = reactive('ratio_opd_u5_hos'),
+        id = 'ratio_ipd_u5_hos',
+        filename = reactive('ratio_ipd_u5_hos'),
         data_fn = comparison,
-        indicator = 'ratio_opd_u5_hos',
+        indicator = 'ratio_ipd_u5_hos',
         sheet_name = reactive('Sheet 1'),
         i18n = i18n
       )
